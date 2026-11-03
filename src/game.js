@@ -1584,8 +1584,8 @@ class Game {
       armor: Math.min(0.70, (char.baseArmor || 0) + bonusArmor),
       damageBonus: bonusDmg,
       areaBonus: (char.id === 'noelle' ? 0.3 : 0),
-      critChance: (char.id === 'yami' ? 0.15 : 0.05) + bonusCrit,
-      critDmgBonus: (up.crit || 0) * 0.15,
+      critChance: (char.id === 'yami' ? 0.15 : (char.id === 'nacht' ? 0.12 : 0)) + bonusCrit,
+      critDmgBonus: (up.crit || 0) * 0.05,
       cooldownReduction: (char.id === 'luck' ? 0.15 : (char.id === 'licht' ? 0.12 : 0)) + bonusCd,
       pickupRadius: 80 + bonusMagnet,
       expBonus: (char.id === 'julius' ? 0.3 : 0) + bonusExp,
@@ -1618,6 +1618,8 @@ class Game {
       this.artifacts.applyEquippedStats(this.player);
       this.player.hp = this.player.maxHp;
     }
+    this.player.critChance = Math.min(1.0, Math.max(0, this.player.critChance || 0));
+    this.player.critDmgBonus = Math.min(2.0, Math.max(0, this.player.critDmgBonus || 0));
 
     // Repertoire: Start with 2 moves if unlocked!
     if ((up.repertoire || 0) >= 1) {
@@ -1748,10 +1750,16 @@ class Game {
     }
 
     const critEl = document.getElementById('stValCrit');
-    if (critEl) critEl.innerText = `${Math.round((p.critChance || 0.05) * 100)}%`;
+    if (critEl) {
+      const critPct = Math.min(100, Math.round((p.critChance || 0) * 100));
+      critEl.innerText = `${critPct}% (Tối đa 100%)`;
+    }
 
     const critDmgEl = document.getElementById('stValCritDmg');
-    if (critDmgEl) critDmgEl.innerText = `${Math.min(200, Math.round((1.5 + (p.critDmgBonus || 0.5)) * 100))}% (Tối đa 200%)`;
+    if (critDmgEl) {
+      const critDmgPct = Math.min(200, Math.round((p.critDmgBonus || 0) * 100));
+      critDmgEl.innerText = `${critDmgPct}% (Tối đa 200%)`;
+    }
 
     const cdrEl = document.getElementById('stValCdr');
     if (cdrEl) {
@@ -2478,7 +2486,14 @@ class Game {
     p.damageBonus = (up.strength || 0) * 0.025 + (infMightLv * 0.10);
     p.cooldownReduction = (p.charId === 'luck' ? 0.15 : (p.charId === 'licht' ? 0.12 : 0)) + ((up.reflexes || 0) * 0.02);
     p.areaBonus = (p.charId === 'noelle' ? 0.3 : (p.charId === 'licht' ? 0.35 : 0));
-    p.critChance = (p.charId === 'yami' ? 0.15 : (p.charId === 'nacht' ? 0.12 : 0.05)) + ((up.crit || 0) * 0.03);
+    
+    // Base Crit Values: If no character trait and no upgrades/relics, starts from 0%
+    const baseCharCrit = (p.charId === 'yami' ? 0.15 : (p.charId === 'nacht' ? 0.12 : 0));
+    const upgradeCrit = (up.crit || 0) * 0.03;
+    const upgradeCritDmg = (up.crit || 0) * 0.05;
+
+    p.critChance = baseCharCrit + upgradeCrit;
+    p.critDmgBonus = upgradeCritDmg;
     p.pickupRadius = 80 + ((up.magnet || 0) * 12);
     p.expBonus = (p.charId === 'julius' ? 0.3 : 0) + ((up.wisdom || 0) * 0.05);
 
@@ -2494,7 +2509,8 @@ class Game {
         manaSkinLv = lv;
         p.armor = Math.min(0.70, (CHARACTERS[p.charId].baseArmor || 0) + ((up.armor || 0) * 0.02) + lv * 0.10);
       }
-      if (id === 'ki_sense') p.critChance += lv * 0.10;
+      if (id === 'ki_sense') p.critChance += lv * 0.20; // +20% Crit Rate per level (Max 100%)
+      if (id === 'crit_damage') p.critDmgBonus += lv * 0.40; // +40% Crit Damage per level (Max 200% at Lv 5)
       if (id === 'mana_resonance') p.cooldownReduction = Math.min(0.55, p.cooldownReduction + lv * 0.10);
       if (id === 'devil_pact') p.areaBonus += lv * 0.20;
       if (id === 'mana_magnet') p.pickupRadius += lv * 40;
@@ -2508,6 +2524,10 @@ class Game {
     if (this.artifacts) {
       this.artifacts.applyEquippedStats(p);
     }
+
+    // Caps per user requirement: Max Crit Rate = 100% (1.0), Max Crit Damage = 200% (2.0)
+    p.critChance = Math.min(1.0, Math.max(0, p.critChance || 0));
+    p.critDmgBonus = Math.min(2.0, Math.max(0, p.critDmgBonus || 0));
   }
 
   updateTargeting() {

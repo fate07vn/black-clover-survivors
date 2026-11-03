@@ -1339,10 +1339,18 @@ const SPELL_DEFS = {
   },
   ki_sense: {
     id: 'ki_sense',
-    name: 'Cảm Nhận Khí (Ki Sense)',
+    name: 'Cảm Nhận Khí (Ki Sense / Crit Rate)',
     type: 'passive',
     icon: '👁️',
-    description: 'Tăng tỉ lệ đánh Chí Mạng +10% và tỉ lệ Né Đòn +8%.',
+    description: 'Tăng Tỉ Lệ Đánh Chí Mạng (Crit Rate) +20% mỗi cấp (Tối đa 100%).',
+    maxLevel: 5
+  },
+  crit_damage: {
+    id: 'crit_damage',
+    name: 'Bạo Kích Tử Diệt (Critical Damage)',
+    type: 'passive',
+    icon: '💥',
+    description: 'Tăng Sát Thương Chí Mạng (Crit Damage) +40% mỗi cấp (Tối đa 200%).',
     maxLevel: 5
   },
   mana_resonance: {
@@ -1649,8 +1657,8 @@ class SpellManager {
     const levelScale = 1 + (p.level - 1) * 0.025;
     const dmgMult = (1 + p.damageBonus) * (1 + (level - 1) * 0.18) * levelScale;
     const areaMult = (1 + p.areaBonus) * (1 + (level - 1) * 0.12);
-    const isCrit = Math.random() < p.critChance;
-    const critMult = isCrit ? Math.min(2.0, 1.5 + (p.critDmgBonus || 0.5)) : 1.0;
+    const isCrit = Math.random() < Math.min(1.0, Math.max(0, p.critChance || 0));
+    const critMult = isCrit ? Math.min(2.0, Math.max(1.0, 1.0 + (p.critDmgBonus || 0) * 0.5)) : 1.0;
     const damage = Math.round(def.baseDamage * dmgMult * critMult);
     const targetAngle = this.getTargetAngle();
 

@@ -6,15 +6,15 @@
       "salt": "e728f0022a55f57d7641e13704689f15",
       "passwordHash": "9227dfbb6bd7c7caaa81424961a929057394e6857acdade7e000e548202453d5",
       "createdAt": "2026-11-03T14:44:32.223Z",
-      "lastLogin": "2026-11-03T17:38:08.499Z",
+      "lastLogin": "2026-11-03T20:07:00.573Z",
       "saveData": {
         "currency": {
-          "coins": 1297866,
-          "tickets": 62,
+          "coins": 944278,
+          "tickets": 83,
           "purpleTickets": 5,
           "diamonds": 19
         },
-        "playerName": "tiendat27",
+        "playerName": "tiendat",
         "unlocked": [
           "asta",
           "yuno",
@@ -129,9 +129,9 @@
           }
         },
         "bannerPity": {
-          "spooky": 18
+          "spooky": 31
         },
-        "pity1000Counter": 0,
+        "pity1000Counter": 200,
         "artifactsSystem": {
           "artifacts": {
             "gauche_phantom_mirror": {
@@ -151,8 +151,8 @@
               "count": 26
             },
             "chronos_hourglass": {
-              "star": 1,
-              "count": 1
+              "star": 2,
+              "count": 2
             },
             "luck_thunder_gauntlets": {
               "star": 3,
@@ -214,8 +214,8 @@
           "sensitivity": 1
         }
       },
-      "lastSaved": "2026-11-03T17:52:12.782Z",
-      "activeToken": "1c729516b5cf423e9202be93fcc190d6b0dc02050e2cbea2"
+      "lastSaved": "2026-11-03T20:07:28.496Z",
+      "activeToken": "4c9d84354d027656df10a5b30d3239937003d18aff03c4e1"
     },
     "lo1": {
       "username": "lo1",
@@ -345,6 +345,141 @@
         }
       },
       "lastSaved": "2026-11-03T15:04:21.262Z"
+    },
+    "tiendatt": {
+      "username": "tiendatt",
+      "lowerUser": "tiendatt",
+      "salt": "03689dc39c0be484c31aa4d278c93886",
+      "passwordHash": "94e52cabdc51cd4024234fe701867bbe875ec98baef72b05e592b9ad9497797a",
+      "createdAt": "2026-11-03T20:07:40.465Z",
+      "lastLogin": "2026-11-03T20:07:40.465Z",
+      "saveData": {
+        "currency": {
+          "coins": 3,
+          "tickets": 0,
+          "purpleTickets": 0,
+          "diamonds": 0
+        },
+        "playerName": "Khách (Tập Sự)",
+        "unlocked": [
+          "asta"
+        ],
+        "upgrades": {
+          "vitality": 0,
+          "strength": 0,
+          "stride": 0,
+          "reflexes": 0,
+          "armor": 0,
+          "synthesis": 0,
+          "magnet": 0,
+          "wisdom": 0,
+          "fortune": 0,
+          "repertoire": 0,
+          "crit": 0,
+          "reroll": 0
+        },
+        "characterUpgrades": {
+          "asta": {
+            "vitality": 0,
+            "strength": 0,
+            "stride": 0,
+            "reflexes": 0,
+            "armor": 0,
+            "synthesis": 0,
+            "magnet": 0,
+            "wisdom": 0,
+            "fortune": 0,
+            "repertoire": 0,
+            "crit": 0,
+            "reroll": 0
+          }
+        },
+        "bannerPity": {},
+        "pity1000Counter": 0,
+        "artifactsSystem": {
+          "artifacts": {
+            "gauche_phantom_mirror": {
+              "star": 3,
+              "count": 22
+            },
+            "nero_sealing_stone": {
+              "star": 3,
+              "count": 30
+            },
+            "charmy_feast_box": {
+              "star": 3,
+              "count": 39
+            },
+            "yami_dark_pipe": {
+              "star": 3,
+              "count": 26
+            },
+            "chronos_hourglass": {
+              "star": 2,
+              "count": 2
+            },
+            "luck_thunder_gauntlets": {
+              "star": 3,
+              "count": 41
+            },
+            "zagred_cursed_rosary": {
+              "star": 3,
+              "count": 9
+            },
+            "salamander_flame_core": {
+              "star": 3,
+              "count": 12
+            },
+            "aegis_silvamillion": {
+              "star": 3,
+              "count": 8
+            },
+            "sylph_tempest_stone": {
+              "star": 3,
+              "count": 15
+            },
+            "yggdrasil_life_seed": {
+              "star": 3,
+              "count": 9
+            },
+            "lucifero_demon_heart": {
+              "star": 3,
+              "count": 3
+            },
+            "demon_blade_licht": {
+              "star": 3,
+              "count": 3
+            },
+            "crown_of_wizard_king": {
+              "star": 2,
+              "count": 2
+            }
+          },
+          "equippedArtifacts": [
+            null,
+            null,
+            null
+          ]
+        },
+        "keybinds": {
+          "up": "KeyW",
+          "down": "KeyS",
+          "left": "KeyA",
+          "right": "KeyD",
+          "dash": "Space",
+          "stats": "KeyC",
+          "evo": "KeyB",
+          "pause": "Escape"
+        },
+        "touchConfig": {
+          "layout": "right",
+          "joystickSize": "medium",
+          "dashSize": "medium",
+          "sensitivity": 1
+        }
+      },
+      "activeToken": "4792e3bfc6f12906f3d9854d62fb8a3aa15ba54647a36630",
+      "lastSaved": "2026-11-03T20:07:54.404Z"
     }
   },
   "sessions": {
@@ -368,9 +503,9 @@
       "lowerUser": "tiendat",
       "createdAt": 1793726892084
     },
-    "1c729516b5cf423e9202be93fcc190d6b0dc02050e2cbea2": {
-      "lowerUser": "tiendat",
-      "createdAt": 1793727488499
+    "4792e3bfc6f12906f3d9854d62fb8a3aa15ba54647a36630": {
+      "lowerUser": "tiendatt",
+      "createdAt": 1793736460465
     }
   },
   "adminTokens": {
