@@ -792,7 +792,7 @@ class Game {
 
     let canAfford = false;
     const ticketCost = count;
-    const coinCost = count === 1 ? 100 : (count === 10 ? 900 : (count === 100 ? 8500 : count * 90));
+    const coinCost = count === 1 ? 2500 : (count === 10 ? 22500 : (count === 100 ? 200000 : count * 2250));
 
     if (this.currency.tickets >= ticketCost) {
       this.currency.tickets -= ticketCost;
@@ -817,6 +817,20 @@ class Game {
     const epics = allRelicKeys.filter(k => defs[k].rarity === 'epic');
     const rares = allRelicKeys.filter(k => defs[k].rarity === 'rare');
 
+    // Giảm tỷ lệ trùng lặp: Ưu tiên cổ vật chưa sở hữu (85%) hoặc chưa đạt 3 sao
+    const selectArtifact = (pool) => {
+      const coll = (this.artifacts && this.artifacts.collection) ? this.artifacts.collection : {};
+      const unowned = pool.filter(k => !coll[k]);
+      if (unowned.length > 0 && Math.random() < 0.85) {
+        return unowned[Math.floor(Math.random() * unowned.length)];
+      }
+      const notMaxed = pool.filter(k => !coll[k] || (coll[k].star || 1) < 3);
+      if (notMaxed.length > 0 && Math.random() < 0.85) {
+        return notMaxed[Math.floor(Math.random() * notMaxed.length)];
+      }
+      return pool[Math.floor(Math.random() * pool.length)];
+    };
+
     const results = [];
     let highestRarity = 'rare';
     let totalDupCoins = 0;
@@ -830,15 +844,15 @@ class Game {
 
       if (roll < 5.0) {
         rTier = 'legendary';
-        pickedId = legendaries[Math.floor(Math.random() * legendaries.length)];
+        pickedId = selectArtifact(legendaries);
         highestRarity = 'legendary';
       } else if (roll < 30.0 || isGuaranteedSlot) {
         rTier = 'epic';
-        pickedId = epics[Math.floor(Math.random() * epics.length)];
+        pickedId = selectArtifact(epics);
         if (highestRarity !== 'legendary') highestRarity = 'epic';
       } else {
         rTier = 'rare';
-        pickedId = rares[Math.floor(Math.random() * rares.length)];
+        pickedId = selectArtifact(rares);
       }
 
       const coll = this.artifacts.collection;
@@ -3303,7 +3317,7 @@ class Game {
 
     let canAfford = false;
     const ticketCost = count;
-    const coinCost = count === 1 ? 100 : (count === 10 ? 900 : 8500);
+    const coinCost = count === 1 ? 2500 : (count === 10 ? 22500 : 200000);
 
     if (this.currency.tickets >= ticketCost) {
       this.currency.tickets -= ticketCost;
@@ -3324,6 +3338,15 @@ class Game {
     const epics = ['yami', 'fuegoleon', 'nozel', 'charlotte', 'dorothy', 'william', 'jack', 'langris', 'henry', 'fana', 'rhya', 'vetto'];
     const rares = ['yuno', 'noelle', 'luck', 'leopold', 'rill', 'mars', 'zora', 'gordon', 'grey', 'mimosa', 'klaus'];
     const commons = ['asta', 'magna', 'finral', 'charmy', 'sol'];
+
+    // Giảm tỷ lệ trùng lặp: Nếu còn tướng trong bậc này chưa sở hữu, ưu tiên 85% ra tướng mới!
+    const pickFromPool = (candidatePool) => {
+      const unowned = candidatePool.filter(id => !this.unlockedCharacters.has(id));
+      if (unowned.length > 0 && Math.random() < 0.85) {
+        return unowned[Math.floor(Math.random() * unowned.length)];
+      }
+      return candidatePool[Math.floor(Math.random() * candidatePool.length)];
+    };
 
     if (!this.bannerPity) this.bannerPity = {};
     if (!this.bannerPity[bannerId]) this.bannerPity[bannerId] = 0;
@@ -3355,11 +3378,9 @@ class Game {
           highestRarity = rTier;
           is1000PityTrigger = true;
         } else {
-          // Nếu đã mở khóa toàn bộ 39 tướng, thưởng lớn Jackpot +50,000 Coins & +50 Vé!
+          // Nếu đã mở khóa toàn bộ 39 tướng, thưởng lớn Jackpot +50,000 Coins (không tặng vé)!
           this.currency.coins += 50000;
-          this.currency.tickets += 50;
           totalDupCoins += 50000;
-          totalDupTickets += 50;
         }
       }
 
@@ -3376,26 +3397,26 @@ class Game {
           rTier = 'legendary';
           const bannerLegs = legendaries.filter(id => banner.pool.includes(id));
           const pool = bannerLegs.length > 0 ? bannerLegs : legendaries;
-          pickedId = pool[Math.floor(Math.random() * pool.length)];
+          pickedId = pickFromPool(pool);
           highestRarity = 'legendary';
           this.bannerPity[bannerId] = 0;
         } else if (roll < (legRate + epicRate) || (isGuaranteedSlot && Math.random() < 0.5)) {
           rTier = 'epic';
           const bannerEpics = epics.filter(id => banner.pool.includes(id));
           const pool = bannerEpics.length > 0 ? bannerEpics : epics;
-          pickedId = pool[Math.floor(Math.random() * pool.length)];
+          pickedId = pickFromPool(pool);
           if (highestRarity !== 'legendary') highestRarity = 'epic';
         } else if (roll < (legRate + epicRate + rareRate) || isGuaranteedSlot) {
           rTier = 'rare';
           const bannerRares = rares.filter(id => banner.pool.includes(id));
           const pool = bannerRares.length > 0 ? bannerRares : rares;
-          pickedId = pool[Math.floor(Math.random() * pool.length)];
+          pickedId = pickFromPool(pool);
           if (highestRarity === 'common') highestRarity = 'rare';
         } else {
           rTier = 'common';
           const bannerCommons = commons.filter(id => banner.pool.includes(id));
           const pool = bannerCommons.length > 0 ? bannerCommons : commons;
-          pickedId = pool[Math.floor(Math.random() * pool.length)];
+          pickedId = pickFromPool(pool);
         }
       }
 
@@ -3407,13 +3428,7 @@ class Game {
         const dupBonus = rTier === 'legendary' ? 2500 : (rTier === 'epic' ? 800 : (rTier === 'rare' ? 300 : 100));
         this.currency.coins += dupBonus;
         totalDupCoins += dupBonus;
-        if (rTier === 'legendary') {
-          this.currency.tickets += 3;
-          totalDupTickets += 3;
-        } else if (rTier === 'epic') {
-          this.currency.tickets += 1;
-          totalDupTickets += 1;
-        }
+        // Bỏ nhận vé khi trùng lặp
       }
 
       results.push({
