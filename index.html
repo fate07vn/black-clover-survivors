@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Black Clover: Magic Survivor (Ma Pháp Sinh Tồn)</title>
-  <link rel="stylesheet" href="style.css?v=bc133">
+  <link rel="stylesheet" href="style.css?v=bc138">
 <style id="inlined-styles">
 /* Black Clover: Magic Survivor - Dark Fantasy Anime UI Styling */
 
@@ -3086,7 +3086,6 @@ html, body {
 
     <div class="top-nav-center">
       <button class="nav-tab-btn btn-phapsu" onclick="openCharSelectModal()">🧙‍♂️ PHÁP SƯ</button>
-      <button class="nav-tab-btn btn-tienhoa" onclick="openEvolutionModal()" style="border-color: #38bdf8; color: #38bdf8;">📖 TIẾN HÓA</button>
       <button class="nav-tab-btn btn-taovat" onclick="openArtifactsModal()">🏺 TẠO VẬT</button>
       <button class="nav-tab-btn btn-gacha" onclick="openGachaModal()">🎰 GACHA</button>
       <button class="nav-tab-btn btn-upgrades" onclick="openUpgradesModal()">⚡ UPGRADES</button>
@@ -3097,7 +3096,6 @@ html, body {
       <button id="btnTopNavAuth" class="nav-tab-btn btn-auth" onclick="openAuthModal()" title="Đăng nhập để lưu tiến trình game lên đám mây">🔑 ĐĂNG NHẬP</button>
       <div id="topNavUserPill" class="currency-pill user" style="display: none; cursor: pointer;" onclick="openAccountModal()" title="Tài khoản Ma Đạo Sĩ (Bấm để xem hồ sơ / đồng bộ)">👤 <span id="topNavUsernameText">Player</span> <span id="authSyncStatusDot">☁️</span></div>
       <button id="btnTopNavSave" class="nav-tab-btn btn-save" style="display: none; background: linear-gradient(135deg, #059669, #10b981); color: #fff; font-weight: 700; border: 1px solid #34d399; box-shadow: 0 0 10px rgba(16,185,129,0.4); padding: 5px 12px; border-radius: 8px; cursor: pointer; align-items: center; gap: 4px;" onclick="manualCloudSave(event)" title="Lưu game ngay lập tức lên đám mây"><span>💾</span> <span>LƯU GAME</span></button>
-      <button class="nav-icon-btn" onclick="toggleSoundSFX()" title="Âm thanh SFX">🔊</button>
       <button class="nav-icon-btn" onclick="toggleFullscreen()" title="Toàn màn hình">⛶</button>
       <button class="nav-icon-btn" onclick="openSettingsModal()" title="Cài đặt">⚙️</button>
     </div>
@@ -3133,12 +3131,8 @@ html, body {
 
       <div class="hud-right">
         <button id="btnStatsInspector" class="hud-btn" title="Xem Toàn Bộ Chỉ Số Nhân Vật (Phím C)" onclick="openStatsInspector()">📊 CHỈ SỐ</button>
-        <button id="btnEvoInspector" class="hud-btn" title="Xem Toàn Bộ Công Thức & Yêu Cầu Tiến Hóa (Phím B)" onclick="openEvolutionModal()" style="border-color: #38bdf8; color: #38bdf8;">📖 TIẾN HÓA</button>
         <button id="btnSpeedToggle" class="hud-btn" title="Chỉnh nhanh tốc độ (1x - 10x)" onclick="cycleSpeedToggle()">⚡ 1x</button>
         <button id="btnAutoTarget" class="hud-btn" title="Bật/Tắt tự động ghim mục tiêu" onclick="toggleTargetLock()">🎯 GHIM: BẬT</button>
-        <button id="btnSoundToggle" class="hud-btn" title="Âm thanh SFX" onclick="toggleSoundSFX()">🔊 SFX</button>
-        <button id="btnBgmToggle" class="hud-btn" title="Nhạc nền BGM" onclick="toggleSoundBGM()">🎵 BGM</button>
-        <button id="btnSettingsToggle" class="hud-btn" title="Cài đặt hệ thống" onclick="openSettingsModal()">⚙️</button>
         <button id="btnPause" class="hud-btn" title="Tạm dừng" onclick="togglePauseGame()">⏸️</button>
       </div>
     </div>
@@ -3667,9 +3661,16 @@ html, body {
 
   <!-- LEVEL UP MODAL -->
   <div id="levelUpOverlay" class="overlay hidden">
-    <div class="menu-card" style="max-width: 880px;">
-      <h2 class="game-title" style="font-size: 28px;">LẬT TRANG SÁCH MA PHÁP (LEVEL UP!)</h2>
-      <p style="color: #94a3b8; font-size: 14px;">Chọn 1 Ma Pháp hoặc Sách Bổ Trợ để gia tăng sức mạnh vượt qua giới hạn:</p>
+    <div class="menu-card level-up-modal-box" style="max-width: 860px; padding: 14px 18px; max-height: 94vh; overflow: visible;">
+      <div class="levelup-header-row" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 8px;">
+        <div style="text-align: left;">
+          <h2 class="game-title" style="font-size: 20px; margin: 0; text-align: left;">⚡ LẬT TRANG SÁCH MA PHÁP (LEVEL UP!)</h2>
+          <p style="color: #94a3b8; font-size: 12px; margin: 2px 0 0 0;">Chọn 1 Ma Pháp hoặc Sách Bổ Trợ để gia tăng sức mạnh:</p>
+        </div>
+        <button class="btn-evo-hint-sm" onclick="openEvolutionModal()" title="Xem toàn bộ công thức & điều kiện tiến hóa">
+          📖 Xem Các Tiến Hóa
+        </button>
+      </div>
 
       <div id="levelUpCards" class="level-cards-container">
         <!-- Injected via JavaScript -->
@@ -3923,13 +3924,13 @@ html, body {
 
 
   <!-- Core Scripts with Cache-Buster Queries -->
-  <script src="src/audio.js?v=bc133"></script>
-  <script src="src/sprites.js?v=bc133"></script>
-  <script src="src/spells.js?v=bc133"></script>
-  <script src="src/enemies.js?v=bc133"></script>
-  <script src="src/artifacts.js?v=bc133"></script>
-  <script src="src/auth.js?v=bc133"></script>
-  <script src="src/game.js?v=bc133"></script>
+  <script src="src/audio.js?v=bc138"></script>
+  <script src="src/sprites.js?v=bc138"></script>
+  <script src="src/spells.js?v=bc138"></script>
+  <script src="src/enemies.js?v=bc138"></script>
+  <script src="src/artifacts.js?v=bc138"></script>
+  <script src="src/auth.js?v=bc138"></script>
+  <script src="src/game.js?v=bc138"></script>
 
   <!-- Global App Controller & Event Handlers -->
   <script>
@@ -5094,7 +5095,8 @@ html, body {
         btnSave.disabled = true;
       }
 
-      const ok = await window.authManager.pushSaveToServer(g.exportSaveData());
+      const res = await window.authManager.pushSaveToServer(g.exportSaveData());
+      const ok = res && (res.success || res === true);
       if (ok) {
         if (window.soundEngine && window.soundEngine.pickup) window.soundEngine.pickup();
         if (btnSave) {
@@ -5114,7 +5116,11 @@ html, body {
           btnSave.innerHTML = '<span>❌</span> <span>LỖI LƯU</span>';
           btnSave.disabled = false;
         }
-        showToast('⚠️ Không thể lưu lên máy chủ. Đã lưu tạm vào máy cục bộ.');
+        if (res && res.reason === 'unauthorized') {
+          showToast('⚠️ Phiên đăng nhập đã hết hạn! Vui lòng bấm vào tên tài khoản đăng xuất rồi đăng nhập lại.');
+        } else {
+          showToast('⚠️ Không thể lưu lên máy chủ. Đã lưu tạm vào máy cục bộ.');
+        }
       }
     };
 

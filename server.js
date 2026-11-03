@@ -147,6 +147,7 @@ async function handleApiRequest(req, res, pathname) {
       saveData: initialData || null
     };
 
+    newUser.activeToken = token;
     db.users[lowerUser] = newUser;
     db.sessions[token] = { lowerUser: lowerUser, createdAt: Date.now() };
     saveDb();
@@ -211,6 +212,7 @@ async function handleApiRequest(req, res, pathname) {
 
     const token = crypto.randomBytes(24).toString('hex');
     user.lastLogin = new Date().toISOString();
+    user.activeToken = token;
     db.sessions[token] = { lowerUser: user.lowerUser || lowerUser, createdAt: Date.now() };
     saveDb();
 
@@ -225,18 +227,36 @@ async function handleApiRequest(req, res, pathname) {
     return;
   }
 
+  // Helper to resolve user from token (with fallback lookup)
+  function resolveUserFromToken(token) {
+    if (!token) return null;
+    const session = db.sessions ? db.sessions[token] : null;
+    if (session && db.users[session.lowerUser]) {
+      return db.users[session.lowerUser];
+    }
+    // Fallback: lookup by user.activeToken
+    for (const u of Object.values(db.users)) {
+      if (u && u.activeToken === token) {
+        if (!db.sessions) db.sessions = {};
+        db.sessions[token] = { lowerUser: u.lowerUser, createdAt: Date.now() };
+        saveDb();
+        return u;
+      }
+    }
+    return null;
+  }
+
   // 3. GET CURRENT USER & SAVE DATA: GET /api/me
   if (pathname === '/api/me' && req.method === 'GET') {
     const token = extractToken(req);
-    const session = token ? db.sessions[token] : null;
+    const user = resolveUserFromToken(token);
 
-    if (!session || !db.users[session.lowerUser]) {
+    if (!user) {
       res.writeHead(401);
       res.end(JSON.stringify({ success: false, error: 'Phiên đăng nhập hết hạn hoặc không hợp lệ!' }));
       return;
     }
 
-    const user = db.users[session.lowerUser];
     res.writeHead(200);
     res.end(JSON.stringify({
       success: true,
@@ -249,17 +269,15 @@ async function handleApiRequest(req, res, pathname) {
   // 4. SAVE PROGRESS: POST /api/save
   if (pathname === '/api/save' && req.method === 'POST') {
     const token = extractToken(req);
-    const session = token ? db.sessions[token] : null;
+    const user = resolveUserFromToken(token);
 
-    if (!session || !db.users[session.lowerUser]) {
+    if (!user) {
       res.writeHead(401);
       res.end(JSON.stringify({ success: false, error: 'Chưa đăng nhập để lưu đám mây!' }));
       return;
     }
 
     const body = await parseJsonBody(req);
-    const user = db.users[session.lowerUser];
-
     if (body.saveData) {
       user.saveData = body.saveData;
       user.lastSaved = new Date().toISOString();
@@ -283,6 +301,155 @@ async function handleApiRequest(req, res, pathname) {
     return;
   }
 
+  
+  // ==========================================
+  // ADMIN API ENDPOINTS
+  // ==========================================
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+  if (!db.adminTokens) db.adminTokens = {};
+
+  function checkAdminAuth(req) {
+    const token = req.headers['x-admin-token'] || extractToken(req);
+    if (!token) return false;
+    if (token === ADMIN_PASSWORD) return true;
+    if (db.adminTokens && db.adminTokens[token]) {
+      return true;
+    }
+    return false;
+  }
+
+  // POST /api/admin/login
+  if (pathname === '/api/admin/login' && req.method === 'POST') {
+    const body = await parseJsonBody(req);
+    const pass = (body.password || '').trim();
+    if (pass === ADMIN_PASSWORD) {
+      const adminToken = crypto.randomBytes(32).toString('hex');
+      if (!db.adminTokens) db.adminTokens = {};
+      db.adminTokens[adminToken] = Date.now();
+      saveDb();
+      console.log('👑 [ADMIN] Quản trị viên đăng nhập thành công!');
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, token: adminToken }));
+      return;
+    } else {
+      res.writeHead(401);
+      res.end(JSON.stringify({ success: false, error: 'Mật khẩu quản trị viên không chính xác!' }));
+      return;
+    }
+  }
+
+  // GET /api/admin/users
+  if (pathname === '/api/admin/users' && req.method === 'GET') {
+    if (!checkAdminAuth(req)) {
+      res.writeHead(401);
+      res.end(JSON.stringify({ success: false, error: 'Không có quyền quản trị!' }));
+      return;
+    }
+
+    const list = Object.keys(db.users).map(k => {
+      const u = db.users[k];
+      return {
+        username: u.username,
+        lowerUser: u.lowerUser,
+        createdAt: u.createdAt,
+        lastLogin: u.lastLogin,
+        lastSaved: u.lastSaved || null,
+        saveData: u.saveData || null
+      };
+    });
+
+    res.writeHead(200);
+    res.end(JSON.stringify({ success: true, users: list }));
+    return;
+  }
+
+  // POST /api/admin/update-user
+  if (pathname === '/api/admin/update-user' && req.method === 'POST') {
+    if (!checkAdminAuth(req)) {
+      res.writeHead(401);
+      res.end(JSON.stringify({ success: false, error: 'Không có quyền quản trị!' }));
+      return;
+    }
+
+    const body = await parseJsonBody(req);
+    const lowerUser = (body.username || '').toLowerCase();
+    const user = db.users[lowerUser];
+    if (!user) {
+      res.writeHead(404);
+      res.end(JSON.stringify({ success: false, error: 'Người chơi không tồn tại!' }));
+      return;
+    }
+
+    // 1. Update Password
+    if (body.newPassword && body.newPassword.length >= 4) {
+      const salt = crypto.randomBytes(16).toString('hex');
+      user.salt = salt;
+      user.passwordHash = hashPassword(body.newPassword.trim(), salt);
+      console.log(`[ADMIN] Đã đổi mật khẩu cho tài khoản: ${user.username}`);
+    }
+
+    // 2. Update Resources
+    if (!user.saveData) user.saveData = {};
+    if (!user.saveData.currency) user.saveData.currency = {};
+
+    if (body.currency) {
+      if (body.currency.coins !== undefined) user.saveData.currency.coins = Number(body.currency.coins);
+      if (body.currency.tickets !== undefined) user.saveData.currency.tickets = Number(body.currency.tickets);
+      if (body.currency.purpleTickets !== undefined) user.saveData.currency.purpleTickets = Number(body.currency.purpleTickets);
+      if (body.currency.diamonds !== undefined) user.saveData.currency.diamonds = Number(body.currency.diamonds);
+      console.log(`[ADMIN] Đã cập nhật tài nguyên cho ${user.username}: Vàng=${user.saveData.currency.coins}, Vé=${user.saveData.currency.tickets}`);
+    }
+
+    // 3. Unlock All Heroes
+    if (body.unlockAllHeroes) {
+      const ALL_HEROES = ['asta', 'yuno', 'noelle', 'magna', 'luck', 'yami', 'julius', 'lumiere', 'licht', 'nacht', 'charmy', 'mereoleona', 'vanica', 'black_asta'];
+      user.saveData.unlocked = ALL_HEROES;
+      console.log(`[ADMIN] Đã mở khóa toàn bộ tướng cho ${user.username}`);
+    } else if (Array.isArray(body.unlocked)) {
+      user.saveData.unlocked = body.unlocked;
+    }
+
+    user.lastSaved = new Date().toISOString();
+    saveDb();
+
+    res.writeHead(200);
+    res.end(JSON.stringify({ success: true, user: { username: user.username, saveData: user.saveData } }));
+    return;
+  }
+
+  // POST /api/admin/delete-user
+  if (pathname === '/api/admin/delete-user' && req.method === 'POST') {
+    if (!checkAdminAuth(req)) {
+      res.writeHead(401);
+      res.end(JSON.stringify({ success: false, error: 'Không có quyền quản trị!' }));
+      return;
+    }
+
+    const body = await parseJsonBody(req);
+    const lowerUser = (body.username || '').toLowerCase();
+    if (!db.users[lowerUser]) {
+      res.writeHead(404);
+      res.end(JSON.stringify({ success: false, error: 'Người chơi không tồn tại!' }));
+      return;
+    }
+
+    // Remove user sessions
+    for (const token of Object.keys(db.sessions)) {
+      if (db.sessions[token].lowerUser === lowerUser) {
+        delete db.sessions[token];
+      }
+    }
+
+    delete db.users[lowerUser];
+    saveDb();
+    console.log(`👑 [ADMIN] Đã xóa tài khoản: ${lowerUser}`);
+
+    res.writeHead(200);
+    res.end(JSON.stringify({ success: true }));
+    return;
+  }
+
+
   res.writeHead(404);
   res.end(JSON.stringify({ success: false, error: 'API route not found' }));
 }
@@ -296,6 +463,9 @@ function handleRequest(req, res) {
     return;
   }
 
+  if (reqPath === '/admin' || reqPath === '/admin/') {
+    reqPath = '/admin.html';
+  }
   let filePath = path.join(__dirname, reqPath === '/' ? 'index.html' : reqPath);
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';

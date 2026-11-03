@@ -1,72 +1,200 @@
 {
   "users": {
-    "asta_hero": {
-      "username": "asta_hero",
-      "lowerUser": "asta_hero",
-      "salt": "69cf847168da7b189c694f8a21408cb5",
-      "passwordHash": "7853fae36004b207c30aed76bdc4ead6ac5593b0c31cbb1f77e2ad75b07ae4a1",
-      "createdAt": "2026-11-03T14:26:00.926Z",
-      "lastLogin": "2026-11-03T14:26:21.630Z",
-      "saveData": {
-        "coins": 99999
-      },
-      "lastSaved": "2026-11-03T14:26:10.067Z"
-    },
-    "yuno_wind": {
-      "username": "yuno_wind",
-      "lowerUser": "yuno_wind",
-      "salt": "b4222e9aaac64af455258416963a06ad",
-      "passwordHash": "fcc8a4082f2e8be96241a4d0f243c241a9f17b0fb52d17da156897a0c80c39fb",
-      "createdAt": "2026-11-03T14:30:13.347Z",
-      "lastLogin": "2026-11-03T14:30:13.347Z",
-      "saveData": {
-        "coins": 88888
-      }
-    },
     "tiendat": {
       "username": "tiendat",
       "lowerUser": "tiendat",
       "salt": "e728f0022a55f57d7641e13704689f15",
       "passwordHash": "9227dfbb6bd7c7caaa81424961a929057394e6857acdade7e000e548202453d5",
       "createdAt": "2026-11-03T14:44:32.223Z",
-      "lastLogin": "2026-11-03T15:48:12.955Z",
+      "lastLogin": "2026-11-03T17:38:08.499Z",
       "saveData": {
         "currency": {
-          "coins": 5000,
-          "tickets": 30,
+          "coins": 1297866,
+          "tickets": 62,
           "purpleTickets": 5,
-          "diamonds": 10
+          "diamonds": 19
         },
         "playerName": "tiendat27",
         "unlocked": [
           "asta",
           "yuno",
           "noelle",
-          "magna"
+          "magna",
+          "julius",
+          "lumiere",
+          "black_asta",
+          "licht",
+          "nacht",
+          "secre",
+          "patry",
+          "yami",
+          "mereoleona",
+          "fuegoleon",
+          "nozel",
+          "charlotte",
+          "dorothy",
+          "william",
+          "jack",
+          "langris",
+          "henry",
+          "luck",
+          "leopold",
+          "rill",
+          "mars",
+          "zora",
+          "gordon",
+          "grey",
+          "mimosa",
+          "klaus",
+          "finral",
+          "charmy",
+          "sol",
+          "zenon",
+          "dante",
+          "vanica",
+          "rhya",
+          "vetto",
+          "fana"
         ],
         "upgrades": {
-          "vitality": 0,
-          "strength": 0,
-          "stride": 0,
-          "reflexes": 0,
-          "armor": 0,
-          "synthesis": 0,
-          "magnet": 0,
-          "wisdom": 0,
-          "fortune": 0,
-          "repertoire": 0,
-          "crit": 0,
-          "reroll": 0
+          "vitality": 10,
+          "strength": 10,
+          "stride": 10,
+          "reflexes": 10,
+          "armor": 10,
+          "synthesis": 10,
+          "magnet": 10,
+          "wisdom": 10,
+          "fortune": 10,
+          "repertoire": 1,
+          "crit": 10,
+          "reroll": 5
         },
-        "characterUpgrades": {},
-        "bannerPity": {},
+        "characterUpgrades": {
+          "fuegoleon": {
+            "vitality": 5,
+            "strength": 10,
+            "stride": 2,
+            "reflexes": 10,
+            "armor": 2,
+            "synthesis": 1,
+            "magnet": 10,
+            "wisdom": 10,
+            "fortune": 0,
+            "repertoire": 0,
+            "crit": 10,
+            "reroll": 1
+          },
+          "asta": {
+            "vitality": 10,
+            "strength": 10,
+            "stride": 10,
+            "reflexes": 10,
+            "armor": 10,
+            "synthesis": 10,
+            "magnet": 10,
+            "wisdom": 10,
+            "fortune": 10,
+            "repertoire": 1,
+            "crit": 10,
+            "reroll": 5
+          },
+          "black_asta": {
+            "vitality": 10,
+            "strength": 10,
+            "stride": 10,
+            "reflexes": 10,
+            "armor": 10,
+            "synthesis": 10,
+            "magnet": 10,
+            "wisdom": 10,
+            "fortune": 10,
+            "repertoire": 1,
+            "crit": 10,
+            "reroll": 5
+          },
+          "julius": {
+            "vitality": 10,
+            "strength": 10,
+            "stride": 10,
+            "reflexes": 10,
+            "armor": 10,
+            "synthesis": 10,
+            "magnet": 10,
+            "wisdom": 10,
+            "fortune": 10,
+            "repertoire": 1,
+            "crit": 10,
+            "reroll": 5
+          }
+        },
+        "bannerPity": {
+          "spooky": 18
+        },
         "pity1000Counter": 0,
         "artifactsSystem": {
-          "artifacts": {},
+          "artifacts": {
+            "gauche_phantom_mirror": {
+              "star": 3,
+              "count": 22
+            },
+            "nero_sealing_stone": {
+              "star": 3,
+              "count": 30
+            },
+            "charmy_feast_box": {
+              "star": 3,
+              "count": 39
+            },
+            "yami_dark_pipe": {
+              "star": 3,
+              "count": 26
+            },
+            "chronos_hourglass": {
+              "star": 1,
+              "count": 1
+            },
+            "luck_thunder_gauntlets": {
+              "star": 3,
+              "count": 41
+            },
+            "zagred_cursed_rosary": {
+              "star": 3,
+              "count": 9
+            },
+            "salamander_flame_core": {
+              "star": 3,
+              "count": 12
+            },
+            "aegis_silvamillion": {
+              "star": 3,
+              "count": 8
+            },
+            "sylph_tempest_stone": {
+              "star": 3,
+              "count": 15
+            },
+            "yggdrasil_life_seed": {
+              "star": 3,
+              "count": 9
+            },
+            "lucifero_demon_heart": {
+              "star": 3,
+              "count": 3
+            },
+            "demon_blade_licht": {
+              "star": 3,
+              "count": 3
+            },
+            "crown_of_wizard_king": {
+              "star": 2,
+              "count": 2
+            }
+          },
           "equippedArtifacts": [
-            null,
-            null,
-            null
+            "demon_blade_licht",
+            "lucifero_demon_heart",
+            "crown_of_wizard_king"
           ]
         },
         "keybinds": {
@@ -86,7 +214,8 @@
           "sensitivity": 1
         }
       },
-      "lastSaved": "2026-11-03T15:16:29.221Z"
+      "lastSaved": "2026-11-03T17:52:12.782Z",
+      "activeToken": "1c729516b5cf423e9202be93fcc190d6b0dc02050e2cbea2"
     },
     "lo1": {
       "username": "lo1",
@@ -216,34 +345,9 @@
         }
       },
       "lastSaved": "2026-11-03T15:04:21.262Z"
-    },
-    "test_user_pc": {
-      "username": "test_user_pc",
-      "lowerUser": "test_user_pc",
-      "salt": "c8d8ef84d0cc1dd0ce44b010d3fa7915",
-      "passwordHash": "4d84cc465d7a985090aa5b06aa0f4b96d6afd1db6524e2a263ea208392979c19",
-      "createdAt": "2026-11-03T15:20:42.684Z",
-      "lastLogin": "2026-11-03T15:21:05.148Z",
-      "saveData": null
     }
   },
   "sessions": {
-    "669abf2e637cfaf7a9720fc925f381f484856c97bde2efd2": {
-      "lowerUser": "asta_hero",
-      "createdAt": 1793715960926
-    },
-    "4d02fa2607b7d1e0925cdcebf8e8bcc0423c0001789fbe8e": {
-      "lowerUser": "asta_hero",
-      "createdAt": 1793715970047
-    },
-    "9ad3972f7ad3705a3a631e356214996d883505a18421dfee": {
-      "lowerUser": "asta_hero",
-      "createdAt": 1793715981630
-    },
-    "daf0175f5b519909873a6bf6e35be09c2197b46d7c1529fd": {
-      "lowerUser": "yuno_wind",
-      "createdAt": 1793716213347
-    },
     "38bc0f8a4ecbd12b94ce9d4160763bf855fd4d4acc1bb49f": {
       "lowerUser": "tiendat",
       "createdAt": 1793717072223
@@ -252,18 +356,6 @@
       "lowerUser": "lo1",
       "createdAt": 1793718241196
     },
-    "258b460ad47965005001d5f8162dbda370ea137cd2b6d3f0": {
-      "lowerUser": "test_user_pc",
-      "createdAt": 1793719242684
-    },
-    "73ec3ed22eeb07e2e09387349533a8c4f00d43f3e1ce88c4": {
-      "lowerUser": "test_user_pc",
-      "createdAt": 1793719253614
-    },
-    "56deeb34dff0a6e1fae234108b36c60ed750f76309614e90": {
-      "lowerUser": "test_user_pc",
-      "createdAt": 1793719265148
-    },
     "e1df6a9469daafe36f6e3dba943f0b19a49e5a0f4dfd53a2": {
       "lowerUser": "tiendat",
       "createdAt": 1793720302452
@@ -271,6 +363,22 @@
     "dee99f6dbdb41b8656acbe17f106e44c452d58638cfd5618": {
       "lowerUser": "tiendat",
       "createdAt": 1793720892955
+    },
+    "f4c5069dd34e7b15ae3313a63fef425fa755a32199f9dbfb": {
+      "lowerUser": "tiendat",
+      "createdAt": 1793726892084
+    },
+    "1c729516b5cf423e9202be93fcc190d6b0dc02050e2cbea2": {
+      "lowerUser": "tiendat",
+      "createdAt": 1793727488499
     }
+  },
+  "adminTokens": {
+    "91a1d6cfd12f4c4fa0b50d4a33150c0d278fc3112004b763868af0e7249d24eb": 1793724644689,
+    "cca98186b91544c90c2898656122c86839a9c662356ad945d820cbf193d612d2": 1793724844781,
+    "beca23ae868eeda2a0267719126443adee7f5f19abdef73875a0becfe488bd95": 1793724866662,
+    "e4a97483294e6b26ea948bf19694f2d6a006f8204c60553195e2db48e45df775": 1793725873622,
+    "b7de3234dd41b0269251fca350e9d301e5563e470d6323d7a0f5659cb63d9ce4": 1793726617588,
+    "a1501bb236565705ca0fda4c67cfc522b7828406170b6bf52f02904749abcae2": 1793726715703
   }
 }

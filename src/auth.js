@@ -187,7 +187,7 @@ class AuthManager {
   }
 
   async pushSaveToServer(saveData) {
-    if (!this.isLoggedIn() || !this.token) return;
+    if (!this.isLoggedIn() || !this.token) return { success: false, reason: 'not_logged_in' };
 
     try {
       const res = await fetch(`${this.apiBase}/api/save`, {
@@ -196,16 +196,22 @@ class AuthManager {
           'Authorization': `Bearer ${this.token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ saveData })
+        body: JSON.stringify({ saveData, username: this.currentUser ? this.currentUser.username : undefined })
       });
       const data = await res.json();
       if (data.success) {
         this.setSyncStatus('synced');
+        return { success: true, savedAt: data.savedAt };
       } else {
         this.setSyncStatus('error');
+        if (res.status === 401) {
+          return { success: false, reason: 'unauthorized', error: data.error };
+        }
+        return { success: false, reason: 'server_error', error: data.error };
       }
     } catch (e) {
       this.setSyncStatus('offline');
+      return { success: false, reason: 'network_error', error: e.message };
     }
   }
 

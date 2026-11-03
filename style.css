@@ -604,25 +604,75 @@ body, html {
 }
 
 .level-card {
-  background: rgba(30, 41, 59, 0.9);
+  background: rgba(30, 41, 59, 0.94);
   border: 2px solid var(--azure);
-  border-radius: 16px;
-  padding: 22px;
-  width: 250px;
+  border-radius: 12px;
+  padding: 12px 14px;
+  width: 242px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.55);
   pointer-events: auto !important;
 }
 
+.level-card .card-icon {
+  font-size: 30px;
+  margin-bottom: 2px;
+}
+
+.level-card .card-title {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.level-card .card-badge {
+  font-size: 9.5px;
+  padding: 1px 7px;
+  border-radius: 5px;
+}
+
+.level-card .card-desc {
+  font-size: 11px;
+  line-height: 1.32;
+  color: #cbd5e1;
+  text-align: center;
+  margin: 1px 0 3px 0;
+}
+
+.btn-evo-hint-sm {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(2, 132, 199, 0.4));
+  border: 1px solid #38bdf8;
+  color: #38bdf8;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
+
+.btn-evo-hint-sm:hover {
+  background: linear-gradient(135deg, #0284c7, #38bdf8);
+  color: #0f172a;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
+  transform: translateY(-1px);
+}
+
 .level-card:hover {
-  transform: translateY(-6px) scale(1.03);
+  transform: translateY(-4px) scale(1.02);
   border-color: var(--gold);
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
 }
 
 .level-card.evolution {
@@ -1681,22 +1731,51 @@ body, html {
 /* Level Up Card Evolution Requirement Box */
 .evo-req-box {
   width: 100%;
-  background: rgba(15, 23, 42, 0.92);
+  background: rgba(15, 23, 42, 0.94);
   border: 1px dashed rgba(245, 158, 11, 0.5);
   border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 11px;
+  padding: 5px 8px;
+  font-size: 10px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-top: 8px;
+  gap: 3px;
+  margin-top: 4px;
   text-align: left;
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
+.evo-req-compact-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.evo-badge-pill {
+  font-size: 9.5px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.evo-badge-pill.done {
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  font-weight: 700;
+}
+
+.evo-badge-pill.todo {
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
 .evo-req-box.passive-link {
   border-color: rgba(56, 189, 248, 0.5);
-  background: rgba(8, 20, 38, 0.92);
+  background: rgba(8, 20, 38, 0.94);
 }
 
 .evo-req-box.ready-burst {

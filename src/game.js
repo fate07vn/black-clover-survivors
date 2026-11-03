@@ -1985,42 +1985,37 @@ class Game {
       let evoReqHtml = '';
       if (choice.evolutionInfo && choice.evolutionInfo.evoName) {
         const ei = choice.evolutionInfo;
+        const cleanEvoName = (ei.evoName || '').split('(')[0].trim();
+        const cleanBookName = (ei.reqBookName || '').split('(')[0].trim();
         evoReqHtml = `
           <div class="evo-req-box">
-            <div class="evo-req-title">✨ TIẾN HÓA: ${ei.evoName}</div>
-            <div class="evo-req-item ${ei.isWeaponLvReady ? 'done' : 'todo'}">
-              <span>🗡️ Cấp Vũ Khí:</span>
-              <span>Lv.${ei.currentWeaponLv}/5 ${ei.isWeaponLvReady ? '✅ (Đạt Cực Hạn)' : '⚠️ (Cần đạt Lv.5)'}</span>
-            </div>
-            <div class="evo-req-item ${ei.hasReqBook ? 'done' : 'todo'}">
-              <span>${ei.reqBookIcon} Sách Cần:</span>
-              <span>${ei.reqBookName} ${ei.hasReqBook ? '✅ (Đã Sở Hữu)' : '❌ (Chưa Có)'}</span>
+            <div class="evo-req-title">✨ ${cleanEvoName}</div>
+            <div class="evo-req-compact-row">
+              <span class="evo-badge-pill ${ei.isWeaponLvReady ? 'done' : 'todo'}">🗡️ Lv.${ei.currentWeaponLv}/5 ${ei.isWeaponLvReady ? '✓' : '🔺'}</span>
+              <span class="evo-badge-pill ${ei.hasReqBook ? 'done' : 'todo'}">${ei.reqBookIcon || '📕'} ${cleanBookName} ${ei.hasReqBook ? '✓' : '✗'}</span>
             </div>
             ${ei.superEvoName ? `
-              <div class="evo-req-super">
-                🌟 Siêu Tiến Hóa Lần 2: ${ei.superEvoName} (Cấp 10+ &bull; Hiện tại: Lv.${ei.playerLevel})
+              <div style="font-size: 9.5px; color: #c084fc; margin-top: 1px; font-weight: 700;">
+                🌟 Siêu Cấp 2: ${(ei.superEvoName || '').split('(')[0].trim()} (Cấp 10+)
               </div>
             ` : ''}
           </div>
         `;
       } else if (choice.passiveEvolutionInfo && choice.passiveEvolutionInfo.length > 0) {
-        const items = choice.passiveEvolutionInfo.map(w => `
-          <div class="evo-req-item ${w.hasWeapon ? 'done' : 'todo'}">
-            <span>${w.weaponIcon} ${w.weaponName}:</span>
-            <span>${w.hasWeapon ? `✅ Đang có (Lv.${w.weaponLv})` : '⚠️ Chưa có vũ khí'}</span>
-          </div>
-        `).join('');
+        const items = choice.passiveEvolutionInfo.map(w => {
+          const wName = (w.weaponName || '').split('(')[0].trim();
+          return `<span class="evo-badge-pill ${w.hasWeapon ? 'done' : 'todo'}">${w.weaponIcon || '⚔️'} ${wName} ${w.hasWeapon ? `(Lv.${w.weaponLv})` : '✗'}</span>`;
+        }).join('');
         evoReqHtml = `
           <div class="evo-req-box passive-link">
-            <div class="evo-req-title">⚡ HỖ TRỢ TIẾN HÓA CHO:</div>
-            ${items}
+            <div class="evo-req-title">⚡ HỖ TRỢ TIẾN HÓA:</div>
+            <div class="evo-req-compact-row">${items}</div>
           </div>
         `;
       } else if (choice.isEvolution) {
         evoReqHtml = `
-          <div class="evo-req-box ready-burst" style="border-color:#34d399; background:rgba(6,78,59,0.5);">
-            <div class="evo-req-title" style="color:#34d399;">🔥 ĐÃ ĐỦ ĐIỀU KIỆN TIẾN HÓA!</div>
-            <div style="font-size:10.5px; color:#e2e8f0; line-height:1.4;">Thay thế vũ khí cơ bản, nâng cấp sát thương cực đại và quét sạch quái vật!</div>
+          <div class="evo-req-box ready-burst" style="border-color:#34d399; background:rgba(6,78,59,0.5); padding: 4px 6px;">
+            <div class="evo-req-title" style="color:#34d399; font-size: 10px;">🔥 ĐÃ ĐỦ ĐIỀU KIỆN TIẾN HÓA!</div>
           </div>
         `;
       }

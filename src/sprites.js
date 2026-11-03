@@ -1247,20 +1247,30 @@ const Sprites = {
 
     if (drop.type === 'mana') {
       const colors = {
-        1: { fill: '#38bdf8', glow: 'rgba(56, 189, 248, 0.65)', r: 5.5 },
-        5: { fill: '#34d399', glow: 'rgba(52, 211, 153, 0.75)', r: 7.5 },
-        20: { fill: '#c084fc', glow: 'rgba(192, 132, 252, 0.85)', r: 9.5 },
-        50: { fill: '#fbbf24', glow: 'rgba(251, 191, 36, 0.95)', r: 13 }
+        1: { fill: '#38bdf8', glow: 'rgba(56, 189, 248, 0.45)', r: 3.2 },
+        5: { fill: '#34d399', glow: 'rgba(52, 211, 153, 0.55)', r: 4.2 },
+        20: { fill: '#c084fc', glow: 'rgba(192, 132, 252, 0.65)', r: 5.5 },
+        50: { fill: '#fbbf24', glow: 'rgba(251, 191, 36, 0.75)', r: 7.0 }
       };
-      const tier = colors[drop.val] || colors[1];
-      this.drawAura(ctx, 0, bob, tier.r + 5, tier.glow, 14);
+      const tier = colors[drop.val] || (drop.val >= 50 ? colors[50] : (drop.val >= 20 ? colors[20] : (drop.val >= 5 ? colors[5] : colors[1])));
+      this.drawAura(ctx, 0, bob, tier.r + 2, tier.glow, 8);
       ctx.fillStyle = tier.fill;
-      // Diamond crystal shape
+      // Diamond crystal shape (tinh thể mana nhỏ gọn, sắc sảo)
       ctx.beginPath();
-      ctx.moveTo(0, bob - tier.r);
-      ctx.lineTo(tier.r, bob);
-      ctx.lineTo(0, bob + tier.r);
-      ctx.lineTo(-tier.r, bob);
+      ctx.moveTo(0, bob - tier.r * 1.25);
+      ctx.lineTo(tier.r * 0.75, bob);
+      ctx.lineTo(0, bob + tier.r * 1.25);
+      ctx.lineTo(-tier.r * 0.75, bob);
+      ctx.closePath();
+      ctx.fill();
+
+      // Highlight điểm sáng trắng ở tâm
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx.beginPath();
+      ctx.moveTo(0, bob - tier.r * 0.6);
+      ctx.lineTo(tier.r * 0.35, bob);
+      ctx.lineTo(0, bob + tier.r * 0.6);
+      ctx.lineTo(-tier.r * 0.35, bob);
       ctx.closePath();
       ctx.fill();
     } else if (drop.type === 'food') {
