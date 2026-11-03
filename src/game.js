@@ -688,15 +688,15 @@ class Game {
     this.comboTimer = 0;
     this.comboBanner = { text: '', alpha: 0, scale: 1 };
 
-    // Persistent Economy & Save Data (PokeSurvivor Style)
+    // Persistent Economy & Save Data (PokeSurvivor Style) - Default Fresh Guest
     this.currency = {
-      coins: 5000,
-      tickets: 30,
-      purpleTickets: 5,
-      diamonds: 10
+      coins: 0,
+      tickets: 0,
+      purpleTickets: 0,
+      diamonds: 0
     };
-    this.playerName = 'tiendat27';
-    this.unlockedCharacters = new Set(['asta', 'yuno', 'noelle', 'magna']);
+    this.playerName = 'Khách (Tập Sự)';
+    this.unlockedCharacters = new Set(['asta']);
     this.pity1000Counter = 0;
     this.upgrades = {
       vitality: 0,
@@ -966,16 +966,25 @@ class Game {
     modal.classList.remove('hidden');
   }
 
+  getSaveStorageKey() {
+    if (typeof window !== 'undefined' && window.authManager && window.authManager.isLoggedIn() && window.authManager.currentUser) {
+      return 'BC_USER_DATA_' + window.authManager.currentUser.username.toLowerCase();
+    }
+    return 'BC_GUEST_DATA';
+  }
+
   loadSaveData() {
     try {
-      const saved = localStorage.getItem('BC_SURVIVORS_DATA');
+      const storageKey = this.getSaveStorageKey();
+      const saved = localStorage.getItem(storageKey);
       if (saved) {
         const data = JSON.parse(saved);
         if (data.currency) this.currency = Object.assign(this.currency, data.currency);
-        if (this.currency.purpleTickets === undefined) this.currency.purpleTickets = 5;
+        if (this.currency.purpleTickets === undefined) this.currency.purpleTickets = 0;
         if (data.playerName) this.playerName = data.playerName;
-        // Guaranteed starter heroes
-        this.unlockedCharacters = new Set(['asta', 'yuno', 'noelle', 'magna']);
+        
+        // Guaranteed starter heroes - ONLY ASTA
+        this.unlockedCharacters = new Set(['asta']);
         if (data.unlocked && Array.isArray(data.unlocked)) {
           data.unlocked.forEach(id => {
             if (CHARACTERS[id]) {
@@ -992,8 +1001,72 @@ class Game {
         if (data.bannerPity) this.bannerPity = data.bannerPity;
         if (data.pity1000Counter !== undefined) this.pity1000Counter = data.pity1000Counter;
         if (data.artifactsSystem && this.artifacts) this.artifacts.loadData(data.artifactsSystem);
+      } else {
+        // Fresh guest or new user clean slate
+        this.currency = {
+          coins: 0,
+          tickets: 0,
+          purpleTickets: 0,
+          diamonds: 0
+        };
+        this.playerName = (typeof window !== 'undefined' && window.authManager && window.authManager.isLoggedIn() && window.authManager.currentUser)
+          ? window.authManager.currentUser.username
+          : 'Khách (Tập Sự)';
+        this.unlockedCharacters = new Set(['asta']);
+        Object.keys(CHARACTERS).forEach(id => {
+          CHARACTERS[id].unlocked = (id === 'asta');
+        });
       }
+    } catch (e) {
+      console.warn('Lỗi khi nạp dữ liệu lưu game:', e);
+    }
+  }
+
+  resetToGuest() {
+    this.currency = {
+      coins: 0,
+      tickets: 0,
+      purpleTickets: 0,
+      diamonds: 0
+    };
+    this.playerName = 'Khách (Tập Sự)';
+    this.unlockedCharacters = new Set(['asta']);
+    Object.keys(CHARACTERS).forEach(id => {
+      CHARACTERS[id].unlocked = (id === 'asta');
+    });
+    this.selectedCharId = 'asta';
+    this.upgradeCharId = 'asta';
+    this.pity1000Counter = 0;
+    this.upgrades = {
+      vitality: 0,
+      strength: 0,
+      stride: 0,
+      reflexes: 0,
+      armor: 0,
+      synthesis: 0,
+      magnet: 0,
+      wisdom: 0,
+      fortune: 0,
+      repertoire: 0,
+      crit: 0,
+      reroll: 0
+    };
+    this.characterUpgrades = {};
+    this.bannerPity = {};
+    if (this.artifacts) {
+      this.artifacts.owned = {};
+      this.artifacts.equipped = [null, null, null];
+    }
+    try {
+      localStorage.setItem('BC_GUEST_DATA', JSON.stringify(this.exportSaveData()));
     } catch (e) {}
+    this.updateTopBarCurrency();
+    if (typeof updateSelectedCharInfo === 'function') updateSelectedCharInfo('asta');
+    if (typeof renderCharRosterGrid === 'function') renderCharRosterGrid();
+    if (typeof renderArtifactsModal === 'function') renderArtifactsModal();
+    if (window.updateSelectedCharInfo) window.updateSelectedCharInfo('asta');
+    if (window.renderCharRosterGrid) window.renderCharRosterGrid();
+    if (window.renderArtifactsModal) window.renderArtifactsModal();
   }
 
   exportSaveData() {
@@ -1022,11 +1095,12 @@ class Game {
       try { localStorage.setItem('BC_TOUCH_CONFIG', JSON.stringify(this.touchConfig)); } catch (e) {}
       this.applyTouchConfig();
     }
-    if (!data) return;
     try {
       if (data.currency) this.currency = Object.assign(this.currency, data.currency);
-      if (this.currency.purpleTickets === undefined) this.currency.purpleTickets = 5;
+      if (this.currency.purpleTickets === undefined) this.currency.purpleTickets = 0;
       if (data.playerName) this.playerName = data.playerName;
+      
+      this.unlockedCharacters = new Set(['asta']);
       if (data.unlocked && Array.isArray(data.unlocked)) {
         data.unlocked.forEach(id => {
           if (CHARACTERS[id]) {
@@ -1043,7 +1117,8 @@ class Game {
       if (data.pity1000Counter !== undefined) this.pity1000Counter = data.pity1000Counter;
       if (data.artifactsSystem && this.artifacts) this.artifacts.loadData(data.artifactsSystem);
 
-      localStorage.setItem('BC_SURVIVORS_DATA', JSON.stringify(this.exportSaveData()));
+      const storageKey = this.getSaveStorageKey();
+      localStorage.setItem(storageKey, JSON.stringify(this.exportSaveData()));
       this.updateTopBarCurrency();
 
       if (typeof updateSelectedCharInfo === 'function') updateSelectedCharInfo(this.selectedCharId || 'asta');
@@ -1059,10 +1134,11 @@ class Game {
 
   saveGameData() {
     try {
+      const storageKey = this.getSaveStorageKey();
       const data = this.exportSaveData();
-      localStorage.setItem('BC_SURVIVORS_DATA', JSON.stringify(data));
+      localStorage.setItem(storageKey, JSON.stringify(data));
       this.updateTopBarCurrency();
-      if (window.authManager) {
+      if (typeof window !== 'undefined' && window.authManager && window.authManager.isLoggedIn()) {
         window.authManager.queueSync(data);
       }
     } catch (e) {}
@@ -1528,7 +1604,7 @@ class Game {
 
       level: 1,
       exp: 0,
-      nextExp: 5, // Vampire Survivors linear tier 1 (5 + (lv-1)*10)
+      nextExp: this.calculateNextExp(1), // 15 EXP for Lv 1 -> Lv 2
       startingWeaponId: char.startingWeapon,
       weapons: {
         [char.startingWeapon]: { level: 1, timer: 0, isStartingWeapon: true }
@@ -1930,14 +2006,14 @@ class Game {
     this.updateHUD();
   }
 
-  // Vampire Survivors Standard Linear Step EXP Formula
+  // Vampire Survivors Standard Linear Step EXP Formula (Paced & Balanced)
   calculateNextExp(level) {
     if (level < 20) {
-      return 5 + (level - 1) * 10;
+      return 15 + (level - 1) * 18;
     } else if (level < 40) {
-      return 195 + (level - 20) * 13;
+      return 358 + (level - 20) * 25;
     } else {
-      return 455 + (level - 40) * 16;
+      return 858 + (level - 40) * 35;
     }
   }
 

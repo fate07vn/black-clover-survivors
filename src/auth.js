@@ -25,8 +25,15 @@ class AuthManager {
     this.updateUI();
 
     // Auto verify and fetch cloud save if token exists
-    if (this.token) {
+    if (this.token && this.currentUser) {
       this.verifyAndFetchSave();
+    } else {
+      // Clean guest mode! Ensure game state is loaded for guest
+      const g = this.game || window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance());
+      if (g && typeof g.loadSaveData === 'function') {
+        g.loadSaveData();
+        g.updateTopBarCurrency();
+      }
     }
   }
 
@@ -128,8 +135,25 @@ class AuthManager {
         localStorage.setItem('BC_AUTH_USER', JSON.stringify(data.user));
         this.updateUI();
 
-        if (data.saveData && this.game) {
-          this.game.applySaveData(data.saveData);
+        const g = this.game || window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance());
+        if (g) {
+          if (data.saveData) {
+            g.applySaveData(data.saveData);
+          } else {
+            const localKey = 'BC_USER_DATA_' + username.toLowerCase();
+            const localSaved = localStorage.getItem(localKey);
+            if (localSaved) {
+              try {
+                g.applySaveData(JSON.parse(localSaved));
+              } catch (e) {
+                g.loadSaveData();
+              }
+            } else {
+              g.loadSaveData();
+            }
+          }
+          g.playerName = this.currentUser.username;
+          g.updateTopBarCurrency();
         }
         return { success: true, user: data.user };
       } else {
@@ -163,11 +187,16 @@ class AuthManager {
     localStorage.removeItem('BC_AUTH_USER');
     this.updateUI();
 
+    const g = this.game || window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance());
+    if (g && typeof g.resetToGuest === 'function') {
+      g.resetToGuest();
+    }
+
     if (window.soundEngine && window.soundEngine.pickup) {
       window.soundEngine.pickup();
     }
     if (promptConfirm) {
-      alert('Đã đăng xuất thành công! Game hiện ở chế độ Khách (Guest).');
+      alert('Đã đăng xuất thành công! Game hiện ở chế độ Khách (Guest) - tài khoản mới bắt đầu từ đầu.');
     }
   }
 

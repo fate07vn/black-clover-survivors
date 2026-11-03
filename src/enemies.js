@@ -834,7 +834,7 @@ class EnemyManager {
         scaleWithLevel = true;
         speed = 72 + Math.random() * 14;
         contactDmg = 22;
-        expVal = 5;
+        expVal = 4;
       } else if (gameTime < 600) {
         // Phút 6 - 10: High Devil (Base per Lv: 35 HP -> Ở Lv ~28 đạt ~980 HP)
         type = Math.random() < 0.65 ? 'high_devil' : 'bone_golem';
@@ -842,7 +842,7 @@ class EnemyManager {
         scaleWithLevel = true;
         speed = 96 + Math.random() * 18;
         contactDmg = 30;
-        expVal = 9;
+        expVal = 7;
       } else if (gameTime < 900) {
         // Phút 10 - 15: Lesser Devil (Base per Lv: 56 HP -> Ở Lv ~45 đạt ~2,520 HP)
         type = Math.random() < 0.7 ? 'lesser_devil' : 'high_devil';
@@ -850,7 +850,7 @@ class EnemyManager {
         scaleWithLevel = true;
         speed = 108 + Math.random() * 18;
         contactDmg = 40;
-        expVal = 15;
+        expVal = 11;
       } else if (gameTime < 1200) {
         // Phút 15 - 20: High Devil Swarm (Base per Lv: 84 HP -> Ở Lv ~60 đạt ~5,040 HP)
         type = 'high_devil';
@@ -858,7 +858,7 @@ class EnemyManager {
         scaleWithLevel = true;
         speed = 114 + Math.random() * 18;
         contactDmg = 50;
-        expVal = 22;
+        expVal = 16;
       } else if (gameTime < 1500) {
         // Phút 20 - 25: Devil Legion (Base per Lv: 118 HP -> Ở Lv ~76 đạt ~8,968 HP)
         type = 'high_devil';
@@ -866,7 +866,7 @@ class EnemyManager {
         scaleWithLevel = true;
         speed = 118 + Math.random() * 20;
         contactDmg = 60;
-        expVal = 32;
+        expVal = 24;
       } else {
         // Phút 25 - 30: Climax Horde (Base per Lv: 165 HP -> Ở Lv ~95 đạt ~15,675 HP)
         type = 'high_devil';
@@ -874,7 +874,7 @@ class EnemyManager {
         scaleWithLevel = true;
         speed = 124 + Math.random() * 20;
         contactDmg = 72;
-        expVal = 45;
+        expVal = 33;
       }
     } else {
       // MAP 1: VƯƠNG QUỐC CLOVER (Cân bằng chuẩn Vampire Survivors, dọn quái sướng tay)
@@ -895,53 +895,53 @@ class EnemyManager {
         contactDmg = 12;
         expVal = 2;
       } else if (gameTime < 360) {
-        // Phút 3.5 - 6: Zombie (Base per Lv: 16 HP -> Ở Lv ~15 đạt ~240 HP, expVal = 4)
+        // Phút 3.5 - 6: Zombie (Base per Lv: 16 HP -> Ở Lv ~15 đạt ~240 HP, expVal = 3)
         type = Math.random() < 0.65 ? 'zombie' : 'cultist';
         baseHp = 16;
         scaleWithLevel = true;
         speed = 66 + Math.random() * 12;
         contactDmg = 18;
-        expVal = 4;
+        expVal = 3;
       } else if (gameTime < 600) {
-        // Phút 6 - 10: Spade Soldier (Base per Lv: 28 HP -> Ở Lv ~28 đạt ~784 HP, expVal = 7)
+        // Phút 6 - 10: Spade Soldier (Base per Lv: 28 HP -> Ở Lv ~28 đạt ~784 HP, expVal = 5)
         type = Math.random() < 0.7 ? 'spade_soldier' : 'zombie';
         baseHp = 28;
         scaleWithLevel = true;
         speed = 88 + Math.random() * 15;
         contactDmg = 25;
-        expVal = 7;
+        expVal = 5;
       } else if (gameTime < 900) {
-        // Phút 10 - 15: Lesser Devil (Base per Lv: 44 HP -> Ở Lv ~45 đạt ~1,980 HP, expVal = 12)
+        // Phút 10 - 15: Lesser Devil (Base per Lv: 44 HP -> Ở Lv ~45 đạt ~1,980 HP, expVal = 9)
         type = Math.random() < 0.7 ? 'lesser_devil' : 'spade_soldier';
         baseHp = 44;
         scaleWithLevel = true;
         speed = 102 + Math.random() * 16;
         contactDmg = 34;
-        expVal = 12;
+        expVal = 9;
       } else if (gameTime < 1200) {
-        // Phút 15 - 20: High Devil (Base per Lv: 66 HP -> Ở Lv ~60 đạt ~3,960 HP, expVal = 18)
+        // Phút 15 - 20: High Devil (Base per Lv: 66 HP -> Ở Lv ~60 đạt ~3,960 HP, expVal = 13)
         type = Math.random() < 0.75 ? 'high_devil' : 'lesser_devil';
         baseHp = 66;
         scaleWithLevel = true;
         speed = 108 + Math.random() * 18;
         contactDmg = 44;
-        expVal = 18;
+        expVal = 13;
       } else if (gameTime < 1500) {
-        // Phút 20 - 25: Devil Legion (Base per Lv: 94 HP -> Ở Lv ~76 đạt ~7,144 HP, expVal = 26)
+        // Phút 20 - 25: Devil Legion (Base per Lv: 94 HP -> Ở Lv ~76 đạt ~7,144 HP, expVal = 19)
         type = 'high_devil';
         baseHp = 94;
         scaleWithLevel = true;
         speed = 114 + Math.random() * 18;
         contactDmg = 54;
-        expVal = 26;
+        expVal = 19;
       } else {
-        // Phút 25 - 30: Climax Horde (Base per Lv: 130 HP -> Ở Lv ~95 đạt ~12,350 HP, expVal = 38)
+        // Phút 25 - 30: Climax Horde (Base per Lv: 130 HP -> Ở Lv ~95 đạt ~12,350 HP, expVal = 28)
         type = 'high_devil';
         baseHp = 130;
         scaleWithLevel = true;
         speed = 120 + Math.random() * 20;
         contactDmg = 65;
-        expVal = 38;
+        expVal = 28;
       }
     }
 
