@@ -23,7 +23,7 @@ const SPELL_DEFS = {
     icon: '⚔️',
     description: 'TIẾN HÓA CẤP 1: Đại kiếm anti-magic xoay 360 độ cực đại, quét sạch mọi ma pháp và quái vật!',
     baseCooldown: 1.31,
-    baseDamage: 92,
+    baseDamage: 166,
     baseArea: 170,
     maxLevel: 1,
     evolution: 'demon_slasher_infinity',
@@ -36,7 +36,7 @@ const SPELL_DEFS = {
     icon: '😈⚔️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Nhát chém Kháng Ma Vô Cực phủ đen cả không gian, giải phóng 2 sóng xung kích diệt thần 360 độ!',
     baseCooldown: 0.88,
-    baseDamage: 171,
+    baseDamage: 479,
     baseArea: 260,
     maxLevel: 1
   },
@@ -62,7 +62,7 @@ const SPELL_DEFS = {
     icon: '🍃',
     description: 'TIẾN HÓA CẤP 1: Tạo ra 2 cơn bão lốc xoáy khổng lồ hút chặt kẻ địch vào tâm và nghiền nát liên tục!',
     baseCooldown: 1.36,
-    baseDamage: 61,
+    baseDamage: 110,
     duration: 3.8,
     maxLevel: 1,
     evolution: 'spirit_zephyr_supreme'
@@ -74,7 +74,7 @@ const SPELL_DEFS = {
     icon: '🏹🌪️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa thân Thánh Khải Saint Stage, bắn liên hoàn 8 mũi tên phong bão xuyên không và tạo bão xoáy khổng lồ toàn map!',
     baseCooldown: 0.99,
-    baseDamage: 160,
+    baseDamage: 448,
     baseArea: 280,
     maxLevel: 1
   },
@@ -100,7 +100,7 @@ const SPELL_DEFS = {
     icon: '🔱',
     description: 'TIẾN HÓA CẤP 1: Phóng ra 8 ngọn giáo nước thần thánh xoay quanh và đâm xuyên mọi hướng!',
     baseCooldown: 1.31,
-    baseDamage: 76,
+    baseDamage: 137,
     maxLevel: 1,
     evolution: 'leviathan_goddess'
   },
@@ -111,7 +111,7 @@ const SPELL_DEFS = {
     icon: '🔱🌊',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa thân Hải Thần Noelle, triệu hồi 3 Thủy Long khổng lồ và 12 thương thần bảo hộ xoay quanh nghiền nát địch!',
     baseCooldown: 0.99,
-    baseDamage: 182,
+    baseDamage: 510,
     baseArea: 300,
     maxLevel: 1
   },
@@ -136,7 +136,7 @@ const SPELL_DEFS = {
     icon: '🌌',
     description: 'TIẾN HÓA CẤP 1: Nhát chém xé toạc không gian xuyên suốt toàn màn hình theo hướng mục tiêu!',
     baseCooldown: 2.03,
-    baseDamage: 160,
+    baseDamage: 288,
     baseArea: 480,
     maxLevel: 1,
     evolution: 'death_thrust_void',
@@ -149,7 +149,7 @@ const SPELL_DEFS = {
     icon: '🌌🗡️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Đòn đâm nén tụ hắc ma pháp thổi bay và tiêu diệt mọi kẻ địch trên đường thẳng xuyên màn hình!',
     baseCooldown: 1.14,
-    baseDamage: 209,
+    baseDamage: 585,
     baseArea: 650,
     maxLevel: 1
   },
@@ -174,7 +174,7 @@ const SPELL_DEFS = {
     icon: '🌩️',
     description: 'TIẾN HÓA CẤP 1: Sấm sét từ trời liên tục giáng xuống các cụm quái vật, làm choáng diện rộng!',
     baseCooldown: 0.66,
-    baseDamage: 55,
+    baseDamage: 99,
     maxLevel: 1,
     evolution: 'thunder_emperor_rampage'
   },
@@ -185,7 +185,7 @@ const SPELL_DEFS = {
     icon: '⚡👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa Lôi Ma Thần Tối Thượng, sấm sét liên hoàn giáng 16 tia một lúc, giật lan toàn bản đồ và làm choáng vĩnh viễn!',
     baseCooldown: 0.7,
-    baseDamage: 144,
+    baseDamage: 403,
     baseArea: 320,
     maxLevel: 1
   },
@@ -210,7 +210,7 @@ const SPELL_DEFS = {
     icon: '🌋',
     description: 'TIẾN HÓA CẤP 1: Cột lửa địa ngục bùng nổ toàn diện bao trùm mặt đất, thiêu rụi mọi kẻ địch!',
     baseCooldown: 1.36,
-    baseDamage: 101,
+    baseDamage: 182,
     baseArea: 180,
     maxLevel: 1,
     evolution: 'sol_prominence_sun'
@@ -222,7 +222,7 @@ const SPELL_DEFS = {
     icon: '☀️🔥',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Quả cầu mặt trời rực lửa thiêu rụi toàn màn hình, bùng nổ sóng lửa liên tục đẩy lùi và thiêu đốt quái vật ra tro!',
     baseCooldown: 0.88,
-    baseDamage: 198,
+    baseDamage: 554,
     baseArea: 350,
     maxLevel: 1
   },
@@ -247,7 +247,7 @@ const SPELL_DEFS = {
     icon: '💧⚔️',
     description: 'TIẾN HÓA CẤP 1: Mưa thương thủy ngân rơi liên tục ghim cứng kẻ địch và nổ chùm kim loại.',
     baseCooldown: 1.14,
-    baseDamage: 80,
+    baseDamage: 144,
     baseArea: 160,
     maxLevel: 1,
     evolution: 'silver_shield_god'
@@ -259,7 +259,7 @@ const SPELL_DEFS = {
     icon: '🛡️🦅',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Thần khiên thủy ngân bao phủ đẩy lùi kẻ địch, đồng thời phóng 32 ngọn thương hủy diệt mọi mục tiêu!',
     baseCooldown: 0.88,
-    baseDamage: 171,
+    baseDamage: 479,
     baseArea: 300,
     maxLevel: 1
   },
@@ -284,7 +284,7 @@ const SPELL_DEFS = {
     icon: '🥀',
     description: 'TIẾN HÓA CẤP 1: Roi gai hoa hồng huyết sắc quét 360 độ, trói chân toàn bộ quái vật và gây chảy máu liên tục.',
     baseCooldown: 1.14,
-    baseDamage: 74,
+    baseDamage: 133,
     baseArea: 170,
     maxLevel: 1,
     evolution: 'blue_rose_cage'
@@ -296,7 +296,7 @@ const SPELL_DEFS = {
     icon: '🌹👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Vườn hoa hồng xanh nở rộ toàn bản đồ giam hãm và xé nát toàn bộ kẻ địch trong hương hoa hủy diệt!',
     baseCooldown: 0.99,
-    baseDamage: 163,
+    baseDamage: 456,
     baseArea: 320,
     maxLevel: 1
   },
@@ -322,7 +322,7 @@ const SPELL_DEFS = {
     icon: '⌛✨',
     description: 'TIẾN HÓA CẤP 1: 3 quả cầu thời gian giam giữ vĩnh viễn quái vật trong vòng lặp vô tận và bòn rút sinh mệnh.',
     baseCooldown: 1.76,
-    baseDamage: 67,
+    baseDamage: 121,
     baseArea: 180,
     maxLevel: 1,
     evolution: 'chrono_eternal_domain'
@@ -334,7 +334,7 @@ const SPELL_DEFS = {
     icon: '⏳👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Ngưng đọng tuyệt đối thời gian toàn bản đồ, nghiền nát mọi kẻ địch thành tro bụi của lịch sử!',
     baseCooldown: 1.14,
-    baseDamage: 182,
+    baseDamage: 510,
     baseArea: 380,
     maxLevel: 1
   },
@@ -358,7 +358,7 @@ const SPELL_DEFS = {
     icon: '⛓️🔥',
     description: 'TIẾN HÓA CẤP 1: Phóng xích lửa trói buộc và chia sẻ sát thương giữa các cụm quái, gây nổ dây chuyền.',
     baseCooldown: 1.31,
-    baseDamage: 78,
+    baseDamage: 140,
     baseArea: 160,
     maxLevel: 1,
     evolution: 'soul_chain_deathmatch'
@@ -370,7 +370,7 @@ const SPELL_DEFS = {
     icon: '🔥⚾',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cú vung chày bão lửa thần thánh thổi bay mọi quái vật với 100% tỉ lệ chí mạng nổ long trời lở đất!',
     baseCooldown: 0.99,
-    baseDamage: 175,
+    baseDamage: 490,
     baseArea: 280,
     maxLevel: 1
   },
@@ -394,7 +394,7 @@ const SPELL_DEFS = {
     icon: '🍖🍲',
     description: 'TIẾN HÓA CẤP 1: Cừu khổng lồ nấu nướng liên tục tạo ra đùi thịt hồi phục HP và hất tung kẻ địch.',
     baseCooldown: 1.44,
-    baseDamage: 67,
+    baseDamage: 121,
     baseArea: 170,
     maxLevel: 1,
     evolution: 'wolf_gluttony'
@@ -406,7 +406,7 @@ const SPELL_DEFS = {
     icon: '🐺🍲',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Triệu hồi Ma Sói Khổng Lồ ngoạm sạch mọi kẻ địch trên màn hình, hồi đầy thanh máu tức thì!',
     baseCooldown: 0.96,
-    baseDamage: 190,
+    baseDamage: 532,
     baseArea: 320,
     maxLevel: 1
   },
@@ -433,7 +433,7 @@ const SPELL_DEFS = {
     icon: '⚔️✨',
     description: 'TIẾN HÓA CẤP 1: Mưa kiếm ánh sáng thiên giới liên tục giáng xuống các cụm quái vật!',
     baseCooldown: 0.96,
-    baseDamage: 76,
+    baseDamage: 137,
     baseArea: 140,
     maxLevel: 1,
     evolution: 'lumiere_god_light',
@@ -446,7 +446,7 @@ const SPELL_DEFS = {
     icon: '☀️👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Quả cầu Thái Dương phát ra 4 chùm laser ánh sáng xoay 360 độ quét rực toàn màn hình và bão kiếm quang rơi như mưa sao băng!',
     baseCooldown: 0.77,
-    baseDamage: 144,
+    baseDamage: 403,
     baseArea: 280,
     maxLevel: 1
   },
@@ -472,7 +472,7 @@ const SPELL_DEFS = {
     icon: '🐺🌑',
     description: 'TIẾN HÓA HUYỀN THOẠI: Bầy Sói Bóng Tối Canis lao vút 4 hướng cắn xé kẻ địch, tạo lốc hắc ám nuốt chửng quái vật và hồi máu cực mạnh!',
     baseCooldown: 0.88,
-    baseDamage: 113,
+    baseDamage: 203,
     baseArea: 220,
     maxLevel: 1,
     evolution: 'shadow_devil_union'
@@ -484,7 +484,7 @@ const SPELL_DEFS = {
     icon: '😈🐾',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Đồng hóa 4 đại quỷ cùng lúc, mở cánh cổng địa ngục nuốt chửng quái vật và tàng hình hút máu bất tử!',
     baseCooldown: 0.84,
-    baseDamage: 205,
+    baseDamage: 574,
     baseArea: 360,
     maxLevel: 1
   },
@@ -511,7 +511,7 @@ const SPELL_DEFS = {
     icon: '⚔️🌌',
     description: 'TIẾN HÓA HUYỀN THOẠI: Cự Kiếm Khai Thiên giáng xuống tạo chấn động địa chấn ma thuật hủy diệt toàn bộ khu vực!',
     baseCooldown: 1.36,
-    baseDamage: 206,
+    baseDamage: 371,
     baseArea: 320,
     maxLevel: 1,
     evolution: 'ultimate_light_slash'
@@ -523,7 +523,7 @@ const SPELL_DEFS = {
     icon: '⚔️🌟',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Triệu hồi 100 Cổ Kiếm Khai Thiên giáng xuống như mưa sao băng quét sạch toàn bộ lục địa Clover!',
     baseCooldown: 0.99,
-    baseDamage: 220,
+    baseDamage: 616,
     baseArea: 400,
     maxLevel: 1
   },
@@ -549,7 +549,7 @@ const SPELL_DEFS = {
     icon: '🌀🕸️',
     description: 'TIẾN HÓA CẤP 1: Vòng tròn bẫy liên hoàn phản lại mọi sát thương và tạo chấn động nổ diện rộng!',
     baseCooldown: 1.28,
-    baseDamage: 92,
+    baseDamage: 166,
     baseArea: 200,
     maxLevel: 1,
     evolution: 'infernal_reflect_void'
@@ -561,7 +561,7 @@ const SPELL_DEFS = {
     icon: '💥🕸️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Ma trận bẫy hư không phản kích vô hạn x5 sát thương, biến toàn bộ đòn đánh địch thành vụ nổ diệt vong!',
     baseCooldown: 0.99,
-    baseDamage: 198,
+    baseDamage: 554,
     baseArea: 350,
     maxLevel: 1
   },
@@ -587,7 +587,7 @@ const SPELL_DEFS = {
     icon: '🌲✨',
     description: 'TIẾN HÓA CẤP 1: Cây Thần Mistilteinn nở hoa trói toàn bộ chiến trường và hút sinh mệnh!',
     baseCooldown: 1.31,
-    baseDamage: 88,
+    baseDamage: 158,
     baseArea: 220,
     maxLevel: 1,
     evolution: 'yggdrasil_rebirth'
@@ -599,7 +599,7 @@ const SPELL_DEFS = {
     icon: '🌳👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cây Sinh Mệnh Yggdrasil khổng lồ bao bọc toàn thế giới, ban quyền bất tử hồi phục và nghiền nát quân địch!',
     baseCooldown: 0.99,
-    baseDamage: 186,
+    baseDamage: 521,
     baseArea: 380,
     maxLevel: 1
   },
@@ -625,7 +625,7 @@ const SPELL_DEFS = {
     icon: '🌌💭',
     description: 'TIẾN HÓA CẤP 1: Nhấn chìm chiến trường vào chiều không gian giấc mơ, quái vật hóa thành bánh kẹo và nổ tung!',
     baseCooldown: 1.36,
-    baseDamage: 97,
+    baseDamage: 175,
     baseArea: 240,
     maxLevel: 1,
     evolution: 'dream_god_reality'
@@ -637,7 +637,7 @@ const SPELL_DEFS = {
     icon: '✨👑💭',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Biến mọi giấc mơ thành hiện thực, triệu hồi thiên thạch kẹo ngọt và sấm chớp mộng cảnh xóa sổ toàn bản đồ!',
     baseCooldown: 0.88,
-    baseDamage: 201,
+    baseDamage: 563,
     baseArea: 380,
     maxLevel: 1
   },
@@ -663,7 +663,7 @@ const SPELL_DEFS = {
     icon: '⚔️🪓',
     description: 'TIẾN HÓA CẤP 1: Lưỡi hái thích nghi với thuộc tính của địch, chém xuyên giáp 100%!',
     baseCooldown: 0.99,
-    baseDamage: 101,
+    baseDamage: 182,
     baseArea: 180,
     maxLevel: 1,
     evolution: 'infinite_cleave'
@@ -675,7 +675,7 @@ const SPELL_DEFS = {
     icon: '⚡🪓',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Chém đứt chính cả không gian và thời gian, 16 nhát chém xé rách toàn màn hình quét sạch mọi loại boss!',
     baseCooldown: 0.66,
-    baseDamage: 205,
+    baseDamage: 574,
     baseArea: 320,
     maxLevel: 1
   },
@@ -701,7 +701,7 @@ const SPELL_DEFS = {
     icon: '🐉🎨',
     description: 'TIẾN HÓA CẤP 1: Vẽ nên thần thú khổng lồ phun bão nguyên tố 4 mùa quét sạch chiến trường!',
     baseCooldown: 1.22,
-    baseDamage: 95,
+    baseDamage: 171,
     baseArea: 210,
     maxLevel: 1,
     evolution: 'twilight_valhalla'
@@ -713,7 +713,7 @@ const SPELL_DEFS = {
     icon: '🌈🎨👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Bức tranh kiệt tác thần thánh ban sức mạnh tuyệt đối, quái vật chạm vào lập tức tan thành sắc màu!',
     baseCooldown: 0.99,
-    baseDamage: 194,
+    baseDamage: 543,
     baseArea: 360,
     maxLevel: 1
   },
@@ -739,7 +739,7 @@ const SPELL_DEFS = {
     icon: '⛓️🐦',
     description: 'TIẾN HÓA CẤP 1: Xích phong ấn cổ đại trói cứng các cụm quái vật và khóa toàn bộ chiêu thức của chúng!',
     baseCooldown: 1.05,
-    baseDamage: 88,
+    baseDamage: 158,
     baseArea: 190,
     maxLevel: 1,
     evolution: 'eternal_prison_coffin'
@@ -751,7 +751,7 @@ const SPELL_DEFS = {
     icon: '⚰️🐦',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Quan tài phong ấn vĩnh cửu nuốt chửng toàn bộ quái vật và boss, khóa chặt vĩnh viễn không thể cựa quậy!',
     baseCooldown: 0.88,
-    baseDamage: 201,
+    baseDamage: 563,
     baseArea: 350,
     maxLevel: 1
   },
@@ -778,7 +778,7 @@ const SPELL_DEFS = {
     icon: '🐉🔥',
     description: 'TIẾN HÓA CẤP 1: Rồng lửa xoắn ốc càn quét toàn màn hình để lại vệt nham thạch thiêu đốt vạn vật!',
     baseCooldown: 1.14,
-    baseDamage: 99,
+    baseDamage: 178,
     baseArea: 220,
     maxLevel: 1,
     evolution: 'flame_dragon_emperor'
@@ -790,7 +790,7 @@ const SPELL_DEFS = {
     icon: '🔥👑🐉',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa thân Viêm Long Bá Đế, triệu hồi bão rồng lửa thiêu rụi toàn map với sát thương nổ long trời lở đất!',
     baseCooldown: 0.92,
-    baseDamage: 209,
+    baseDamage: 585,
     baseArea: 370,
     maxLevel: 1
   },
@@ -817,7 +817,7 @@ const SPELL_DEFS = {
     icon: '🌌🔮',
     description: 'TIẾN HÓA CẤP 1: Nhát chém không gian xóa sổ hoàn toàn quái vật và đạn ma pháp!',
     baseCooldown: 1.14,
-    baseDamage: 109,
+    baseDamage: 196,
     baseArea: 210,
     maxLevel: 1,
     evolution: 'absolute_void_annihilation'
@@ -829,7 +829,7 @@ const SPELL_DEFS = {
     icon: '🌌👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Tạo lỗ đen không gian tuyệt đối nuốt chửng toàn bộ bản đồ và xóa sạch kẻ địch khỏi thực tại!',
     baseCooldown: 0.99,
-    baseDamage: 217,
+    baseDamage: 608,
     baseArea: 380,
     maxLevel: 1
   },
@@ -856,7 +856,7 @@ const SPELL_DEFS = {
     icon: '🔱💎',
     description: 'TIẾN HÓA CẤP 1: Đại thương kim cương kết hợp lửa địa ngục phát nổ diện rộng!',
     baseCooldown: 1.14,
-    baseDamage: 92,
+    baseDamage: 166,
     baseArea: 200,
     maxLevel: 1,
     evolution: 'crystal_colossus'
@@ -868,7 +868,7 @@ const SPELL_DEFS = {
     icon: '🗿💎',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Người khổng lồ khoáng thạch bất hoại giáng chùy xuống đất tạo động đất xóa sổ toàn bộ địch!',
     baseCooldown: 0.99,
-    baseDamage: 198,
+    baseDamage: 554,
     baseArea: 350,
     maxLevel: 1
   },
@@ -895,7 +895,7 @@ const SPELL_DEFS = {
     icon: '⚡🌑',
     description: 'TIẾN HÓA CẤP 1: Chùm tia ánh sáng đen hủy diệt quét xuyên suốt bản đồ thiêu rụi mọi hàng ngũ!',
     baseCooldown: 0.96,
-    baseDamage: 105,
+    baseDamage: 189,
     baseArea: 230,
     maxLevel: 1,
     evolution: 'demon_light_judgment'
@@ -907,7 +907,7 @@ const SPELL_DEFS = {
     icon: '🌑👑✨',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hắc ma thần quang giáng 32 tia sấm sét đen từ thiên giới nghiền nát toàn bộ chiến trường!',
     baseCooldown: 0.84,
-    baseDamage: 213,
+    baseDamage: 596,
     baseArea: 390,
     maxLevel: 1
   },
@@ -934,7 +934,7 @@ const SPELL_DEFS = {
     icon: '☠️',
     description: 'TIẾN HÓA CẤP 1: Mở rộng vùng khí độc cực đại, làm suy giảm 40% phòng ngự và độc ăn sâu!',
     baseCooldown: 1.22,
-    baseDamage: 61,
+    baseDamage: 110,
     baseArea: 160,
     duration: 3.5,
     maxLevel: 1,
@@ -948,7 +948,7 @@ const SPELL_DEFS = {
     icon: '🧪☠️👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Màn sương độc thần cổ đại bao phủ cả bản đồ, quái vật dính độc phát nổ lây lan sang kẻ địch khác!',
     baseCooldown: 0.99,
-    baseDamage: 160,
+    baseDamage: 448,
     baseArea: 280,
     maxLevel: 1
   },
@@ -975,7 +975,7 @@ const SPELL_DEFS = {
     icon: '✨💎',
     description: 'TIẾN HÓA CẤP 1: Bắn chùm 5 tinh thể biến dị, biến quái vật bị tiêu diệt thành ngọc Mana và tiền xu!',
     baseCooldown: 1.14,
-    baseDamage: 65,
+    baseDamage: 117,
     baseSpeed: 480,
     pierce: 6,
     maxLevel: 1,
@@ -989,7 +989,7 @@ const SPELL_DEFS = {
     icon: '🌈💎👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Sóng ánh sáng cầu vồng chuyển hóa toàn màn hình biến đạn địch thành ngọc hồi máu và nghiền nát quân đoàn quái!',
     baseCooldown: 0.99,
-    baseDamage: 167,
+    baseDamage: 468,
     baseArea: 320,
     maxLevel: 1
   },
@@ -1016,7 +1016,7 @@ const SPELL_DEFS = {
     icon: '🏰🐂',
     description: 'TIẾN HÓA CẤP 1: Phóng ra 2 Cự Ngưu bọc sắt song hành càn quét 2 hướng và hất tung quái vật!',
     baseCooldown: 1.36,
-    baseDamage: 78,
+    baseDamage: 140,
     baseSpeed: 450,
     pierce: 99,
     maxLevel: 1,
@@ -1030,7 +1030,7 @@ const SPELL_DEFS = {
     icon: '🏰👑💥',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Triệu hồi Cự Pháo Đài Hắc Bộc Ngưu dậm nát mặt đất tạo sóng xung kích diệt thần 360 độ!',
     baseCooldown: 0.96,
-    baseDamage: 186,
+    baseDamage: 521,
     baseArea: 300,
     maxLevel: 1
   },
@@ -1057,7 +1057,7 @@ const SPELL_DEFS = {
     icon: '🌺✨',
     description: 'TIẾN HÓA CẤP 1: Nở rộ vườn hoa thánh địa xung quanh người chơi liên tục hồi máu và bắn gai nhọn diệt địch!',
     baseCooldown: 1.22,
-    baseDamage: 67,
+    baseDamage: 121,
     baseArea: 170,
     duration: 3.5,
     maxLevel: 1,
@@ -1071,7 +1071,7 @@ const SPELL_DEFS = {
     icon: '🌸👑🌿',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cây Thần Địa Đàng khai mở, liên tục phóng 16 chùm hoa pháo diệt thần và bất tử hồi máu 5% mỗi 2 giây!',
     baseCooldown: 0.99,
-    baseDamage: 163,
+    baseDamage: 456,
     baseArea: 320,
     maxLevel: 1
   },
@@ -1098,7 +1098,7 @@ const SPELL_DEFS = {
     icon: '🌀🔩',
     description: 'TIẾN HÓA CẤP 1: 5 đại khoan thép xoay bão lốc càn quét theo hình nan quạt, đẩy lùi cực mạnh!',
     baseCooldown: 1.05,
-    baseDamage: 74,
+    baseDamage: 133,
     baseSpeed: 520,
     pierce: 99,
     maxLevel: 1,
@@ -1112,7 +1112,7 @@ const SPELL_DEFS = {
     icon: '🔩👑⚡',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cột giáo khoan thép khổng lồ từ thiên giới cắm thẳng xuống đất tạo sóng chấn động sắt thép toàn màn hình!',
     baseCooldown: 0.92,
-    baseDamage: 175,
+    baseDamage: 490,
     baseArea: 290,
     maxLevel: 1
   },
@@ -1138,7 +1138,7 @@ const SPELL_DEFS = {
     icon: '🏔️💥',
     description: 'TIẾN HÓA CẤP 1: 2 bàn tay khổng lồ bằng nham thạch đập vào nhau nghiền nát tất cả kẻ địch ở giữa!',
     baseCooldown: 1.31,
-    baseDamage: 82,
+    baseDamage: 148,
     baseArea: 175,
     maxLevel: 1,
     evolution: 'terra_titan_earthquake',
@@ -1151,7 +1151,7 @@ const SPELL_DEFS = {
     icon: '🗿👑🌋',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Đại địa nứt toác toàn màn hình, dung nham và đá tảng phun trào làm choáng và quét sạch quái vật!',
     baseCooldown: 1.06,
-    baseDamage: 179,
+    baseDamage: 501,
     baseArea: 310,
     maxLevel: 1
   },
@@ -1177,7 +1177,7 @@ const SPELL_DEFS = {
     icon: '⬛⚡',
     description: 'TIẾN HÓA CẤP 1: Thiết lập khối không gian đen tối áp chế tuyệt đối mọi sinh linh, phóng mưa gai xương Ma Quỷ 360 độ!',
     baseCooldown: 1.1,
-    baseDamage: 125,
+    baseDamage: 225,
     baseArea: 230,
     maxLevel: 1
   },
@@ -1203,7 +1203,7 @@ const SPELL_DEFS = {
     icon: '🩸😈',
     description: 'TIẾN HÓA CẤP 1: Triệu hồi Cự Đại Huyết Ma Thú càn quét bản đồ, kích nổ vòng hoa huyết nguyền rủa và hút máu cực đại!',
     baseCooldown: 1.3,
-    baseDamage: 115,
+    baseDamage: 207,
     baseArea: 220,
     maxLevel: 1
   },
@@ -1229,7 +1229,7 @@ const SPELL_DEFS = {
     icon: '🕳️💥',
     description: 'TIẾN HÓA CẤP 1: Tạo ra điểm dị thường trọng lực nuốt chửng toàn bộ quái vật vào tâm rồi phát nổ hủy diệt không gian!',
     baseCooldown: 1.5,
-    baseDamage: 145,
+    baseDamage: 261,
     baseArea: 250,
     maxLevel: 1
   },
@@ -1255,7 +1255,7 @@ const SPELL_DEFS = {
     icon: '🔥🦅',
     description: 'TIẾN HÓA CẤP 1: Thần Điểu Phượng Hoàng rực lửa sải cánh bay lượn toàn chiến trường, để lại vệt lửa vĩnh cửu và hồi sinh mệnh!',
     baseCooldown: 1.0,
-    baseDamage: 110,
+    baseDamage: 198,
     baseArea: 220,
     maxLevel: 1
   },
@@ -1281,7 +1281,7 @@ const SPELL_DEFS = {
     icon: '🌈⚡',
     description: 'TIẾN HÓA CẤP 1: Khai mở kho tàng ma pháp sao chép tối thượng, giải phóng liên tục 8 loại ma đạn nguyên tố bão táp 360 độ!',
     baseCooldown: 0.95,
-    baseDamage: 105,
+    baseDamage: 189,
     baseArea: 240,
     maxLevel: 1
   },
@@ -1307,7 +1307,7 @@ const SPELL_DEFS = {
     icon: '🐺👹',
     description: 'TIẾN HÓA CẤP 1: Khai mở Con Mắt Thứ Ba, phóng ra các đợt cào xé ma khí khổng lồ đan chéo kèm sóng xung kích thú thần hủy diệt!',
     baseCooldown: 0.85,
-    baseDamage: 130,
+    baseDamage: 234,
     baseArea: 220,
     maxLevel: 1
   },
@@ -1442,7 +1442,7 @@ class SpellManager {
         }
         const sDef = SPELL_DEFS[spellId];
         const baseCd = sDef ? sDef.baseCooldown : 1.5;
-        const finalCd = Math.max(0.45, baseCd * (1 - Math.min(0.40, (p.cooldownReduction || 0))) * (1 - (item.level - 1) * 0.04));
+        const finalCd = Math.max(0.22, baseCd * (1 - Math.min(0.55, (p.cooldownReduction || 0))) * (1 - (item.level - 1) * 0.04));
         item.timer = finalCd;
       }
     }
@@ -1563,7 +1563,7 @@ class SpellManager {
               enemy.x += Math.cos(pullAngle) * 45 * dt;
               enemy.y += Math.sin(pullAngle) * 45 * dt;
             }
-            this.applyDamage(enemy, zone.damage, false, zone.color);
+            this.applyDamage(enemy, zone.damage, !!zone.isCrit, zone.color);
           }
         }
       }
@@ -1620,11 +1620,11 @@ class SpellManager {
     }
 
     // Cap active AoE zones & shockwaves to eliminate lag
-    if (this.aoeZones.length > 10) {
-      this.aoeZones.splice(0, this.aoeZones.length - 10);
+    if (this.aoeZones.length > 25) {
+      this.aoeZones.splice(0, this.aoeZones.length - 25);
     }
-    if (this.shockwaves.length > 8) {
-      this.shockwaves.splice(0, this.shockwaves.length - 8);
+    if (this.shockwaves.length > 16) {
+      this.shockwaves.splice(0, this.shockwaves.length - 16);
     }
   }
 
@@ -1646,10 +1646,11 @@ class SpellManager {
     const def = SPELL_DEFS[spellId];
     if (!def) return;
 
-    const dmgMult = (1 + p.damageBonus) * (1 + (level - 1) * 0.12);
+    const levelScale = 1 + (p.level - 1) * 0.025;
+    const dmgMult = (1 + p.damageBonus) * (1 + (level - 1) * 0.25) * levelScale;
     const areaMult = (1 + p.areaBonus) * (1 + (level - 1) * 0.12);
     const isCrit = Math.random() < p.critChance;
-    const critMult = isCrit ? (1.35 + (p.critDmgBonus || 0.25)) : 1.0;
+    const critMult = isCrit ? (2.0 + (p.critDmgBonus || 0)) : 1.0;
     const damage = Math.round(def.baseDamage * dmgMult * critMult);
     const targetAngle = this.getTargetAngle();
 
@@ -1741,7 +1742,8 @@ class SpellManager {
             tickTimer: 0,
             life: 4.5,
             pull: true,
-            color: '#10b981'
+            color: '#10b981',
+            isCrit: isCrit
           });
         }
         this.playSound('windBlade');
@@ -1865,7 +1867,8 @@ class SpellManager {
             interval: 0.1,
             tickTimer: 0,
             life: 0.22,
-            color: '#fde047'
+            color: '#fde047',
+            isCrit: isCrit
           });
           this.lightningChains.push({
             points: [{ x: tx, y: ty - 280 }, { x: tx, y: ty }],
@@ -1913,8 +1916,9 @@ class SpellManager {
           interval: 0.2,
           tickTimer: 0,
           life: 2.5,
-          color: '#ef4444'
-        });
+          color: '#ef4444',
+            isCrit: isCrit
+          });
         this.spawnShockwave(p.x, p.y, '#f97316', 380, 0.35);
         this.playSound('fireExplosion');
         this.game.shakeScreen(8, 0.25);
@@ -1937,7 +1941,8 @@ class SpellManager {
             interval: 0.1,
             tickTimer: 0,
             life: 0.2,
-            color: '#cbd5e1'
+            color: '#cbd5e1',
+            isCrit: isCrit
           });
         }
         this.playSound('slash');
@@ -1977,8 +1982,9 @@ class SpellManager {
           tickTimer: 0,
           life: def.duration,
           slow: true,
-          color: '#fbbf24'
-        });
+          color: '#fbbf24',
+            isCrit: isCrit
+          });
         this.playSound('timeWarp');
         break;
       }
@@ -2016,8 +2022,9 @@ class SpellManager {
           tickTimer: 0,
           life: 3.2,
           followPlayer: true,
-          color: '#ec4899'
-        });
+          color: '#ec4899',
+            isCrit: isCrit
+          });
         if (Math.random() < 0.3) {
           this.game.spawnDrop(p.x + (Math.random() - 0.5) * 60, p.y + (Math.random() - 0.5) * 60, 'food', 30);
         }
@@ -2067,7 +2074,8 @@ class SpellManager {
             interval: 0.1,
             tickTimer: 0,
             life: 0.25 + (i * 0.04),
-            color: '#fbbf24'
+            color: '#fbbf24',
+            isCrit: isCrit
           });
           this.spawnShockwave(rx, ry, '#fef08a', 200, 0.2);
         }
@@ -2092,8 +2100,9 @@ class SpellManager {
           tickTimer: 0,
           life: 1.8,
           followPlayer: true,
-          color: '#fbbf24'
-        });
+          color: '#fbbf24',
+            isCrit: isCrit
+          });
 
         // 6 Light rain swords all around (immediate with staggered life)
         for (let i = 0; i < 6; i++) {
@@ -2108,7 +2117,8 @@ class SpellManager {
             interval: 0.1,
             tickTimer: 0,
             life: 0.28 + (i * 0.03),
-            color: '#ffffff'
+            color: '#ffffff',
+            isCrit: isCrit
           });
           this.spawnShockwave(rx, ry, '#fbbf24', 240, 0.2);
         }
@@ -2179,7 +2189,8 @@ class SpellManager {
             tickTimer: 0,
             life: 0.35 + (i * 0.03),
             color: '#581c87',
-            isShadowClaw: true
+            isShadowClaw: true,
+            isCrit: isCrit
           });
           this.spawnShockwave(sx, sy, '#7c3aed', 160, 0.25);
         }
@@ -2222,8 +2233,9 @@ class SpellManager {
           tickTimer: 0,
           life: 1.6,
           followPlayer: true,
-          color: '#3b0764'
-        });
+          color: '#3b0764',
+            isCrit: isCrit
+          });
 
         // Life steal burst
         p.hp = Math.min(p.maxHp, p.hp + 12);
@@ -2273,8 +2285,9 @@ class SpellManager {
           tickTimer: 0,
           life: 0.65,
           color: '#fef08a',
-          isGiantSword: true
-        });
+          isGiantSword: true,
+            isCrit: isCrit
+          });
         break;
       }
 
@@ -2309,8 +2322,9 @@ class SpellManager {
           tickTimer: 0,
           life: 2.0,
           followPlayer: true,
-          color: '#059669'
-        });
+          color: '#059669',
+            isCrit: isCrit
+          });
         this.playSound('windBlade');
         break;
       }
@@ -2357,7 +2371,8 @@ class SpellManager {
             interval: 0.1,
             tickTimer: 0,
             life: 0.25,
-            color: '#facc15'
+            color: '#facc15',
+            isCrit: isCrit
           });
           this.lightningChains.push({
             points: [{ x: tx, y: ty - 320 }, { x: tx, y: ty }],
@@ -2382,8 +2397,9 @@ class SpellManager {
           tickTimer: 0,
           life: 2.2,
           followPlayer: true,
-          color: '#ea580c'
-        });
+          color: '#ea580c',
+            isCrit: isCrit
+          });
         this.playSound('fireball');
         break;
       }
@@ -2406,7 +2422,8 @@ class SpellManager {
             interval: 0.1,
             tickTimer: 0,
             life: 0.28,
-            color: '#cbd5e1'
+            color: '#cbd5e1',
+            isCrit: isCrit
           });
           this.spawnShockwave(sx, sy, '#f8fafc', 180, 0.2);
         }
@@ -2450,8 +2467,9 @@ class SpellManager {
           tickTimer: 0,
           life: 2.8,
           color: '#fbbf24',
-          pull: true
-        });
+          pull: true,
+            isCrit: isCrit
+          });
         this.playSound('chronoFreeze');
         break;
       }
@@ -2493,8 +2511,9 @@ class SpellManager {
           interval: 0.15,
           tickTimer: 0,
           life: 1.5,
-          color: '#f43f5e'
-        });
+          color: '#f43f5e',
+            isCrit: isCrit
+          });
         p.hp = Math.min(p.maxHp, p.hp + 20);
         this.playSound('levelUp');
         break;
@@ -2513,8 +2532,9 @@ class SpellManager {
           tickTimer: 0,
           life: 2.2,
           color: '#3b0764',
-          followPlayer: true
-        });
+          followPlayer: true,
+            isCrit: isCrit
+          });
         p.hp = Math.min(p.maxHp, p.hp + 30);
         this.playSound('shadowSlash');
         break;
@@ -2563,7 +2583,8 @@ class SpellManager {
             interval: 0.1,
             tickTimer: 0,
             life: 0.35,
-            color: '#78716c'
+            color: '#78716c',
+            isCrit: isCrit
           });
           this.spawnShockwave(tx, ty, '#f97316', 220, 0.25);
         }
@@ -2584,8 +2605,9 @@ class SpellManager {
           interval: 0.15,
           tickTimer: 0,
           life: 2.0,
-          color: '#16a34a'
-        });
+          color: '#16a34a',
+            isCrit: isCrit
+          });
         p.hp = Math.min(p.maxHp, p.hp + 15);
         this.playSound('levelUp');
         break;
@@ -2605,8 +2627,9 @@ class SpellManager {
           tickTimer: 0,
           life: 2.2,
           color: '#d946ef',
-          pull: true
-        });
+          pull: true,
+            isCrit: isCrit
+          });
         this.playSound('chronoFreeze');
         break;
       }
@@ -2678,8 +2701,9 @@ class SpellManager {
           tickTimer: 0,
           life: 2.0,
           color: '#1c1917',
-          pull: true
-        });
+          pull: true,
+            isCrit: isCrit
+          });
         this.playSound('shadowSlash');
         break;
       }
@@ -2724,8 +2748,9 @@ class SpellManager {
           tickTimer: 0,
           life: 1.8,
           color: '#581c87',
-          pull: true
-        });
+          pull: true,
+            isCrit: isCrit
+          });
         this.playSound('dimensionSlash');
         break;
       }
@@ -2799,8 +2824,9 @@ class SpellManager {
           life: def.duration || 2.5,
           maxLife: def.duration || 2.5,
           color: '#10b981',
-          name: 'poison_cloud'
-        });
+          name: 'poison_cloud',
+            isCrit: isCrit
+          });
         this.spawnShockwave(tx, ty, '#10b981', 120, 0.2);
         this.playSound('waterMagic');
         break;
@@ -2817,8 +2843,9 @@ class SpellManager {
           life: def.duration || 3.5,
           maxLife: def.duration || 3.5,
           color: '#059669',
-          name: 'toxic_miasma'
-        });
+          name: 'toxic_miasma',
+            isCrit: isCrit
+          });
         this.spawnShockwave(p.x, p.y, '#34d399', 220, 0.3);
         this.playSound('waterMagic');
         break;
@@ -2836,8 +2863,9 @@ class SpellManager {
           life: 4.5,
           maxLife: 4.5,
           color: '#047857',
-          name: 'forbidden_poison_god'
-        });
+          name: 'forbidden_poison_god',
+            isCrit: isCrit
+          });
         this.spawnShockwave(p.x, p.y, '#6ee7b7', 350, 0.4);
         this.playSound('dimensionSlash');
         break;
@@ -3008,8 +3036,9 @@ class SpellManager {
           life: def.duration || 3.5,
           maxLife: def.duration || 3.5,
           color: '#fb7185',
-          name: 'princess_healing'
-        });
+          name: 'princess_healing',
+            isCrit: isCrit
+          });
         p.hp = Math.min(p.maxHp, p.hp + 6);
         this.spawnShockwave(p.x, p.y, '#fda4af', 240, 0.3);
         this.playSound('waterMagic');

@@ -20,6 +20,14 @@ class EnemyManager {
     this.dangerTelegraphs = [];
   }
 
+  // Vampire Survivors Standard HP Scaling Formula
+  getVampireSurvivorsHpMultiplier(scaleWithLevel = true, isBoss = false) {
+    const playerLevel = (this.game.player && this.game.player.level) ? this.game.player.level : 1;
+    const playerCurse = (this.game.player && this.game.player.curse) ? this.game.player.curse : 0;
+    const levelMult = scaleWithLevel ? playerLevel : 1;
+    return levelMult * (1 + playerCurse);
+  }
+
   update(dt, gameTime) {
     const p = this.game.player;
     if (!p || p.hp <= 0) return;
@@ -614,9 +622,10 @@ class EnemyManager {
             type: 'circle',
             label: 'WORD SOUL: DIE'
           });
-          // Also spawn 2 lesser devil minions
+          // Also spawn 2 lesser devil minions with VS level-scaling HP
+          const minionHp = Math.max(800, Math.round(35 * this.getVampireSurvivorsHpMultiplier(true, false)));
           for (let k = 0; k < 2; k++) {
-            this.spawnEnemyAt(boss.x + (Math.random() - 0.5) * 80, boss.y + (Math.random() - 0.5) * 80, 'lesser_devil', 2500, 115, 22, 25);
+            this.spawnEnemyAt(boss.x + (Math.random() - 0.5) * 80, boss.y + (Math.random() - 0.5) * 80, 'lesser_devil', minionHp, 115, 22, 25);
           }
         }
         // Underworld Spears barrage
@@ -786,138 +795,158 @@ class EnemyManager {
     ctx.restore();
   }
 
-  // Regular enemy spawn selector based on map and time (30-Minute Balanced Curve)
+  // Regular enemy spawn selector based on map and time (Vampire Survivors Balanced Curve)
   spawnRegularEnemy(gameTime) {
     const pos = this.getSpawnPositionOffscreen();
     const mapId = this.game.selectedMapId || 'clover_plains';
 
     let type = 'bandit';
-    let hp = 55;
+    let baseHp = 55;
     let speed = 75;
     let contactDmg = 6;
     let expVal = 2;
+    let scaleWithLevel = false;
 
     const endlessMult = gameTime > 1800 ? (1 + (gameTime - 1800) * 0.003) : 1.0;
 
-    if (mapId === 'underworld_palace') {
+        if (mapId === 'underworld_palace') {
       // MAP 2: ĐẠI MA CUNG MINH GIỚI (Chế độ Thử Thách, quái cân bằng để chặt chém sướng tay)
       if (gameTime < 90) {
-        // Phút 0 - 1.5: Hellhound (45 - 85 HP)
+        // Phút 0 - 1.5: Hellhound (45 - 85 HP) - scaleWithLevel = false để farm cấp đầu trận
         type = 'hellhound';
-        hp = Math.round((45 + gameTime * 0.45) * endlessMult);
+        baseHp = 45 + gameTime * 0.45;
+        scaleWithLevel = false;
         speed = 82 + Math.random() * 14;
         contactDmg = 7;
-        expVal = 5;
+        expVal = 2;
       } else if (gameTime < 210) {
-        // Phút 1.5 - 3.5: Shadow Mage (110 - 218 HP)
+        // Phút 1.5 - 3.5: Shadow Mage (110 - 218 HP) - scaleWithLevel = false để farm cấp đầu trận
         type = Math.random() < 0.65 ? 'shadow_mage' : 'hellhound';
-        hp = Math.round((110 + (gameTime - 90) * 0.9) * endlessMult);
+        baseHp = 110 + (gameTime - 90) * 0.9;
+        scaleWithLevel = false;
         speed = 88 + Math.random() * 15;
         contactDmg = 10;
-        expVal = 12;
+        expVal = 3;
       } else if (gameTime < 360) {
-        // Phút 3.5 - 6: Bone Golem (260 - 560 HP)
+        // Phút 3.5 - 6: Bone Golem (Base per Lv: 15 HP -> Ở Lv ~15 đạt ~225 HP)
         type = Math.random() < 0.6 ? 'bone_golem' : 'shadow_mage';
-        hp = Math.round((260 + (gameTime - 210) * 2.0) * endlessMult);
+        baseHp = 15;
+        scaleWithLevel = true;
         speed = 72 + Math.random() * 14;
         contactDmg = 14;
-        expVal = 26;
+        expVal = 5;
       } else if (gameTime < 600) {
-        // Phút 6 - 10: High Devil (650 - 1,560 HP)
+        // Phút 6 - 10: High Devil (Base per Lv: 25 HP -> Ở Lv ~28 đạt ~700 HP)
         type = Math.random() < 0.65 ? 'high_devil' : 'bone_golem';
-        hp = Math.round((650 + (gameTime - 360) * 3.8) * endlessMult);
+        baseHp = 25;
+        scaleWithLevel = true;
         speed = 96 + Math.random() * 18;
         contactDmg = 18;
-        expVal = 55;
+        expVal = 9;
       } else if (gameTime < 900) {
-        // Phút 10 - 15: Lesser Devil (1,750 - 4,000 HP)
+        // Phút 10 - 15: Lesser Devil (Base per Lv: 40 HP -> Ở Lv ~45 đạt ~1,800 HP)
         type = Math.random() < 0.7 ? 'lesser_devil' : 'high_devil';
-        hp = Math.round((1750 + (gameTime - 600) * 7.5) * endlessMult);
+        baseHp = 40;
+        scaleWithLevel = true;
         speed = 108 + Math.random() * 18;
         contactDmg = 24;
-        expVal = 110;
+        expVal = 15;
       } else if (gameTime < 1200) {
-        // Phút 15 - 20: High Devil Swarm (4,500 - 9,000 HP)
+        // Phút 15 - 20: High Devil Swarm (Base per Lv: 60 HP -> Ở Lv ~60 đạt ~3,600 HP)
         type = 'high_devil';
-        hp = Math.round((4500 + (gameTime - 900) * 15.0) * endlessMult);
+        baseHp = 60;
+        scaleWithLevel = true;
         speed = 114 + Math.random() * 18;
         contactDmg = 28;
-        expVal = 220;
+        expVal = 22;
       } else if (gameTime < 1500) {
-        // Phút 20 - 25: Devil Legion (10,500 - 20,100 HP)
+        // Phút 20 - 25: Devil Legion (Base per Lv: 85 HP -> Ở Lv ~76 đạt ~6,460 HP)
         type = 'high_devil';
-        hp = Math.round((10500 + (gameTime - 1200) * 32.0) * endlessMult);
+        baseHp = 85;
+        scaleWithLevel = true;
         speed = 118 + Math.random() * 20;
         contactDmg = 34;
-        expVal = 380;
+        expVal = 32;
       } else {
-        // Phút 25 - 30: Climax Horde (24,000 - 43,500 HP)
+        // Phút 25 - 30: Climax Horde (Base per Lv: 119 HP, tức 95 * 1.25x -> Ở Lv ~95 đạt ~11,300 HP)
         type = 'high_devil';
-        hp = Math.round((24000 + (gameTime - 1500) * 65.0) * endlessMult);
+        baseHp = 119;
+        scaleWithLevel = true;
         speed = 124 + Math.random() * 20;
         contactDmg = 38;
-        expVal = 750;
+        expVal = 45;
       }
     } else {
       // MAP 1: VƯƠNG QUỐC CLOVER (Cân bằng chuẩn Vampire Survivors, dọn quái sướng tay)
       if (gameTime < 90) {
-        // Phút 0 - 1.5: Bandit (32 - 63 HP - Chém 1-2 kiếm là nổ tung, rớt kinh nghiệm dồi dào!)
+        // Phút 0 - 1.5: Bandit (32 - 63 HP - Chém 1-2 kiếm là nổ tung, scaleWithLevel = false)
         type = 'bandit';
-        hp = Math.round((32 + gameTime * 0.35) * endlessMult);
+        baseHp = 32 + gameTime * 0.35;
+        scaleWithLevel = false;
         speed = 70 + Math.random() * 12;
         contactDmg = 5;
-        expVal = 4;
+        expVal = 1;
       } else if (gameTime < 210) {
-        // Phút 1.5 - 3.5: Cultist (75 - 159 HP)
+        // Phút 1.5 - 3.5: Cultist (75 - 159 HP - scaleWithLevel = false để dễ farm cấp)
         type = Math.random() < 0.7 ? 'cultist' : 'bandit';
-        hp = Math.round((75 + (gameTime - 90) * 0.7) * endlessMult);
+        baseHp = 75 + (gameTime - 90) * 0.7;
+        scaleWithLevel = false;
         speed = 78 + Math.random() * 14;
         contactDmg = 8;
-        expVal = 8;
+        expVal = 2;
       } else if (gameTime < 360) {
-        // Phút 3.5 - 6: Zombie (180 - 405 HP)
+        // Phút 3.5 - 6: Zombie (Base per Lv: 12 HP -> Ở Lv ~15 đạt ~180 HP, expVal = 4)
         type = Math.random() < 0.65 ? 'zombie' : 'cultist';
-        hp = Math.round((180 + (gameTime - 210) * 1.5) * endlessMult);
+        baseHp = 12;
+        scaleWithLevel = true;
         speed = 66 + Math.random() * 12;
         contactDmg = 12;
-        expVal = 18;
+        expVal = 4;
       } else if (gameTime < 600) {
-        // Phút 6 - 10: Spade Soldier (460 - 1,180 HP)
+        // Phút 6 - 10: Spade Soldier (Base per Lv: 20 HP -> Ở Lv ~28 đạt ~560 HP, expVal = 7)
         type = Math.random() < 0.7 ? 'spade_soldier' : 'zombie';
-        hp = Math.round((460 + (gameTime - 360) * 3.0) * endlessMult);
+        baseHp = 20;
+        scaleWithLevel = true;
         speed = 88 + Math.random() * 15;
         contactDmg = 16;
-        expVal = 40;
+        expVal = 7;
       } else if (gameTime < 900) {
-        // Phút 10 - 15: Lesser Devil (1,350 - 3,300 HP - Thử chiêu Tiến Hóa Tier 2 dọn đàn)
+        // Phút 10 - 15: Lesser Devil (Base per Lv: 32 HP -> Ở Lv ~45 đạt ~1,440 HP, expVal = 12)
         type = Math.random() < 0.7 ? 'lesser_devil' : 'spade_soldier';
-        hp = Math.round((1350 + (gameTime - 600) * 6.5) * endlessMult);
+        baseHp = 32;
+        scaleWithLevel = true;
         speed = 102 + Math.random() * 16;
         contactDmg = 20;
-        expVal = 85;
+        expVal = 12;
       } else if (gameTime < 1200) {
-        // Phút 15 - 20: High Devil (3,600 - 7,200 HP)
+        // Phút 15 - 20: High Devil (Base per Lv: 48 HP -> Ở Lv ~60 đạt ~2,880 HP, expVal = 18)
         type = Math.random() < 0.75 ? 'high_devil' : 'lesser_devil';
-        hp = Math.round((3600 + (gameTime - 900) * 12.0) * endlessMult);
+        baseHp = 48;
+        scaleWithLevel = true;
         speed = 108 + Math.random() * 18;
         contactDmg = 25;
-        expVal = 170;
+        expVal = 18;
       } else if (gameTime < 1500) {
-        // Phút 20 - 25: Devil Legion (8,000 - 15,500 HP - Siêu Tiến Hóa càn quét)
+        // Phút 20 - 25: Devil Legion (Base per Lv: 68 HP -> Ở Lv ~76 đạt ~5,168 HP, expVal = 26)
         type = 'high_devil';
-        hp = Math.round((8000 + (gameTime - 1200) * 25.0) * endlessMult);
+        baseHp = 68;
+        scaleWithLevel = true;
         speed = 114 + Math.random() * 18;
         contactDmg = 30;
-        expVal = 320;
+        expVal = 26;
       } else {
-        // Phút 25 - 30: Climax Horde (17,500 - 34,000 HP - Bão quái cuồng nộ)
+        // Phút 25 - 30: Climax Horde (Base per Lv: 95 HP -> Ở Lv ~95 đạt ~9,025 HP, expVal = 38)
         type = 'high_devil';
-        hp = Math.round((17500 + (gameTime - 1500) * 55.0) * endlessMult);
+        baseHp = 95;
+        scaleWithLevel = true;
         speed = 120 + Math.random() * 20;
         contactDmg = 35;
-        expVal = 650;
+        expVal = 38;
       }
     }
+
+    const hpMult = this.getVampireSurvivorsHpMultiplier(scaleWithLevel, false);
+    let hp = Math.round(baseHp * hpMult * endlessMult);
 
     const diffKey = this.game.selectedDifficulty || 'normal';
     const diffMod = (typeof MAP_DIFFICULTIES !== 'undefined' ? MAP_DIFFICULTIES[diffKey] : null) || (window.MAP_DIFFICULTIES && window.MAP_DIFFICULTIES[diffKey]) || { hpMult: 1, bossHpMult: 1, dmgMult: 1, speedMult: 1, rewardMult: 1 };
@@ -955,86 +984,86 @@ class EnemyManager {
     return enemy;
   }
 
-  checkBossSpawns(gameTime) {
+    checkBossSpawns(gameTime) {
     const mapId = this.game.selectedMapId || 'clover_plains';
 
     if (mapId === 'underworld_palace') {
-      // Phút 3 (180s): Vanica Warmup (5,500 HP - Thử thách mở màn vừa vặn)
+      // Phút 3 (180s): Vanica Warmup (Base per Lv: 350 HP -> Ở Lv 15 đạt ~5,250 HP)
       if (gameTime >= 180 && !this.activeBossesSpawned.has('boss_vanica')) {
         this.activeBossesSpawned.add('boss_vanica');
-        this.spawnBoss('boss_vanica', 'VANICA & MEGICULA (Huyết Ma Pháp)', 5500, 105, 18, 2400);
+        this.spawnBoss('boss_vanica', 'VANICA & MEGICULA (Huyết Ma Pháp)', 350, 105, 18, 80);
       }
-      // Phút 6 (360s): Zenon Warmup (18,000 HP)
+      // Phút 6 (360s): Zenon Warmup (Base per Lv: 700 HP -> Ở Lv 25 đạt ~17,500 HP)
       if (gameTime >= 360 && !this.activeBossesSpawned.has('boss_zenon')) {
         this.activeBossesSpawned.add('boss_zenon');
-        this.spawnBoss('boss_zenon', 'ZENON ZOGRATIS (Xương & Không Gian)', 18000, 100, 22, 5000);
+        this.spawnBoss('boss_zenon', 'ZENON ZOGRATIS (Xương & Không Gian)', 700, 100, 22, 180);
       }
-      // PHÚT 10 (600s) - BOSS NHỎ 1: Dante (55,000 HP - Rơi Rương Tiến Hóa!)
+      // PHÚT 10 (600s) - BOSS NHỎ 1: Dante (Base per Lv: 1,300 HP -> Ở Lv 40 đạt ~52,000 HP - Rơi Rương Tiến Hóa!)
       if (gameTime >= 600 && !this.activeBossesSpawned.has('boss_dante_10')) {
         this.activeBossesSpawned.add('boss_dante_10');
-        const b = this.spawnBoss('boss_dante', '⚠️ BOSS NHỎ PHÚT 10: DANTE & LUCIFERO (Trọng Lực Tuyệt Đối)', 55000, 115, 28, 12000);
+        const b = this.spawnBoss('boss_dante', '⚠️ BOSS NHỎ PHÚT 10: DANTE & LUCIFERO (Trọng Lực Tuyệt Đối)', 1300, 115, 28, 400);
         if (b) b.isMiniBoss10 = true;
       }
-      // Phút 15 (900s): Megicula Thức Tỉnh (115,000 HP - Thử lửa vũ khí Tiến Hóa Tier 2)
+      // Phút 15 (900s): Megicula Thức Tỉnh (Base per Lv: 2,000 HP -> Ở Lv 52 đạt ~104,000 HP)
       if (gameTime >= 900 && !this.activeBossesSpawned.has('boss_megicula_15')) {
         this.activeBossesSpawned.add('boss_megicula_15');
-        this.spawnBoss('boss_vanica', 'MEGICULA THỨC TỈNH TOÀN DIỆN (Huyết Chú Ma Vương)', 115000, 110, 32, 22000);
+        this.spawnBoss('boss_vanica', 'MEGICULA THỨC TỈNH TOÀN DIỆN (Huyết Chú Ma Vương)', 2000, 110, 32, 650);
       }
-      // PHÚT 20 (1200s) - BOSS NHỎ 2: Moris Á Ma (210,000 HP - Mở khóa Siêu Tiến Hóa Tier 3)
+      // PHÚT 20 (1200s) - BOSS NHỎ 2: Moris Á Ma (Base per Lv: 2,900 HP -> Ở Lv 68 đạt ~197,200 HP - Mở khóa Siêu Tiến Hóa Tier 3)
       if (gameTime >= 1200 && !this.activeBossesSpawned.has('boss_moris_20')) {
         this.activeBossesSpawned.add('boss_moris_20');
-        const b = this.spawnBoss('boss_zenon', '⚠️ BOSS NHỎ PHÚT 20: MORIS Á MA HỢP THỂ (Cấu Trúc Ma Vương)', 210000, 105, 36, 35000);
+        const b = this.spawnBoss('boss_zenon', '⚠️ BOSS NHỎ PHÚT 20: MORIS Á MA HỢP THỂ (Cấu Trúc Ma Vương)', 2900, 105, 36, 1000);
         if (b) b.isMiniBoss20 = true;
       }
-      // Phút 25 (1500s): Song Ma Tối Cao Naamah & Lilith (340,000 HP)
+      // Phút 25 (1500s): Song Ma Tối Cao Naamah & Lilith (Base per Lv: 3,800 HP -> Ở Lv 82 đạt ~311,600 HP)
       if (gameTime >= 1500 && !this.activeBossesSpawned.has('boss_elite_25')) {
         this.activeBossesSpawned.add('boss_elite_25');
-        this.spawnBoss('boss_dante', 'SONG MA ĐẠO TỐI CAO: NAAMAH & LILITH', 340000, 118, 42, 48000);
+        this.spawnBoss('boss_dante', 'SONG MA ĐẠO TỐI CAO: NAAMAH & LILITH', 3800, 118, 42, 1500);
       }
-      // PHÚT 30 (1800s) - ĐẠI BOSS CUỐI: Lucifero (580,000 HP Ma Vương Tối Cao)
+      // PHÚT 30 (1800s) - ĐẠI BOSS CUỐI: Lucifero (Base per Lv: 5,500 HP -> Ở Lv 95-100 đạt ~520,000 - 550,000 HP)
       if (gameTime >= 1800 && !this.activeBossesSpawned.has('boss_lucifero_30')) {
         this.activeBossesSpawned.add('boss_lucifero_30');
-        const b = this.spawnBoss('boss_lucifero', '👑 ĐẠI BOSS CUỐI PHÚT 30: MINH GIỚI TỐI CAO MA VƯƠNG LUCIFERO (580K HP)', 580000, 85, 48, 120000);
+        const b = this.spawnBoss('boss_lucifero', '👑 ĐẠI BOSS CUỐI PHÚT 30: MINH GIỚI TỐI CAO MA VƯƠNG LUCIFERO', 5500, 85, 48, 3000);
         if (b) b.isFinalBoss = true;
       }
     } else {
-      // MAP 1: VƯƠNG QUỐC CLOVER (Máu Boss chuẩn cân đối, diệt Boss đã tay)
-      // Phút 3 (180s): Mars (4,500 HP - Đòi hỏi thả diều và né đòn khoáng thạch)
+      // MAP 1: VƯƠNG QUỐC CLOVER (Cân bằng chuẩn Vampire Survivors, diệt Boss đã tay)
+      // Phút 3 (180s): Mars (Base per Lv: 300 HP -> Ở Lv 15 đạt ~4,500 HP)
       if (gameTime >= 180 && !this.activeBossesSpawned.has('boss_mars')) {
         this.activeBossesSpawned.add('boss_mars');
-        this.spawnBoss('boss_mars', 'MARS (Khoáng Thạch Ma Pháp)', 4500, 62, 16, 2000);
+        this.spawnBoss('boss_mars', 'MARS (Khoáng Thạch Ma Pháp)', 300, 62, 16, 60);
       }
-      // Phút 6 (360s): Vetto (14,000 HP - Thú ma pháp tuyệt vọng)
+      // Phút 6 (360s): Vetto (Base per Lv: 600 HP -> Ở Lv 25 đạt ~15,000 HP)
       if (gameTime >= 360 && !this.activeBossesSpawned.has('boss_vetto')) {
         this.activeBossesSpawned.add('boss_vetto');
-        this.spawnBoss('boss_vetto', 'VETTO (Thú Ma Pháp Tuyệt Vọng)', 14000, 100, 20, 4000);
+        this.spawnBoss('boss_vetto', 'VETTO (Thú Ma Pháp Tuyệt Vọng)', 600, 100, 20, 140);
       }
-      // PHÚT 10 (600s) - BOSS NHỎ 1: Patri (42,000 HP - Rơi Rương Tiến Hóa!)
+      // PHÚT 10 (600s) - BOSS NHỎ 1: Patri (Base per Lv: 1,100 HP -> Ở Lv 35-45 đạt ~38,500 - 49,500 HP - Rơi Rương Tiến Hóa!)
       if (gameTime >= 600 && !this.activeBossesSpawned.has('boss_patri_10')) {
         this.activeBossesSpawned.add('boss_patri_10');
-        const b = this.spawnBoss('boss_patri', '⚠️ BOSS NHỎ PHÚT 10: PATRI (Ánh Sáng Phán Xét & Thần Tốc)', 42000, 118, 26, 10000);
+        const b = this.spawnBoss('boss_patri', '⚠️ BOSS NHỎ PHÚT 10: PATRI (Ánh Sáng Phán Xét & Thần Tốc)', 1100, 118, 26, 300);
         if (b) b.isMiniBoss10 = true;
       }
-      // Phút 15 (900s): Vetto Thức Tỉnh Ma Nhãn (88,000 HP - Thử sức vũ khí Tiến Hóa Tier 2)
+      // Phút 15 (900s): Vetto Thức Tỉnh Ma Nhãn (Base per Lv: 1,600 HP -> Ở Lv 50 đạt ~80,000 HP - Thử sức vũ khí Tiến Hóa Tier 2)
       if (gameTime >= 900 && !this.activeBossesSpawned.has('boss_vetto_15')) {
         this.activeBossesSpawned.add('boss_vetto_15');
-        this.spawnBoss('boss_vetto', 'VETTO THỨC TỈNH MA NHÃN (Tuyệt Vọng Ma Thú)', 88000, 105, 30, 18000);
+        this.spawnBoss('boss_vetto', 'VETTO THỨC TỈNH MA NHÃN (Tuyệt Vọng Ma Thú)', 1600, 105, 30, 500);
       }
-      // PHÚT 20 (1200s) - BOSS NHỎ 2: Ma Thần Cổ Đại (160,000 HP - Mở khóa Siêu Tiến Hóa Tier 3)
+      // PHÚT 20 (1200s) - BOSS NHỎ 2: Ma Thần Cổ Đại (Base per Lv: 2,400 HP -> Ở Lv 65 đạt ~156,000 HP - Mở khóa Siêu Tiến Hóa Tier 3)
       if (gameTime >= 1200 && !this.activeBossesSpawned.has('boss_demon_god_20')) {
         this.activeBossesSpawned.add('boss_demon_god_20');
-        const b = this.spawnBoss('boss_patri', '⚠️ BOSS NHỎ PHÚT 20: MA THẦN CỔ ĐẠI (Ancient Demon God)', 160000, 90, 36, 30000);
+        const b = this.spawnBoss('boss_patri', '⚠️ BOSS NHỎ PHÚT 20: MA THẦN CỔ ĐẠI (Ancient Demon God)', 2400, 90, 36, 800);
         if (b) b.isMiniBoss20 = true;
       }
-      // Phút 25 (1500s): Hắc Yêu Tinh Quang Kiếm (260,000 HP - Cần Siêu Tiến Hóa dồn sát thương)
+      // Phút 25 (1500s): Hắc Yêu Tinh Quang Kiếm (Base per Lv: 3,200 HP -> Ở Lv 80 đạt ~256,000 HP - Cần Siêu Tiến Hóa dồn sát thương)
       if (gameTime >= 1500 && !this.activeBossesSpawned.has('boss_dark_elf_25')) {
         this.activeBossesSpawned.add('boss_dark_elf_25');
-        this.spawnBoss('boss_mars', 'HẮC YÊU TINH QUANG KIẾM CỰC HẠN', 260000, 115, 40, 40000);
+        this.spawnBoss('boss_mars', 'HẮC YÊU TINH QUANG KIẾM CỰC HẠN', 3200, 115, 40, 1200);
       }
-      // PHÚT 30 (1800s) - ĐẠI BOSS CUỐI: Zagred (450,000 HP - Đại Ác Ma Minh Giới)
+      // PHÚT 30 (1800s) - ĐẠI BOSS CUỐI: Zagred (Base per Lv: 4,500 HP -> Ở Lv 90-100 đạt ~405,000 - 450,000 HP)
       if (gameTime >= 1800 && !this.activeBossesSpawned.has('boss_zagred_30')) {
         this.activeBossesSpawned.add('boss_zagred_30');
-        const b = this.spawnBoss('boss_zagred', '👑 ĐẠI BOSS CUỐI PHÚT 30: ÁC QUỶ MINH GIỚI ZAGRED (450K HP)', 450000, 78, 44, 100000);
+        const b = this.spawnBoss('boss_zagred', '👑 ĐẠI BOSS CUỐI PHÚT 30: ÁC QUỶ MINH GIỚI ZAGRED', 4500, 78, 44, 3000);
         if (b) b.isFinalBoss = true;
       }
     }
@@ -1047,16 +1076,17 @@ class EnemyManager {
         this.activeBossesSpawned.add(endlessKey);
         const bType = mapId === 'underworld_palace' ? 'boss_lucifero' : 'boss_zagred';
         const bName = `CHÚA TỂ HẮC ÁM VÔ TẬN TẦNG ${endlessStep} (HP BẤT TỬ)`;
-        this.spawnBoss(bType, bName, 350000 + endlessStep * 100000, 100, 50, 150000);
+        this.spawnBoss(bType, bName, 4000 + endlessStep * 1200, 100, 50, 150000);
       }
     }
   }
 
-  spawnBoss(type, name, hp, speed, contactDmg, expVal) {
+  spawnBoss(type, name, baseHp, speed, contactDmg, expVal) {
     const diffKey = this.game.selectedDifficulty || 'normal';
     const diffMod = (typeof MAP_DIFFICULTIES !== 'undefined' ? MAP_DIFFICULTIES[diffKey] : null) || (window.MAP_DIFFICULTIES && window.MAP_DIFFICULTIES[diffKey]) || { hpMult: 1, bossHpMult: 1, dmgMult: 1, speedMult: 1, rewardMult: 1 };
 
-    const scaledHp = Math.round(hp * diffMod.bossHpMult);
+    const vsHpMult = this.getVampireSurvivorsHpMultiplier(true, true);
+    const scaledHp = Math.round(baseHp * vsHpMult * diffMod.bossHpMult);
     const scaledSpeed = Math.round(speed * diffMod.speedMult);
     const scaledDmg = Math.round(contactDmg * diffMod.dmgMult);
     const scaledExp = Math.round(expVal * diffMod.rewardMult);

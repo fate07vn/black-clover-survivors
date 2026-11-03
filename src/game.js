@@ -1460,6 +1460,7 @@ class Game {
     this.currentTarget = null;
     this.victoryShown = false;
     this.isEndlessMode = false;
+    this.pendingLevelUps = 0;
     this.spells.reset();
     this.enemyManager.reset();
     if (this.artifacts) this.artifacts.resetRun();
@@ -1515,7 +1516,7 @@ class Game {
 
       level: 1,
       exp: 0,
-      nextExp: 8, // fast early leveling
+      nextExp: 5, // Vampire Survivors linear tier 1 (5 + (lv-1)*10)
       startingWeaponId: char.startingWeapon,
       weapons: {
         [char.startingWeapon]: { level: 1, timer: 0, isStartingWeapon: true }
@@ -1917,16 +1918,34 @@ class Game {
     this.updateHUD();
   }
 
+  // Vampire Survivors Standard Linear Step EXP Formula
+  calculateNextExp(level) {
+    if (level < 20) {
+      return 5 + (level - 1) * 10;
+    } else if (level < 40) {
+      return 195 + (level - 20) * 13;
+    } else {
+      return 455 + (level - 40) * 16;
+    }
+  }
+
   addExp(amount) {
     const p = this.player;
-    if (!p) return;
-    const gained = amount * (1 + p.expBonus);
+    if (!p || p.hp <= 0) return;
+    const gained = amount * (1 + (p.expBonus || 0));
     p.exp += gained;
 
-    if (p.exp >= p.nextExp) {
+    let leveledUp = false;
+    while (p.exp >= p.nextExp) {
       p.exp -= p.nextExp;
       p.level++;
-      p.nextExp = Math.round(p.nextExp * 1.32 + 6);
+      p.nextExp = this.calculateNextExp(p.level);
+      this.pendingLevelUps = (this.pendingLevelUps || 0) + 1;
+      leveledUp = true;
+    }
+
+    if (leveledUp && this.state === 'PLAYING') {
+      this.pendingLevelUps--;
       this.triggerLevelUp();
     }
     this.updateHUD();
@@ -2029,12 +2048,22 @@ class Game {
       `;
       card.addEventListener('click', () => {
         this.applyUpgrade(choice);
-        document.getElementById('levelUpOverlay').classList.add('hidden');
-        this.state = 'PLAYING';
-        if (document.activeElement && typeof document.activeElement.blur === 'function') {
-          document.activeElement.blur();
+        if (this.pendingLevelUps > 0) {
+          this.pendingLevelUps--;
+          this.triggerLevelUp();
+        } else if (this.player && this.player.exp >= this.player.nextExp) {
+          this.player.exp -= this.player.nextExp;
+          this.player.level++;
+          this.player.nextExp = this.calculateNextExp(this.player.level);
+          this.triggerLevelUp();
+        } else {
+          document.getElementById('levelUpOverlay').classList.add('hidden');
+          this.state = 'PLAYING';
+          if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            document.activeElement.blur();
+          }
+          window.focus();
         }
-        window.focus();
       });
       cardsContainer.appendChild(card);
     });
@@ -2363,20 +2392,20 @@ class Game {
 
     let manaSkinLv = 0;
     for (const [id, lv] of Object.entries(p.passives)) {
-      if (id === 'reinforcement') p.damageBonus += lv * 0.08;
-      if (id === 'wind_glide') speedBonus += lv * 0.12;
+      if (id === 'reinforcement') p.damageBonus += lv * 0.18;
+      if (id === 'wind_glide') speedBonus += lv * 0.14;
       if (id === 'mana_skin') {
         manaSkinLv = lv;
-        p.armor = Math.min(0.65, (CHARACTERS[p.charId].baseArmor || 0) + ((up.armor || 0) * 0.02) + lv * 0.08);
+        p.armor = Math.min(0.70, (CHARACTERS[p.charId].baseArmor || 0) + ((up.armor || 0) * 0.02) + lv * 0.10);
       }
-      if (id === 'ki_sense') p.critChance += lv * 0.08;
-      if (id === 'mana_resonance') p.cooldownReduction = Math.min(0.40, p.cooldownReduction + lv * 0.05);
-      if (id === 'devil_pact') p.areaBonus += lv * 0.15;
+      if (id === 'ki_sense') p.critChance += lv * 0.10;
+      if (id === 'mana_resonance') p.cooldownReduction = Math.min(0.55, p.cooldownReduction + lv * 0.10);
+      if (id === 'devil_pact') p.areaBonus += lv * 0.20;
       if (id === 'mana_magnet') p.pickupRadius += lv * 40;
-      if (id === 'clover_fortune') p.expBonus += lv * 0.20;
+      if (id === 'clover_fortune') p.expBonus += lv * 0.25;
     }
 
-    p.maxHp = CHARACTERS[p.charId].baseHp + ((up.vitality || 0) * 8) + (manaSkinLv * 25) + (infVitLv * 50);
+    p.maxHp = CHARACTERS[p.charId].baseHp + ((up.vitality || 0) * 8) + (manaSkinLv * 30) + (infVitLv * 50);
     p.speed = CHARACTERS[p.charId].baseSpeed * speedBonus;
 
     // Apply Artifact & Relic stats
@@ -3663,8 +3692,7 @@ class Game {
         break;
       case 'addExp':
         if (this.player && this.state === 'PLAYING') {
-          this.player.exp += 100000;
-          this.checkLevelUp();
+          this.addExp(100000);
           this.triggerComboBanner('🚀 MOD: ĐÃ CỘNG +100,000 EXP!');
         } else {
           alert('Cần vào trận chiến để sử dụng tính năng cộng EXP!');
