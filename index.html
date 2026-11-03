@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Black Clover: Magic Survivor (Ma Pháp Sinh Tồn)</title>
-  <link rel="stylesheet" href="style.css?v=bc143">
+  <link rel="stylesheet" href="style.css?v=bc147">
 <style id="inlined-styles">
 /* Black Clover: Magic Survivor - Dark Fantasy Anime UI Styling */
 
@@ -3594,6 +3594,7 @@ html, body {
 
       <div class="hud-right">
         <button id="btnStatsInspector" class="hud-btn" title="Xem Toàn Bộ Chỉ Số Nhân Vật (Phím C)" onclick="openStatsInspector()">📊 CHỈ SỐ</button>
+        <button id="btnEvoInspector" class="hud-btn" title="Xem Toàn Bộ Công Thức & Yêu Cầu Tiến Hóa (Phím B)" onclick="openEvolutionModal()" style="border-color: #38bdf8; color: #38bdf8;">📖 TIẾN HÓA</button>
         <button id="btnSpeedToggle" class="hud-btn" title="Chỉnh nhanh tốc độ (1x - 10x)" onclick="cycleSpeedToggle()">⚡ 1x</button>
         <button id="btnAutoTarget" class="hud-btn" title="Bật/Tắt tự động ghim mục tiêu" onclick="toggleTargetLock()">🎯 GHIM: BẬT</button>
         <button id="btnPause" class="hud-btn" title="Tạm dừng" onclick="togglePauseGame()">⏸️</button>
@@ -4130,8 +4131,8 @@ html, body {
           <h2 class="game-title" style="font-size: 20px; margin: 0; text-align: left;">⚡ LẬT TRANG SÁCH MA PHÁP (LEVEL UP!)</h2>
           <p style="color: #94a3b8; font-size: 12px; margin: 2px 0 0 0;">Chọn 1 Ma Pháp hoặc Sách Bổ Trợ để gia tăng sức mạnh:</p>
         </div>
-        <button class="btn-evo-hint-sm" onclick="openEvolutionModal()" title="Xem toàn bộ công thức & điều kiện tiến hóa">
-          📖 Xem Các Tiến Hóa
+        <button id="btnLevelUpEvo" class="hud-btn" onclick="openEvolutionModal()" title="Xem Toàn Bộ Công Thức & Điều Kiện Tiến Hóa (Phím B)" style="border-color: #38bdf8; color: #38bdf8; padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);">
+          📖 TIẾN HÓA
         </button>
       </div>
 
@@ -4387,13 +4388,13 @@ html, body {
 
 
   <!-- Core Scripts with Cache-Buster Queries -->
-  <script src="src/audio.js?v=bc143"></script>
-  <script src="src/sprites.js?v=bc143"></script>
-  <script src="src/spells.js?v=bc143"></script>
-  <script src="src/enemies.js?v=bc143"></script>
-  <script src="src/artifacts.js?v=bc143"></script>
-  <script src="src/auth.js?v=bc143"></script>
-  <script src="src/game.js?v=bc143"></script>
+  <script src="src/audio.js?v=bc147"></script>
+  <script src="src/sprites.js?v=bc147"></script>
+  <script src="src/spells.js?v=bc147"></script>
+  <script src="src/enemies.js?v=bc147"></script>
+  <script src="src/artifacts.js?v=bc147"></script>
+  <script src="src/auth.js?v=bc147"></script>
+  <script src="src/game.js?v=bc147"></script>
 
   <!-- Global App Controller & Event Handlers -->
   <script>
@@ -5674,6 +5675,9 @@ html, body {
     // Initialize immediately without waiting
     function init() {
       const g = ensureGameInstance();
+      if (window.authManager) {
+        window.authManager.init(g);
+      }
       if (g) g.updateTopBarCurrency();
       updateSelectedCharInfo(selectedHeroId);
       syncSettingsValues();
