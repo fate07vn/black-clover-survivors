@@ -4388,13 +4388,13 @@ html, body {
 
 
   <!-- Core Scripts with Cache-Buster Queries -->
-  <script src="src/audio.js?v=bc149"></script>
-  <script src="src/sprites.js?v=bc149"></script>
-  <script src="src/spells.js?v=bc149"></script>
-  <script src="src/enemies.js?v=bc149"></script>
-  <script src="src/artifacts.js?v=bc149"></script>
-  <script src="src/auth.js?v=bc149"></script>
-  <script src="src/game.js?v=bc149"></script>
+  <script src="src/audio.js?v=bc150"></script>
+  <script src="src/sprites.js?v=bc150"></script>
+  <script src="src/spells.js?v=bc150"></script>
+  <script src="src/enemies.js?v=bc150"></script>
+  <script src="src/artifacts.js?v=bc150"></script>
+  <script src="src/auth.js?v=bc150"></script>
+  <script src="src/game.js?v=bc150"></script>
 
   <!-- Global App Controller & Event Handlers -->
   <script>
@@ -4901,18 +4901,18 @@ html, body {
       if (coinEl) coinEl.innerText = g.currency.coins.toLocaleString();
 
       const TALENTS = [
-        { id: 'vitality', name: 'Sinh Lực (Max HP)', desc: '+8 HP mỗi cấp', icon: '❤️', max: 10, cost: 200 },
-        { id: 'strength', name: 'Uy Lực (Damage)', desc: '+4% Sát thương phép', icon: '🥊', max: 10, cost: 200 },
-        { id: 'stride', name: 'Tốc Hành (Speed)', desc: '+3% Tốc độ chạy', icon: '👟', max: 10, cost: 200 },
-        { id: 'reflexes', name: 'Hồi Chiêu (CDR)', desc: '-3% Thời gian hồi', icon: '⏰', max: 10, cost: 200 },
-        { id: 'armor', name: 'Giáp Thép (Defense)', desc: '+2% Giảm sát thương', icon: '🛡️', max: 10, cost: 200 },
-        { id: 'synthesis', name: 'Tự Phục Hồi (Regen)', desc: '+0.2 HP/s hồi phục', icon: '🌿', max: 10, cost: 200 },
-        { id: 'magnet', name: 'Nam Châm (Magnet)', desc: '+15% Bán kính hút', icon: '🧲', max: 10, cost: 200 },
-        { id: 'wisdom', name: 'Trí Tuệ (EXP)', desc: '+5% Điểm kinh nghiệm', icon: '📘', max: 10, cost: 200 },
-        { id: 'fortune', name: 'Thần Tài (Greed)', desc: '+8% Clover Coins rơi', icon: '🪙', max: 10, cost: 200 },
-        { id: 'repertoire', name: 'Khởi Điểm (2 Moves)', desc: 'Vào trận với 2 vũ khí', icon: '🃏', max: 1, cost: 800 },
-        { id: 'crit', name: 'Bạo Kích (Crit Rate)', desc: '+3% Tỉ lệ chí mạng', icon: '⭐', max: 10, cost: 200 },
-        { id: 'reroll', name: 'Đổi Bài (Rerolls)', desc: '+1 Lần đổi lá bài nâng cấp', icon: '🔄', max: 5, cost: 500 }
+        { id: 'vitality', name: 'Sinh Lực (Max HP)', desc: '+4 HP mỗi cấp (Tối đa +40 HP)', icon: '❤️', max: 10, cost: 200 },
+        { id: 'strength', name: 'Uy Lực (Damage)', desc: '+1.5% Sát thương phép mỗi cấp (Tối đa +15%)', icon: '🥊', max: 10, cost: 200 },
+        { id: 'stride', name: 'Tốc Hành (Speed)', desc: '+1.5% Tốc độ di chuyển mỗi cấp (Tối đa +15%)', icon: '👟', max: 10, cost: 200 },
+        { id: 'reflexes', name: 'Hồi Chiêu (CDR)', desc: '-1% Thời gian hồi chiêu mỗi cấp (Tối đa -10%)', icon: '⏰', max: 10, cost: 200 },
+        { id: 'armor', name: 'Giáp Thép (Defense)', desc: '+1% Giáp phòng ngự mỗi cấp (Tối đa +10%)', icon: '🛡️', max: 10, cost: 200 },
+        { id: 'synthesis', name: 'Tự Phục Hồi (Regen)', desc: '+0.1 HP/s hồi máu mỗi cấp (Tối đa +1.0 HP/s)', icon: '🌿', max: 10, cost: 200 },
+        { id: 'magnet', name: 'Nam Châm (Magnet)', desc: '+6px Bán kính hút ngọc mỗi cấp (Tối đa +60px)', icon: '🧲', max: 10, cost: 200 },
+        { id: 'wisdom', name: 'Trí Tuệ (EXP)', desc: '+2% Điểm kinh nghiệm mỗi cấp (Tối đa +20%)', icon: '📘', max: 10, cost: 200 },
+        { id: 'fortune', name: 'Thần Tài (Greed)', desc: '+4% Tiền xu Clover rơi mỗi cấp (Tối đa +40%)', icon: '🪙', max: 10, cost: 200 },
+        { id: 'repertoire', name: 'Khởi Điểm (2 Moves)', desc: 'Khởi đầu trận đấu với thêm 1 vũ khí ngẫu nhiên', icon: '🃏', max: 1, cost: 800 },
+        { id: 'crit', name: 'Bạo Kích (Crit Rate)', desc: '+1.5% Tỉ lệ chí mạng & +2% ST Chí mạng mỗi cấp', icon: '⭐', max: 10, cost: 200 },
+        { id: 'reroll', name: 'Đổi Bài (Rerolls)', desc: '+1 Lần đổi lá bài nâng cấp khi lên cấp (Tối đa 3 lần)', icon: '🔄', max: 3, cost: 500 }
       ];
 
       const u = g.upgrades || {};
@@ -4954,28 +4954,51 @@ html, body {
       if (!g || g.currency.coins < cost) return;
       g.currency.coins -= cost;
       g.upgrades[id] = (g.upgrades[id] || 0) + 1;
+      g.characterUpgrades = {};
       if (window.soundEngine && window.soundEngine.upgradeBuy) window.soundEngine.upgradeBuy();
       g.saveGameData();
+      if (g.updateTopBarCurrency) g.updateTopBarCurrency();
       renderUpgradesTalentGrid();
     }
 
     function resetAllUpgrades() {
       const g = ensureGameInstance();
       if (!g) return;
-      if (!confirm('Bạn có chắc muốn hoàn trả toàn bộ điểm nâng cấp và nhận lại 100% Coins?')) return;
-      // Refund calculation
+      if (!confirm('Bạn có chắc muốn hoàn trả toàn bộ điểm nâng cấp về 0 và nhận lại 100% Coins?')) return;
+      
+      const TALENT_COSTS = {
+        vitality: 200, strength: 200, stride: 200, reflexes: 200,
+        armor: 200, synthesis: 200, magnet: 200, wisdom: 200,
+        fortune: 200, repertoire: 800, crit: 200, reroll: 500
+      };
+
+      if (!g.upgrades) g.upgrades = {};
+
       let refund = 0;
-      const TALENTS = { vitality: 200, strength: 200, stride: 200, reflexes: 200, armor: 200, synthesis: 200, magnet: 200, wisdom: 200, fortune: 200, repertoire: 800, crit: 200, reroll: 500 };
-      for (const [id, lv] of Object.entries(g.upgrades)) {
-        const baseCost = TALENTS[id] || 200;
+      const ALL_KEYS = ['vitality', 'strength', 'stride', 'reflexes', 'armor', 'synthesis', 'magnet', 'wisdom', 'fortune', 'repertoire', 'crit', 'reroll'];
+
+      ALL_KEYS.forEach(k => {
+        const lv = g.upgrades[k] || 0;
+        const baseCost = TALENT_COSTS[k] || 200;
         for (let i = 0; i < lv; i++) {
           refund += Math.round(baseCost * Math.pow(1.3, i));
         }
-        g.upgrades[id] = 0;
-      }
+        g.upgrades[k] = 0;
+      });
+
+      // Wipe character upgrades cache completely to avoid any stale stats
+      g.characterUpgrades = {};
+
       g.currency.coins += refund;
       g.saveGameData();
+      if (g.updateTopBarCurrency) g.updateTopBarCurrency();
       renderUpgradesTalentGrid();
+      if (window.soundEngine && window.soundEngine.pickup) window.soundEngine.pickup();
+      if (window.showToast) {
+        window.showToast(`✅ Đã hoàn trả toàn bộ điểm nâng cấp về 0! Nhận lại +${refund.toLocaleString()} Coins.`);
+      } else {
+        alert(`✅ Đã hoàn trả toàn bộ điểm nâng cấp về 0!\nNhận lại: +${refund.toLocaleString()} Coins.`);
+      }
     }
 
     function openMapModal() {

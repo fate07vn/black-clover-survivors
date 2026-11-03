@@ -1163,34 +1163,33 @@ class Game {
   }
 
   getCharUpgrades(charId) {
-    const id = charId || 'asta';
-    if (!this.characterUpgrades[id]) {
-      this.characterUpgrades[id] = {
-        vitality: this.upgrades.vitality || 0,
-        strength: this.upgrades.strength || 0,
-        stride: this.upgrades.stride || 0,
-        reflexes: this.upgrades.reflexes || 0,
-        armor: this.upgrades.armor || 0,
-        synthesis: this.upgrades.synthesis || 0,
-        magnet: this.upgrades.magnet || 0,
-        wisdom: this.upgrades.wisdom || 0,
-        fortune: this.upgrades.fortune || 0,
-        repertoire: this.upgrades.repertoire || 0,
-        crit: this.upgrades.crit || 0,
-        reroll: this.upgrades.reroll || 0
+    if (!this.upgrades) {
+      this.upgrades = {
+        vitality: 0,
+        strength: 0,
+        stride: 0,
+        reflexes: 0,
+        armor: 0,
+        synthesis: 0,
+        magnet: 0,
+        wisdom: 0,
+        fortune: 0,
+        repertoire: 0,
+        crit: 0,
+        reroll: 0
       };
     }
-    return this.characterUpgrades[id];
+    return this.upgrades;
   }
 
   buyCharUpgrade(charId, talentId) {
     const u = this.getCharUpgrades(charId);
-    const maxLv = talentId === 'repertoire' ? 1 : (talentId === 'reroll' ? 5 : 10);
+    const maxLv = talentId === 'repertoire' ? 1 : (talentId === 'reroll' ? 3 : 10);
     const curLv = u[talentId] || 0;
     if (curLv >= maxLv) return;
 
     const baseCost = talentId === 'repertoire' ? 800 : (talentId === 'reroll' ? 500 : 200);
-    const cost = baseCost * (curLv + 1);
+    const cost = Math.round(baseCost * Math.pow(1.3, curLv));
 
     if (this.currency.coins < cost) {
       alert(`Bạn không đủ Coins! Cần ${cost.toLocaleString()} Coins.`);
@@ -1199,9 +1198,10 @@ class Game {
 
     this.currency.coins -= cost;
     u[talentId] = curLv + 1;
-    window.soundEngine.upgradeBuy();
+    if (window.soundEngine && window.soundEngine.upgradeBuy) window.soundEngine.upgradeBuy();
     this.saveGameData();
-    this.renderUpgradesMenu(charId);
+    if (this.updateTopBarCurrency) this.updateTopBarCurrency();
+    if (typeof renderUpgradesTalentGrid === 'function') renderUpgradesTalentGrid();
   }
 
   
@@ -1553,18 +1553,18 @@ class Game {
     this.enemyManager.reset();
     if (this.artifacts) this.artifacts.resetRun();
 
-    // Permanent upgrades applied to base stats (Individual Character Talents - Image 2)
+    // Permanent upgrades applied to base stats (Global Talents)
     const up = this.getCharUpgrades(char.id);
-    const bonusHp = (up.vitality || 0) * 8;
-    const bonusDmg = (up.strength || 0) * 0.025;
-    const bonusSpd = 1 + ((up.stride || 0) * 0.03);
-    const bonusCd = (up.reflexes || 0) * 0.02;
-    const bonusArmor = (up.armor || 0) * 0.02;
-    const regenHp = (up.synthesis || 0) * 0.2;
-    const bonusMagnet = (up.magnet || 0) * 12;
-    const bonusExp = (up.wisdom || 0) * 0.05;
-    const bonusCrit = (up.crit || 0) * 0.03;
-    this.coinDropMultiplier = 1.0 + ((up.fortune || 0) * 0.08);
+    const bonusHp = (up.vitality || 0) * 4;
+    const bonusDmg = (up.strength || 0) * 0.015;
+    const bonusSpd = 1 + ((up.stride || 0) * 0.015);
+    const bonusCd = (up.reflexes || 0) * 0.01;
+    const bonusArmor = (up.armor || 0) * 0.01;
+    const regenHp = (up.synthesis || 0) * 0.1;
+    const bonusMagnet = (up.magnet || 0) * 6;
+    const bonusExp = (up.wisdom || 0) * 0.02;
+    const bonusCrit = (up.crit || 0) * 0.015;
+    this.coinDropMultiplier = 1.0 + ((up.fortune || 0) * 0.04);
 
     this.player = {
       charId: char.id,
@@ -1585,7 +1585,7 @@ class Game {
       damageBonus: bonusDmg,
       areaBonus: (char.id === 'noelle' ? 0.3 : 0),
       critChance: (char.id === 'yami' ? 0.15 : (char.id === 'nacht' ? 0.12 : 0)) + bonusCrit,
-      critDmgBonus: (up.crit || 0) * 0.05,
+      critDmgBonus: (up.crit || 0) * 0.02,
       cooldownReduction: (char.id === 'luck' ? 0.15 : (char.id === 'licht' ? 0.12 : 0)) + bonusCd,
       pickupRadius: 80 + bonusMagnet,
       expBonus: (char.id === 'julius' ? 0.3 : 0) + bonusExp,
@@ -2483,21 +2483,21 @@ class Game {
     const infVitLv = (p.infinitePassives && p.infinitePassives.infinite_vitality) || 0;
     const infMightLv = (p.infinitePassives && p.infinitePassives.infinite_might) || 0;
 
-    p.damageBonus = (up.strength || 0) * 0.025 + (infMightLv * 0.10);
-    p.cooldownReduction = (p.charId === 'luck' ? 0.15 : (p.charId === 'licht' ? 0.12 : 0)) + ((up.reflexes || 0) * 0.02);
+    p.damageBonus = (up.strength || 0) * 0.015 + (infMightLv * 0.10);
+    p.cooldownReduction = (p.charId === 'luck' ? 0.15 : (p.charId === 'licht' ? 0.12 : 0)) + ((up.reflexes || 0) * 0.01);
     p.areaBonus = (p.charId === 'noelle' ? 0.3 : (p.charId === 'licht' ? 0.35 : 0));
     
     // Base Crit Values: If no character trait and no upgrades/relics, starts from 0%
     const baseCharCrit = (p.charId === 'yami' ? 0.15 : (p.charId === 'nacht' ? 0.12 : 0));
-    const upgradeCrit = (up.crit || 0) * 0.03;
-    const upgradeCritDmg = (up.crit || 0) * 0.05;
+    const upgradeCrit = (up.crit || 0) * 0.015;
+    const upgradeCritDmg = (up.crit || 0) * 0.02;
 
     p.critChance = baseCharCrit + upgradeCrit;
     p.critDmgBonus = upgradeCritDmg;
-    p.pickupRadius = 80 + ((up.magnet || 0) * 12);
-    p.expBonus = (p.charId === 'julius' ? 0.3 : 0) + ((up.wisdom || 0) * 0.05);
+    p.pickupRadius = 80 + ((up.magnet || 0) * 6);
+    p.expBonus = (p.charId === 'julius' ? 0.3 : 0) + ((up.wisdom || 0) * 0.02);
 
-    let speedBonus = 1 + ((up.stride || 0) * 0.03);
+    let speedBonus = 1 + ((up.stride || 0) * 0.015);
     if (p.charId === 'yuno') speedBonus += 0.2;
     if (p.charId === 'grey') p.pickupRadius += 30;
 
@@ -2507,7 +2507,7 @@ class Game {
       if (id === 'wind_glide') speedBonus += lv * 0.14;
       if (id === 'mana_skin') {
         manaSkinLv = lv;
-        p.armor = Math.min(0.70, (CHARACTERS[p.charId].baseArmor || 0) + ((up.armor || 0) * 0.02) + lv * 0.10);
+        p.armor = Math.min(0.70, (CHARACTERS[p.charId].baseArmor || 0) + ((up.armor || 0) * 0.01) + lv * 0.10);
       }
       if (id === 'ki_sense') p.critChance += lv * 0.20; // +20% Crit Rate per level (Max 100%)
       if (id === 'crit_damage') p.critDmgBonus += lv * 0.40; // +40% Crit Damage per level (Max 200% at Lv 5)
@@ -2517,7 +2517,7 @@ class Game {
       if (id === 'clover_fortune') p.expBonus += lv * 0.25;
     }
 
-    p.maxHp = CHARACTERS[p.charId].baseHp + ((up.vitality || 0) * 8) + (manaSkinLv * 30) + (infVitLv * 50);
+    p.maxHp = CHARACTERS[p.charId].baseHp + ((up.vitality || 0) * 4) + (manaSkinLv * 30) + (infVitLv * 50);
     p.speed = CHARACTERS[p.charId].baseSpeed * speedBonus;
 
     // Apply Artifact & Relic stats
@@ -3716,20 +3716,20 @@ class Game {
     const container = document.getElementById('upgradeNodesContainer');
     if (!container) return;
 
-    // 12 Exact Attributes from PokeSurvivor
+    // 12 Exact Attributes
     const TALENTS = [
-      { id: 'vitality', name: 'Vitality', desc: '+8 HP', icon: '❤️', max: 10, cost: 200 },
-      { id: 'strength', name: 'Strength', desc: '+4% damage', icon: '🥊', max: 10, cost: 200 },
-      { id: 'stride', name: 'Stride', desc: '+3% speed', icon: '👟', max: 10, cost: 200 },
-      { id: 'reflexes', name: 'Reflexes', desc: '-3% cooldown', icon: '⏰', max: 10, cost: 200 },
-      { id: 'armor', name: 'Armor', desc: '+2% defense', icon: '🛡️', max: 10, cost: 200 },
-      { id: 'synthesis', name: 'Synthesis', desc: '+0.2 HP/s', icon: '🌿', max: 10, cost: 200 },
-      { id: 'magnet', name: 'Magnet', desc: '+12% pickup', icon: '🧲', max: 10, cost: 200 },
-      { id: 'wisdom', name: 'Wisdom', desc: '+5% experience', icon: '📘', max: 10, cost: 200 },
-      { id: 'fortune', name: 'Fortune', desc: '+8% PokéCoins', icon: '🪙', max: 10, cost: 200 },
+      { id: 'vitality', name: 'Vitality', desc: '+4 HP', icon: '❤️', max: 10, cost: 200 },
+      { id: 'strength', name: 'Strength', desc: '+1.5% damage', icon: '🥊', max: 10, cost: 200 },
+      { id: 'stride', name: 'Stride', desc: '+1.5% speed', icon: '👟', max: 10, cost: 200 },
+      { id: 'reflexes', name: 'Reflexes', desc: '-1% cooldown', icon: '⏰', max: 10, cost: 200 },
+      { id: 'armor', name: 'Armor', desc: '+1% defense', icon: '🛡️', max: 10, cost: 200 },
+      { id: 'synthesis', name: 'Synthesis', desc: '+0.1 HP/s', icon: '🌿', max: 10, cost: 200 },
+      { id: 'magnet', name: 'Magnet', desc: '+6px pickup', icon: '🧲', max: 10, cost: 200 },
+      { id: 'wisdom', name: 'Wisdom', desc: '+2% experience', icon: '📘', max: 10, cost: 200 },
+      { id: 'fortune', name: 'Fortune', desc: '+4% Clover Coins', icon: '🪙', max: 10, cost: 200 },
       { id: 'repertoire', name: 'Repertoire', desc: 'Start with 2 moves', icon: '🃏', max: 1, cost: 800 },
-      { id: 'crit', name: 'Critical Hit', desc: '+3% crit (+1.5 dmg)', icon: '⭐', max: 10, cost: 200 },
-      { id: 'reroll', name: 'Card reroll', desc: '+1 level-up reroll', icon: '⬆️', max: 5, cost: 500 }
+      { id: 'crit', name: 'Critical Hit', desc: '+1.5% crit (+2% crit dmg)', icon: '⭐', max: 10, cost: 200 },
+      { id: 'reroll', name: 'Card reroll', desc: '+1 level-up reroll', icon: '⬆️', max: 3, cost: 500 }
     ];
 
     container.innerHTML = '';
@@ -3790,24 +3790,14 @@ class Game {
         });
         this.triggerComboBanner('⭐ MOD: ĐÃ MỞ KHÓA TẤT CẢ 17 PHÁP SƯ!');
         break;
-      case 'maxCurrentHero': {
-        const u = this.getCharUpgrades(this.upgradeCharId || this.selectedCharId || 'asta');
-        ['vitality', 'strength', 'stride', 'reflexes', 'armor', 'synthesis', 'magnet', 'wisdom', 'fortune', 'crit'].forEach(k => u[k] = 10);
-        u.repertoire = 1;
-        u.reroll = 5;
-        this.triggerComboBanner('⭐ MOD: ĐÃ MAX CHỈ SỐ CHO PHÁP SƯ HIỆN TẠI!');
-        break;
-      }
+      case 'maxCurrentHero':
       case 'maxAllHeroes': {
-        Object.keys(CHARACTERS).forEach(id => {
-          this.unlockedCharacters.add(id);
-          CHARACTERS[id].unlocked = true;
-          const u = this.getCharUpgrades(id);
-          ['vitality', 'strength', 'stride', 'reflexes', 'armor', 'synthesis', 'magnet', 'wisdom', 'fortune', 'crit'].forEach(k => u[k] = 10);
-          u.repertoire = 1;
-          u.reroll = 5;
-        });
-        this.triggerComboBanner('⭐ MOD: ĐÃ MAX CHỈ SỐ CHO TOÀN BỘ 17 PHÁP SƯ!');
+        ['vitality', 'strength', 'stride', 'reflexes', 'armor', 'synthesis', 'magnet', 'wisdom', 'fortune', 'crit'].forEach(k => this.upgrades[k] = 10);
+        this.upgrades.repertoire = 1;
+        this.upgrades.reroll = 3;
+        this.characterUpgrades = {};
+        this.triggerComboBanner('⭐ MOD: ĐÃ MAX TOÀN BỘ CHỈ SỐ NÂNG CẤP!');
+        if (typeof renderUpgradesTalentGrid === 'function') renderUpgradesTalentGrid();
         break;
       }
       case 'godMode':
