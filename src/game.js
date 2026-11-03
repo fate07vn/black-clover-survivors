@@ -902,6 +902,18 @@ class Game {
 
     container.innerHTML = '';
 
+    const hasLegendary = results.some(r => r.rarity === 'legendary');
+    const hasEpic = results.some(r => r.rarity === 'epic');
+
+    modal.classList.remove('modal-shake-legendary', 'modal-shake-epic');
+    if (hasLegendary) {
+      void modal.offsetWidth;
+      modal.classList.add('modal-shake-legendary');
+    } else if (hasEpic) {
+      void modal.offsetWidth;
+      modal.classList.add('modal-shake-epic');
+    }
+
     if (isMulti) {
       const newCount = results.filter(r => r.isNew).length;
       const legCount = results.filter(r => r.rarity === 'legendary').length;
@@ -1663,7 +1675,7 @@ class Game {
     if (critEl) critEl.innerText = `${Math.round((p.critChance || 0.05) * 100)}%`;
 
     const critDmgEl = document.getElementById('stValCritDmg');
-    if (critDmgEl) critDmgEl.innerText = `${Math.round((2.0 + (p.critDmgBonus || 0)) * 100)}%`;
+    if (critDmgEl) critDmgEl.innerText = `${Math.min(200, Math.round((1.5 + (p.critDmgBonus || 0.5)) * 100))}% (Tối đa 200%)`;
 
     const cdrEl = document.getElementById('stValCdr');
     if (cdrEl) {
@@ -1999,7 +2011,7 @@ class Game {
 
     choices.forEach((choice) => {
       const card = document.createElement('div');
-      card.className = `level-card ${choice.isEvolution ? 'evolution' : ''} ${choice.isInfinite ? 'infinite-card' : ''}`;
+      card.className = `level-card ${choice.isEvolution ? 'evolution' : ''} ${choice.isSuperEvolution ? 'super-evolution' : ''} ${choice.isInfinite ? 'infinite-card' : ''}`;
 
       let evoReqHtml = '';
       if (choice.evolutionInfo && choice.evolutionInfo.evoName) {
@@ -2032,11 +2044,19 @@ class Game {
           </div>
         `;
       } else if (choice.isEvolution) {
-        evoReqHtml = `
-          <div class="evo-req-box ready-burst" style="border-color:#34d399; background:rgba(6,78,59,0.5); padding: 4px 6px;">
-            <div class="evo-req-title" style="color:#34d399; font-size: 10px;">🔥 ĐÃ ĐỦ ĐIỀU KIỆN TIẾN HÓA!</div>
-          </div>
-        `;
+        if (choice.isSuperEvolution) {
+          evoReqHtml = `
+            <div class="evo-req-box ready-burst super-ready" style="border-color:#fbbf24; background:linear-gradient(135deg, rgba(120,53,15,0.7), rgba(88,28,135,0.7)); padding: 5px 8px; box-shadow: 0 0 15px rgba(245,158,11,0.5);">
+              <div class="evo-req-title" style="color:#fef08a; font-size: 10px; font-weight:900;">👑 SIÊU TIẾN HÓA TỐI THƯỢNG (TIER 3)!</div>
+            </div>
+          `;
+        } else {
+          evoReqHtml = `
+            <div class="evo-req-box ready-burst" style="border-color:#34d399; background:rgba(6,78,59,0.5); padding: 4px 6px;">
+              <div class="evo-req-title" style="color:#34d399; font-size: 10px;">🔥 ĐÃ ĐỦ ĐIỀU KIỆN TIẾN HÓA!</div>
+            </div>
+          `;
+        }
       }
 
       card.innerHTML = `
@@ -2392,7 +2412,7 @@ class Game {
 
     let manaSkinLv = 0;
     for (const [id, lv] of Object.entries(p.passives)) {
-      if (id === 'reinforcement') p.damageBonus += lv * 0.18;
+      if (id === 'reinforcement') p.damageBonus += lv * 0.14;
       if (id === 'wind_glide') speedBonus += lv * 0.14;
       if (id === 'mana_skin') {
         manaSkinLv = lv;
@@ -3476,6 +3496,18 @@ class Game {
     if (!modal || !container) return;
 
     container.innerHTML = '';
+
+    const hasLegendary = results.some(r => r.rarity === 'legendary');
+    const hasEpic = results.some(r => r.rarity === 'epic');
+
+    modal.classList.remove('modal-shake-legendary', 'modal-shake-epic');
+    if (hasLegendary) {
+      void modal.offsetWidth;
+      modal.classList.add('modal-shake-legendary');
+    } else if (hasEpic) {
+      void modal.offsetWidth;
+      modal.classList.add('modal-shake-epic');
+    }
 
     const hasPity1000 = results.some(r => r.is1000Pity);
 

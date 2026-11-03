@@ -1318,7 +1318,7 @@ const SPELL_DEFS = {
     name: 'Ma Pháp Cường Hóa (Reinforcement)',
     type: 'passive',
     icon: '💪',
-    description: 'Tăng tổng sát thương gây ra thêm +18% mỗi cấp.',
+    description: 'Tăng tổng sát thương gây ra thêm +14% mỗi cấp.',
     maxLevel: 5
   },
   wind_glide: {
@@ -1647,10 +1647,10 @@ class SpellManager {
     if (!def) return;
 
     const levelScale = 1 + (p.level - 1) * 0.025;
-    const dmgMult = (1 + p.damageBonus) * (1 + (level - 1) * 0.25) * levelScale;
+    const dmgMult = (1 + p.damageBonus) * (1 + (level - 1) * 0.18) * levelScale;
     const areaMult = (1 + p.areaBonus) * (1 + (level - 1) * 0.12);
     const isCrit = Math.random() < p.critChance;
-    const critMult = isCrit ? (2.0 + (p.critDmgBonus || 0)) : 1.0;
+    const critMult = isCrit ? Math.min(2.0, 1.5 + (p.critDmgBonus || 0.5)) : 1.0;
     const damage = Math.round(def.baseDamage * dmgMult * critMult);
     const targetAngle = this.getTargetAngle();
 
