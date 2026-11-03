@@ -1,0 +1,5494 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Black Clover: Magic Survivor (Ma Pháp Sinh Tồn)</title>
+  <link rel="stylesheet" href="style.css?v=bc131">
+<style id="inlined-styles">
+/* Black Clover: Magic Survivor - Dark Fantasy Anime UI Styling */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800;900&family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+  --bg-dark: #0a0b10;
+  --panel-bg: rgba(16, 20, 32, 0.94);
+  --panel-border: #f59e0b;
+  --gold: #fbbf24;
+  --crimson: #dc2626;
+  --emerald: #10b981;
+  --azure: #0284c7;
+  --purple: #9333ea;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-dark);
+  font-family: 'Nunito', sans-serif;
+  color: var(--text-main);
+}
+
+#gameCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* UI OVERLAYS CONTAINER */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 10, 16, 0.88);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  transition: opacity 0.25s ease;
+  padding: 20px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+.overlay.hidden, .hidden {
+  display: none !important;
+}
+
+/* IN-GAME HUD */
+#hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 25;
+}
+
+#hud * {
+  pointer-events: none;
+}
+
+#hud button,
+#hud .hud-btn,
+#hud .dash-btn,
+#hud .slot-icon,
+#hud #joystickZone {
+  pointer-events: auto !important;
+}
+
+/* TOP STATUS BAR */
+.hud-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(10, 14, 24, 0.92) 0%, rgba(10, 14, 24, 0) 100%);
+}
+
+.hud-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.level-badge {
+  background: linear-gradient(135deg, #b45309, #f59e0b);
+  border: 2px solid #fef08a;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-family: 'Cinzel', serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+.bars-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 250px;
+}
+
+.bar-container {
+  height: 16px;
+  background: #1e293b;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+}
+
+.hp-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #dc2626, #f87171);
+  transition: width 0.15s ease;
+}
+
+.exp-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  transition: width 0.15s ease;
+}
+
+.bar-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  text-shadow: 0 1px 2px #000;
+}
+
+.hud-center {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.timer-box, .kill-box {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  padding: 6px 16px;
+  border-radius: 12px;
+  font-family: 'Cinzel', serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--gold);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.target-lock-pill {
+  background: rgba(220, 38, 38, 0.25);
+  border: 1.5px solid #ef4444;
+  color: #fef08a;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 800;
+  animation: targetPillPulse 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes targetPillPulse {
+  0% { transform: scale(0.97); }
+  100% { transform: scale(1.03); }
+}
+
+.hud-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-btn {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.2s;
+  pointer-events: auto !important;
+}
+
+.hud-btn:hover {
+  background: #334155;
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
+/* WEAPON & PASSIVE SLOTS */
+.inventory-dock {
+  position: absolute;
+  bottom: 16px;
+  left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slot-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slot-icon {
+  width: 44px;
+  height: 44px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 2px solid var(--azure);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+.slot-icon.passive {
+  border-color: var(--emerald);
+  border-radius: 50%;
+}
+
+.slot-icon.passive.infinite {
+  border-color: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.7);
+  animation: infiniteGlow 2.5s infinite alternate;
+}
+
+@keyframes infiniteGlow {
+  0% { box-shadow: 0 0 6px rgba(245, 158, 11, 0.5); }
+  100% { box-shadow: 0 0 14px rgba(234, 88, 12, 0.9); }
+}
+
+.slot-lv {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: var(--gold);
+  color: #000;
+  font-size: 10px;
+  font-weight: 800;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot-lv.inf {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #fef08a;
+  font-size: 8.5px;
+  font-weight: 900;
+  width: 22px;
+  height: 16px;
+  border-radius: 8px;
+  right: -8px;
+  border: 1px solid #fef08a;
+}
+
+/* DASH BUTTON / COOLDOWN */
+.dash-dock {
+  position: absolute;
+  bottom: 20px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.dash-btn {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #dc2626 0%, #7f1d1d 100%);
+  border: 3px solid #fecaca;
+  color: #fff;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(220, 38, 38, 0.6);
+  transition: transform 0.1s;
+  pointer-events: auto !important;
+}
+
+.dash-btn:active {
+  transform: scale(0.92);
+}
+
+.dash-meter-container {
+  width: 60px;
+  height: 6px;
+  background: #334155;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.dash-meter-fill {
+  width: 100%;
+  height: 100%;
+  background: #f87171;
+  transition: width 0.1s linear;
+}
+
+/* BOSS HEALTH BAR */
+.boss-bar-wrap {
+  position: absolute;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 520px;
+  max-width: 90vw;
+  background: rgba(15, 23, 42, 0.95);
+  border: 2px solid var(--crimson);
+  border-radius: 12px;
+  padding: 8px 16px;
+  box-shadow: 0 0 25px rgba(220, 38, 38, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.boss-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 800;
+  color: #fca5a5;
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+.boss-fill {
+  height: 12px;
+  background: linear-gradient(90deg, #991b1b, #ef4444);
+  border-radius: 6px;
+  transition: width 0.1s ease;
+}
+
+/* BOSS WARNING BANNER */
+.boss-banner {
+  position: absolute;
+  top: 135px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(185, 28, 28, 0.92);
+  border: 2px solid #fef08a;
+  color: #fff;
+  padding: 10px 28px;
+  border-radius: 30px;
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  animation: pulse 1s infinite alternate;
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.8);
+}
+
+@keyframes pulse {
+  0% { transform: translateX(-50%) scale(0.95); }
+  100% { transform: translateX(-50%) scale(1.05); }
+}
+
+/* MAIN MENU & CHARACTER SELECT */
+.menu-card {
+  background: var(--panel-bg);
+  border: 2px solid var(--panel-border);
+  border-radius: 18px;
+  padding: 26px 36px;
+  max-width: 980px;
+  width: 95vw;
+  max-height: 94vh;
+  overflow-y: auto;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 30px rgba(245, 158, 11, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.game-title {
+  font-family: 'Cinzel', serif;
+  font-size: 34px;
+  font-weight: 900;
+  text-align: center;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #dc2626 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+}
+
+.game-subtitle {
+  font-size: 14px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: -6px;
+}
+
+/* MAP SELECTOR */
+.map-selector-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.map-label {
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--gold);
+}
+
+.map-options {
+  display: flex;
+  gap: 10px;
+}
+
+.map-select-btn {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  padding: 7px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  transition: all 0.2s;
+  pointer-events: auto !important;
+}
+
+.map-select-btn:hover {
+  border-color: var(--gold);
+  color: #fff;
+}
+
+.map-select-btn.selected {
+  background: linear-gradient(135deg, #b45309, #d97706);
+  border-color: #fef08a;
+  color: #fff;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.4);
+}
+
+.char-grid-title {
+  width: 100%;
+  font-size: 15px;
+  font-weight: 800;
+  color: #fde68a;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 6px;
+}
+
+.char-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+  gap: 10px;
+  width: 100%;
+  min-height: 120px;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.char-card {
+  background: rgba(30, 41, 59, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  pointer-events: auto !important;
+}
+
+.char-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--gold);
+  background: rgba(51, 65, 85, 0.8);
+}
+
+.char-card.selected {
+  border-color: var(--gold);
+  background: rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.45);
+}
+
+.char-avatar-ring {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  border: 2px solid #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.char-name {
+  font-weight: 800;
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.char-detail-panel {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.detail-label {
+  font-weight: 800;
+  color: var(--gold);
+  min-width: 110px;
+}
+
+.btn-start {
+  background: linear-gradient(135deg, #f59e0b 0%, #dc2626 100%);
+  border: 2px solid #fef08a;
+  border-radius: 30px;
+  padding: 14px 48px;
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+  letter-spacing: 1px;
+  pointer-events: auto !important;
+}
+
+.btn-start:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 35px rgba(245, 158, 11, 0.8);
+}
+
+.controls-hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* LEVEL UP CARDS */
+.level-cards-container {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 900px;
+}
+
+.level-card {
+  background: rgba(30, 41, 59, 0.9);
+  border: 2px solid var(--azure);
+  border-radius: 16px;
+  padding: 22px;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  pointer-events: auto !important;
+}
+
+.level-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  border-color: var(--gold);
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+}
+
+.level-card.evolution {
+  border-color: var(--crimson);
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.9) 0%, rgba(127, 29, 29, 0.5) 100%);
+  box-shadow: 0 0 25px rgba(220, 38, 38, 0.5);
+}
+
+.level-card.infinite-card {
+  border-color: #f59e0b;
+  background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(120, 53, 15, 0.45) 100%);
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.45);
+}
+
+.level-card.infinite-card .card-badge {
+  background: #f59e0b;
+  color: #1e1b4b;
+  font-weight: 900;
+  border-color: #fbbf24;
+}
+
+.diff-select-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.diff-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 2px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+}
+
+.diff-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(245, 158, 11, 0.6);
+  background: rgba(30, 41, 59, 0.95);
+}
+
+.diff-card.selected {
+  border-color: #fbbf24 !important;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.25) 0%, rgba(30, 41, 59, 0.95) 100%) !important;
+  box-shadow: 0 0 16px rgba(251, 191, 36, 0.4) !important;
+}
+
+.card-icon {
+  font-size: 40px;
+}
+
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 800;
+  text-align: center;
+  color: var(--gold);
+}
+
+.card-badge {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+.card-desc {
+  font-size: 12px;
+  color: #cbd5e1;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* SETTINGS MODAL */
+.settings-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.setting-item {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.setting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.setting-val-badge {
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  background: rgba(148, 163, 184, 0.2);
+  color: #cbd5e1;
+}
+
+.setting-val-badge.on {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid #10b981;
+}
+
+.setting-val-badge.off {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid #ef4444;
+}
+
+.setting-val-badge.gold {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid #f59e0b;
+}
+
+.setting-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #334155;
+  outline: none;
+  cursor: pointer;
+  accent-color: #38bdf8;
+  pointer-events: auto !important;
+}
+
+.setting-slider.gold {
+  accent-color: #f59e0b;
+}
+
+.btn-setting-toggle {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: 1px solid #6ee7b7;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  pointer-events: auto !important;
+  align-self: flex-start;
+}
+
+.speed-presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.preset-btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #cbd5e1;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  pointer-events: auto !important;
+}
+
+.preset-btn:hover {
+  border-color: var(--gold);
+  color: #fff;
+}
+
+.preset-btn.active {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  border-color: #fef08a;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+/* RESULTS MODAL (Pause / Game Over / Victory) */
+.results-modal {
+  background: var(--panel-bg);
+  border: 2px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 32px 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+  max-width: 600px;
+  width: 90vw;
+}
+
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--crimson);
+}
+
+.modal-title.victory {
+  color: var(--gold);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 10px 0;
+  width: 100%;
+}
+
+.stat-item {
+  background: rgba(30, 41, 59, 0.7);
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.stat-lbl {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* VIRTUAL JOYSTICK (Mobile) */
+#joystickZone {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+}
+
+#joystickKnob {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.6);
+  border: 2px solid #fff;
+}
+
+@media (pointer: coarse) {
+  #joystickZone {
+    display: flex;
+  }
+}
+
+/* ========================================================
+   TOP NAVIGATION BAR & LOBBY SYSTEM (Anime ROGUELITE UI)
+   ======================================================== */
+#topNavBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: rgba(10, 14, 23, 0.95);
+  border-bottom: 2px solid rgba(245, 158, 11, 0.35);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 60;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.top-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo-text {
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #fbbf24;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+.currency-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.currency-pill.gold { border-color: #f59e0b; color: #fde047; }
+.currency-pill.ticket { border-color: #0284c7; color: #38bdf8; }
+.currency-pill.purple { border-color: #a855f7; color: #c084fc; }
+.currency-pill.diamond { border-color: #06b6d4; color: #67e8f9; }
+
+.player-profile-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.3));
+  border: 1px solid #10b981;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #a7f3d0;
+}
+
+.top-nav-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(30, 41, 59, 0.8);
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.nav-tab-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.15);
+}
+
+.nav-tab-btn.btn-phapsu {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  border-color: #c084fc;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.5);
+}
+
+.nav-tab-btn.btn-gacha {
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+  border-color: #fdba74;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(234, 88, 12, 0.4);
+}
+
+.nav-tab-btn.btn-upgrades {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border-color: #7dd3fc;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(2, 132, 199, 0.4);
+}
+
+.nav-tab-btn.btn-bando {
+  background: linear-gradient(135deg, #059669, #047857);
+  border-color: #6ee7b7;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(5, 150, 105, 0.4);
+}
+
+.nav-tab-btn.btn-taovat {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  border-color: #fde047;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+}
+
+
+.top-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-icon-btn {
+  padding: 6px 10px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #cbd5e1;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-icon-btn:hover {
+  background: rgba(51, 65, 85, 0.9);
+  color: #fff;
+}
+
+/* MAIN LOBBY SHOWCASE CARD (SCREENSHOT 3 STYLE) */
+.lobby-center-card {
+  width: 100%;
+  max-width: 860px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.94), rgba(8, 10, 16, 0.98));
+  border: 2px solid #f59e0b;
+  border-radius: 16px;
+  padding: 24px 28px;
+  box-shadow: 0 0 45px rgba(245, 158, 11, 0.25), 0 20px 50px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.showcase-hero-container {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.showcase-hero-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.showcase-avatar-ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid #f59e0b;
+  background: radial-gradient(circle, #1e293b, #0f172a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.4);
+}
+
+.showcase-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.showcase-hero-name {
+  font-size: 24px;
+  font-weight: 900;
+  color: #fbbf24;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.showcase-rarity-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.showcase-rarity-badge.common { background: #475569; color: #f8fafc; border: 1px solid #64748b; }
+.showcase-rarity-badge.rare { background: linear-gradient(135deg, #0284c7, #0369a1); color: #e0f2fe; border: 1px solid #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
+.showcase-rarity-badge.epic { background: linear-gradient(135deg, #9333ea, #7e22ce); color: #fae8ff; border: 1px solid #c084fc; box-shadow: 0 0 10px rgba(168, 85, 247, 0.4); }
+.showcase-rarity-badge.legendary { background: linear-gradient(135deg, #f59e0b, #d97706); color: #ffffff; font-weight: 900; border: 1px solid #fbbf24; box-shadow: 0 0 12px rgba(245, 158, 11, 0.6); }
+
+.showcase-hero-sub {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.showcase-badges-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.hero-pill-tag {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+}
+
+/* 2x3 Grid inside Showcase */
+.showcase-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.showcase-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.showcase-box-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.showcase-box-val {
+  font-size: 13px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.showcase-box-val.gold { color: #fde047; }
+.showcase-box-val.purple { color: #c084fc; }
+.showcase-box-val.cyan { color: #38bdf8; }
+
+.showcase-trait-box {
+  width: 100%;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #cbd5e1;
+}
+
+.showcase-trait-box b {
+  color: #fbbf24;
+}
+
+/* DEDICATED MODALS (Character Select, Gacha, Upgrades, Stats) */
+.modal-overlay-custom {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 7, 12, 0.88);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay-custom.hidden {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.modal-dialog-box {
+  width: 100%;
+  max-width: 920px;
+  max-height: 88vh;
+  background: #0f172a;
+  border: 2px solid rgba(245, 158, 11, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.modal-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header-title {
+  font-size: 20px;
+  font-weight: 900;
+  color: #fbbf24;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-btn-close {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-btn-close:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+.modal-body-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Character Select Grid */
+.char-filter-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.char-filter-tab {
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.char-filter-tab.active,
+.char-filter-tab:hover {
+  background: #7c3aed;
+  border-color: #c084fc;
+  color: #fff;
+}
+
+.full-char-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.char-roster-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.char-roster-card:hover {
+  transform: translateY(-4px);
+  border-color: #38bdf8;
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.3);
+}
+
+.char-roster-card.legendary {
+  border-color: #f59e0b;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.14), rgba(30, 41, 59, 0.85));
+}
+.char-roster-card.legendary:hover {
+  border-color: #fbbf24;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
+}
+.char-roster-card.epic {
+  border-color: #a855f7;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.14), rgba(30, 41, 59, 0.85));
+}
+.char-roster-card.epic:hover {
+  border-color: #c084fc;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.5);
+}
+.char-roster-card.rare {
+  border-color: #38bdf8;
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.14), rgba(30, 41, 59, 0.85));
+}
+.char-roster-card.rare:hover {
+  border-color: #7dd3fc;
+  box-shadow: 0 4px 20px rgba(56, 189, 248, 0.5);
+}
+.char-roster-card.common {
+  border-color: #64748b;
+  background: rgba(30, 41, 59, 0.7);
+}
+
+.char-roster-card.selected {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.22);
+  box-shadow: 0 0 22px rgba(245, 158, 11, 0.6);
+}
+
+.roster-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 6px;
+  background: #1e293b;
+}
+
+.char-roster-card.legendary .roster-avatar { border-color: #eab308; box-shadow: 0 0 10px #eab30866; }
+.char-roster-card.epic .roster-avatar { border-color: #9333ea; box-shadow: 0 0 10px #9333ea66; }
+.char-roster-card.rare .roster-avatar { border-color: #0284c7; box-shadow: 0 0 10px #0284c766; }
+.char-roster-card.common .roster-avatar { border-color: #64748b; }
+
+.roster-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.roster-squad {
+  font-size: 10px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.roster-lock-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 12px;
+}
+
+/* GACHA BANNER MODAL */
+.gacha-banner-hero-showcase {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, #1e1b4b, #31104b);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.gacha-btn-group {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.btn-gacha-pull {
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 900;
+  border: 2px solid;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.btn-gacha-pull:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.2);
+}
+
+.btn-gacha-pull.single {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border-color: #38bdf8;
+  color: #fff;
+}
+
+.btn-gacha-pull.multi {
+  background: linear-gradient(135deg, #eab308, #ca8a04);
+  border-color: #fef08a;
+  color: #713f12;
+}
+
+/* UPGRADES TALENT TREE */
+.talents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.talent-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.talent-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.talent-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.talent-desc {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.talent-level-dots {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.talent-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.talent-dot.active {
+  background: #f59e0b;
+  box-shadow: 0 0 6px #f59e0b;
+}
+
+.btn-buy-talent {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: 1px solid #34d399;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.btn-buy-talent:hover:not(:disabled) {
+  filter: brightness(1.2);
+  transform: translateY(-2px);
+}
+
+.btn-buy-talent:disabled {
+  background: #334155;
+  border-color: #475569;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+/* IN-GAME STATS INSPECTOR (FULL REAL-TIME SHEET) */
+.stats-sheet-container {
+  width: 100%;
+  max-width: 820px;
+  max-height: 88vh;
+  background: #0f172a;
+  border: 2px solid #38bdf8;
+  border-radius: 16px;
+  box-shadow: 0 0 45px rgba(56, 189, 248, 0.35);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.stat-sheet-header {
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-sheet-hero-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stat-hero-avatar-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid #38bdf8;
+  background: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.stat-grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.stat-sheet-box {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-sheet-box-lbl {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.stat-sheet-box-val {
+  font-size: 16px;
+  font-weight: 900;
+  color: #f8fafc;
+}
+
+.stat-sheet-box-val.gold { color: #fbbf24; }
+.stat-sheet-box-val.green { color: #34d399; }
+.stat-sheet-box-val.cyan { color: #38bdf8; }
+.stat-sheet-box-val.purple { color: #c084fc; }
+
+.stat-gear-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.stat-gear-item {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stat-gear-item.super-evo {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+.stat-gear-item.evo {
+  border-color: #a855f7;
+  background: rgba(168, 85, 247, 0.12);
+}
+
+.stat-gear-icon {
+  font-size: 24px;
+}
+
+.stat-gear-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-gear-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.stat-gear-desc {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* ========================================================
+   EVOLUTION REQUIREMENTS & GRIMOIRE RECIPE SYSTEM
+   ======================================================== */
+
+/* Level Up Card Evolution Requirement Box */
+.evo-req-box {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px dashed rgba(245, 158, 11, 0.5);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 8px;
+  text-align: left;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.evo-req-box.passive-link {
+  border-color: rgba(56, 189, 248, 0.5);
+  background: rgba(8, 20, 38, 0.92);
+}
+
+.evo-req-box.ready-burst {
+  border-color: #10b981;
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+  animation: pulseReadyGlow 1.8s infinite alternate;
+}
+
+@keyframes pulseReadyGlow {
+  0% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+  100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.7); }
+}
+
+.evo-req-title {
+  color: #fbbf24;
+  font-weight: 800;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.evo-req-box.passive-link .evo-req-title {
+  color: #38bdf8;
+}
+
+.evo-req-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10.5px;
+  color: #cbd5e1;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.evo-req-item.done {
+  color: #34d399;
+  font-weight: 700;
+  border-left: 2px solid #34d399;
+}
+
+.evo-req-item.todo {
+  color: #f87171;
+  border-left: 2px solid #ef4444;
+}
+
+.evo-req-super {
+  margin-top: 3px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+  font-size: 10.5px;
+  color: #c084fc;
+  font-weight: 700;
+}
+
+/* Grimoire Evolution Recipes Grid */
+.evo-recipe-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.evo-recipe-card {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.evo-recipe-card:hover {
+  border-color: #38bdf8;
+  background: rgba(30, 41, 59, 0.98);
+  box-shadow: 0 4px 18px rgba(56, 189, 248, 0.25);
+}
+
+.evo-recipe-card.ready {
+  border-color: #34d399;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(6, 78, 59, 0.45) 100%);
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.35);
+}
+
+.evo-recipe-card.equipped {
+  border-color: #fbbf24;
+}
+
+.evo-recipe-flow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.evo-flow-box {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #f1f5f9;
+}
+
+.evo-flow-box.weapon {
+  border-color: #38bdf8;
+  background: rgba(14, 116, 144, 0.2);
+}
+
+.evo-flow-box.book {
+  border-color: #a855f7;
+  background: rgba(109, 40, 217, 0.2);
+}
+
+.evo-flow-box.evo {
+  border-color: #fbbf24;
+  background: rgba(180, 83, 9, 0.25);
+}
+
+.evo-flow-box.super {
+  border-color: #ec4899;
+  background: rgba(190, 24, 93, 0.25);
+}
+
+.evo-flow-sign {
+  font-size: 16px;
+  font-weight: 900;
+  color: #94a3b8;
+}
+
+.evo-status-pill {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.evo-status-pill.ready {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10b981;
+  color: #34d399;
+}
+
+.evo-status-pill.in-progress {
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid #f59e0b;
+  color: #fbbf24;
+}
+
+.evo-status-pill.locked {
+  background: rgba(100, 116, 139, 0.2);
+  border: 1px solid #64748b;
+  color: #94a3b8;
+}
+
+.evo-status-pill.super-unlocked {
+  background: rgba(236, 72, 153, 0.2);
+  border: 1px solid #ec4899;
+  color: #f472b6;
+}
+
+/* ARTIFACTS / CỔ VẬT MA THUẬT STYLES */
+.relic-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.relic-slot-box {
+  background: rgba(30, 41, 59, 0.7);
+  border: 2px dashed rgba(245, 158, 11, 0.4);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 110px;
+  text-align: center;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.relic-slot-box.filled {
+  border-style: solid;
+  border-color: #f59e0b;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(120, 53, 15, 0.35));
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.25);
+}
+
+.relic-slot-box .slot-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.relic-slot-box.filled .slot-label {
+  color: #fbbf24;
+}
+
+.relic-slot-icon {
+  font-size: 32px;
+  margin-bottom: 4px;
+}
+
+.relic-slot-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.relic-slot-stars {
+  font-size: 11px;
+  color: #fbbf24;
+  margin-bottom: 6px;
+}
+
+.btn-unequip-slot {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-unequip-slot:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+.relics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 14px;
+}
+
+.relic-item-card {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1.5px solid rgba(148, 163, 184, 0.25);
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.relic-item-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(245, 158, 11, 0.6);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+.relic-item-card.locked {
+  opacity: 0.6;
+  filter: grayscale(0.5);
+}
+
+.relic-item-card.legendary {
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.relic-item-card.legendary:hover {
+  border-color: #fbbf24;
+  box-shadow: 0 0 16px rgba(251, 191, 36, 0.35);
+}
+
+.relic-item-card.epic {
+  border-color: rgba(192, 132, 252, 0.4);
+}
+
+.relic-item-card.rare {
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.relic-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.relic-card-icon {
+  font-size: 32px;
+}
+
+.relic-card-title-block {
+  flex: 1;
+}
+
+.relic-card-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fbbf24;
+}
+
+.relic-card-tagline {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.relic-card-desc {
+  font-size: 11.5px;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.relic-stat-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.relic-stat-pill {
+  font-size: 10.5px;
+  font-weight: 700;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.relic-skill-box {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: #fde68a;
+}
+
+.relic-skill-box .skill-title {
+  color: #fbbf24;
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+
+.relic-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.btn-equip-relic {
+  flex: 1;
+  background: linear-gradient(135deg, #d97706, #b45309);
+  border: 1px solid #fde047;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.btn-equip-relic:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+.btn-equip-relic.equipped {
+  background: linear-gradient(135deg, #059669, #047857);
+  border-color: #6ee7b7;
+}
+
+.slot-icon.artifact {
+  border-color: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+.slot-lv.art-star {
+  background: #b45309;
+  color: #fef08a;
+  font-size: 8.5px;
+  font-weight: 900;
+  width: 18px;
+  height: 16px;
+  border-radius: 8px;
+  right: -5px;
+  border: 1px solid #fef08a;
+}
+
+.char-roster-card.locked {
+  opacity: 0.7;
+  filter: grayscale(0.85);
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  cursor: not-allowed;
+}
+
+.char-roster-card.locked:hover {
+  transform: none;
+  filter: grayscale(0.65);
+  opacity: 0.85;
+}
+
+.roster-lock-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  background: rgba(220, 38, 38, 0.85);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid #ef4444;
+  letter-spacing: 0.5px;
+}
+
+.gacha-tab-switcher {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.gacha-mode-tab {
+  padding: 8px 22px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 900;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.7);
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.gacha-mode-tab:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.gacha-mode-tab.active {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  border-color: #c084fc;
+  color: #fff;
+  box-shadow: 0 0 16px rgba(124, 58, 237, 0.55);
+}
+
+/* GACHA REVEAL CARDS (CHARACTER SUMMON) */
+.gacha-reveal-card {
+  width: 175px;
+  background: linear-gradient(145deg, #0f172a, #1e293b);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  position: relative;
+  border: 2px solid #64748b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  animation: cardFadeIn 0.3s ease forwards;
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(12px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.gacha-reveal-card.legendary {
+  border-color: #f59e0b;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.45);
+}
+.gacha-reveal-card.epic {
+  border-color: #a855f7;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.4);
+}
+.gacha-reveal-card.rare {
+  border-color: #38bdf8;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
+}
+.gacha-reveal-card.common {
+  border-color: #64748b;
+}
+
+.gacha-card-badge {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.4);
+}
+.gacha-reveal-card.legendary .gacha-card-badge { color: #f59e0b; }
+.gacha-reveal-card.epic .gacha-card-badge { color: #c084fc; }
+.gacha-reveal-card.rare .gacha-card-badge { color: #38bdf8; }
+.gacha-reveal-card.common .gacha-card-badge { color: #94a3b8; }
+
+.gacha-avatar {
+  font-size: 42px;
+  margin: 4px 0;
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.35);
+}
+
+.gacha-name {
+  font-size: 13px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.3;
+}
+
+.gacha-squad {
+  font-size: 10px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 155px;
+}
+
+.gacha-tag {
+  font-size: 10px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-top: 4px;
+}
+
+.gacha-tag.tag-new {
+  background: #10b981;
+  color: #fff;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.gacha-tag.tag-dup {
+  background: rgba(100, 116, 139, 0.4);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-stats-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.9);
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 14px;
+  font-weight: 800;
+  font-size: 12px;
+  width: 100%;
+}
+
+.sum-stat.new b { color: #4ade80; }
+.sum-stat.leg b { color: #f59e0b; }
+.sum-stat.epic b { color: #c084fc; }
+.sum-stat.rare b { color: #38bdf8; }
+.sum-stat.dup b { color: #fde047; }
+
+.btn-gacha-pull.mega {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  border-color: #fca5a5;
+  color: #fff;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.45);
+}
+
+.btn-gacha-pull.mega:hover {
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.75);
+}
+
+/* ========================================================
+   COMPREHENSIVE MOBILE & TOUCH OPTIMIZATIONS (Smartphones / Tablets)
+   ======================================================== */
+
+html, body {
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+}
+
+.mobile-controls {
+  display: none;
+}
+.pc-controls {
+  display: inline;
+}
+
+/* Base Mobile & Landscape Phone Optimization */
+@media (max-width: 900px), (max-height: 580px), (pointer: coarse) {
+  .mobile-controls {
+    display: inline !important;
+  }
+  .pc-controls {
+    display: none !important;
+  }
+  .dash-sub-txt {
+    display: none !important;
+  }
+
+  /* 1. Global Overlays & Scrollability */
+  .overlay {
+    justify-content: flex-start !important;
+    padding: 44px 8px 18px 8px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* 2. Top Navigation Bar (Compact & Horizontal Scroll) */
+  #topNavBar {
+    height: 40px !important;
+    padding: 2px 6px !important;
+    gap: 4px !important;
+    z-index: 60 !important;
+  }
+  .brand-logo-text {
+    font-size: 8.5px !important;
+    line-height: 1.1 !important;
+    max-width: 65px !important;
+    display: none !important;
+  }
+  .top-nav-left {
+    gap: 4px !important;
+  }
+  .currency-pill {
+    padding: 2px 6px !important;
+    font-size: 11px !important;
+    gap: 3px !important;
+  }
+  .top-nav-center {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    gap: 4px !important;
+    padding: 0 4px !important;
+    flex: 1 !important;
+  }
+  .top-nav-center::-webkit-scrollbar {
+    display: none !important;
+  }
+  .nav-tab-btn {
+    padding: 4px 7px !important;
+    font-size: 11px !important;
+    flex-shrink: 0 !important;
+  }
+  .top-nav-right {
+    gap: 3px !important;
+  }
+  .nav-icon-btn {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 12px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* 3. Main Lobby Hero Showcase Card (Fits Mobile Viewport & Reaches Start Button) */
+  .lobby-center-card {
+    margin-top: 0 !important;
+    padding: 8px 12px !important;
+    width: 100% !important;
+    max-width: 98% !important;
+    border-radius: 12px !important;
+    margin-bottom: 24px !important;
+  }
+  .lobby-center-card .game-title {
+    font-size: 14px !important;
+    margin-bottom: 2px !important;
+  }
+  .lobby-center-card .game-subtitle {
+    display: none !important;
+  }
+  .showcase-hero-container {
+    margin: 6px 0 !important;
+    padding: 8px 10px !important;
+  }
+  .showcase-avatar-ring {
+    width: 44px !important;
+    height: 44px !important;
+    font-size: 20px !important;
+  }
+  .showcase-hero-name {
+    font-size: 15px !important;
+  }
+  .showcase-rarity-badge {
+    font-size: 9px !important;
+    padding: 2px 5px !important;
+  }
+  .showcase-hero-sub {
+    font-size: 10.5px !important;
+  }
+  .showcase-badges-row {
+    gap: 4px !important;
+  }
+  .hero-pill-tag {
+    font-size: 9.5px !important;
+    padding: 2px 5px !important;
+  }
+  .showcase-details-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 5px !important;
+    margin: 6px 0 !important;
+  }
+  .showcase-box {
+    padding: 5px 7px !important;
+    border-radius: 6px !important;
+  }
+  .showcase-box-label {
+    font-size: 8.5px !important;
+    margin-bottom: 2px !important;
+  }
+  .showcase-box-val {
+    font-size: 10.5px !important;
+  }
+  .showcase-trait-box {
+    padding: 5px 8px !important;
+    font-size: 10px !important;
+    line-height: 1.25 !important;
+    margin-top: 4px !important;
+  }
+
+  /* START BATTLE BUTTON - BIG, GLOWING & PROMINENT */
+  #btnStartGame {
+    font-size: 15px !important;
+    padding: 11px 24px !important;
+    width: 100% !important;
+    max-width: 340px !important;
+    margin: 8px auto 4px auto !important;
+    display: block !important;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6) !important;
+    animation: mobileBtnPulse 1.6s infinite alternate !important;
+  }
+  @keyframes mobileBtnPulse {
+    0% { transform: scale(1); box-shadow: 0 0 14px rgba(245, 158, 11, 0.5); }
+    100% { transform: scale(1.02); box-shadow: 0 0 24px rgba(234, 88, 12, 0.85); }
+  }
+
+  .controls-hint {
+    font-size: 10px !important;
+    margin-top: 4px !important;
+    padding: 4px 6px !important;
+  }
+
+  /* 4. In-Game HUD on Mobile */
+  .hud-top {
+    padding: 3px 6px !important;
+    gap: 4px !important;
+  }
+  .level-badge {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 11px !important;
+  }
+  .bars-group {
+    width: 95px !important;
+    gap: 2px !important;
+  }
+  .bar-container {
+    height: 12px !important;
+  }
+  .bar-text {
+    font-size: 8px !important;
+  }
+  .timer-box, .kill-box {
+    font-size: 11px !important;
+    padding: 3px 6px !important;
+  }
+  .target-lock-pill {
+    font-size: 8.5px !important;
+    padding: 2px 5px !important;
+  }
+  .hud-right {
+    gap: 2px !important;
+  }
+  .hud-btn {
+    padding: 3px 5px !important;
+    font-size: 9px !important;
+  }
+  #btnSoundToggle, #btnBgmToggle {
+    display: none !important;
+  }
+
+  /* CRITICAL: Reposition Inventory Dock to TOP-LEFT away from Joystick */
+  .inventory-dock {
+    position: absolute !important;
+    top: 44px !important;
+    bottom: auto !important;
+    left: 8px !important;
+    gap: 3px !important;
+    pointer-events: none !important;
+  }
+  .slot-row {
+    gap: 3px !important;
+  }
+  .slot-icon {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 14px !important;
+    border-width: 1.5px !important;
+    border-radius: 6px !important;
+    pointer-events: auto !important;
+  }
+  .slot-lv {
+    font-size: 8px !important;
+    width: 12px !important;
+    height: 12px !important;
+    bottom: -2px !important;
+    right: -2px !important;
+  }
+
+  /* VIRTUAL TOUCH JOYSTICK FOR MOBILE */
+  #joystickZone {
+    display: flex !important;
+    position: absolute !important;
+    bottom: 14px !important;
+    left: 14px !important;
+    width: 96px !important;
+    height: 96px !important;
+    border-radius: 50% !important;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(15, 23, 42, 0.7) 100%) !important;
+    border: 2px solid rgba(245, 158, 11, 0.5) !important;
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.35) !important;
+    z-index: 40 !important;
+    pointer-events: auto !important;
+    touch-action: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  #joystickKnob {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    background: radial-gradient(circle, #fbbf24 0%, #d97706 100%) !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.8) !important;
+    pointer-events: none !important;
+  }
+
+  /* DASH BUTTON */
+  .dash-dock {
+    position: absolute !important;
+    bottom: 14px !important;
+    right: 14px !important;
+    z-index: 40 !important;
+    pointer-events: auto !important;
+  }
+  .dash-btn {
+    width: 62px !important;
+    height: 62px !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+    box-shadow: 0 0 18px rgba(220, 38, 38, 0.6) !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+  }
+
+  /* 5. Modals & Dialogs on Mobile */
+  .modal-overlay-custom {
+    padding: 6px !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .modal-dialog-box {
+    width: 98vw !important;
+    max-width: 98vw !important;
+    height: 94vh !important;
+    max-height: 94vh !important;
+    padding: 8px 10px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .modal-header-bar {
+    height: 36px !important;
+    margin-bottom: 6px !important;
+  }
+  .modal-header-title {
+    font-size: 13px !important;
+  }
+  .modal-btn-close {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 16px !important;
+  }
+  .modal-body-scrollable {
+    flex: 1 !important;
+    max-height: calc(94vh - 44px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-right: 4px !important;
+  }
+
+  /* Character Roster Grid */
+  .char-roster-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
+    gap: 6px !important;
+  }
+  .char-roster-card {
+    padding: 6px !important;
+  }
+  .char-card-avatar {
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 18px !important;
+  }
+  .char-card-name {
+    font-size: 11px !important;
+  }
+  .char-card-role {
+    font-size: 9px !important;
+  }
+
+  /* Gacha Modal */
+  .gacha-banner-hero {
+    height: 95px !important;
+    padding: 6px 10px !important;
+  }
+  .gacha-title-main {
+    font-size: 16px !important;
+  }
+  .gacha-pity-counter {
+    font-size: 10px !important;
+    padding: 2px 6px !important;
+  }
+  .gacha-actions-bar {
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+  }
+  .btn-gacha-pull {
+    padding: 7px 10px !important;
+    font-size: 11px !important;
+    flex: 1 !important;
+    min-width: 80px !important;
+  }
+  .gacha-results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)) !important;
+    gap: 6px !important;
+    max-height: 220px !important;
+  }
+  .gacha-reveal-card {
+    height: 115px !important;
+    padding: 5px !important;
+  }
+  .gacha-card-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 16px !important;
+  }
+  .gacha-card-name {
+    font-size: 9.5px !important;
+  }
+
+  /* Level Up Modal */
+  #levelUpOverlay .menu-card {
+    width: 96vw !important;
+    max-width: 96vw !important;
+    max-height: 94vh !important;
+    overflow-y: auto !important;
+    padding: 10px !important;
+  }
+  #levelUpOverlay .game-title {
+    font-size: 15px !important;
+  }
+  .level-cards-container {
+    gap: 6px !important;
+    max-width: 100% !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+  .level-card {
+    width: 150px !important;
+    padding: 8px !important;
+    gap: 4px !important;
+    border-radius: 10px !important;
+  }
+  .level-card .card-icon {
+    font-size: 24px !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .level-card .card-name {
+    font-size: 11px !important;
+  }
+  .level-card .card-desc {
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+  }
+}
+
+/* Portrait Phone Optimization (Orientation: Portrait) */
+@media (orientation: portrait) and (max-width: 600px) {
+  .brand-logo-text {
+    display: none !important;
+  }
+  .top-nav-left {
+    flex-direction: row !important;
+  }
+  .showcase-details-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .showcase-box[style*="span 2"] {
+    grid-column: span 1 !important;
+  }
+  .level-cards-container {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .level-card {
+    width: 92% !important;
+    max-width: 320px !important;
+    flex-direction: row !important;
+    text-align: left !important;
+    align-items: center !important;
+    padding: 10px 14px !important;
+    gap: 12px !important;
+  }
+}
+
+/* ========================================================
+   AUTHENTICATION & CLOUD SAVE MODAL STYLING
+   ======================================================== */
+.btn-auth {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.25), rgba(219, 39, 119, 0.45));
+  border-color: #f472b6 !important;
+  color: #fbcfe8 !important;
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.35);
+}
+.btn-auth:hover {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.45), rgba(219, 39, 119, 0.7));
+  box-shadow: 0 0 18px rgba(236, 72, 153, 0.65);
+}
+.currency-pill.user {
+  background: rgba(88, 28, 135, 0.6);
+  border-color: #c084fc;
+  color: #f3e8ff;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+.currency-pill.user:hover {
+  background: rgba(109, 40, 217, 0.8);
+  box-shadow: 0 0 12px rgba(192, 132, 252, 0.5);
+}
+.auth-tabs-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.auth-tab-btn {
+  flex: 1;
+  padding: 9px 12px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1.5px solid rgba(245, 158, 11, 0.25);
+  color: var(--text-muted);
+  border-radius: 8px;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.auth-tab-btn.active {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(217, 119, 6, 0.45));
+  border-color: #f59e0b;
+  color: #fbbf24;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.35);
+}
+.auth-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.auth-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+.auth-input {
+  width: 100%;
+  padding: 9px 12px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1.5px solid rgba(148, 163, 184, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.auth-input:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
+}
+.auth-alert {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.auth-alert.error {
+  background: rgba(239, 68, 68, 0.25);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+}
+.auth-alert.success {
+  background: rgba(34, 197, 94, 0.25);
+  border: 1px solid #22c55e;
+  color: #86efac;
+}
+
+/* FIX AUTH BUTTON CLICK & POINTER EVENTS */
+#btnTopNavAuth, .btn-auth {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  z-index: 80 !important;
+  user-select: none !important;
+  touch-action: manipulation !important;
+}
+#topNavUserPill, .currency-pill.user {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  z-index: 80 !important;
+  user-select: none !important;
+  touch-action: manipulation !important;
+}
+.top-nav-right {
+  display: flex !important;
+  align-items: center !important;
+  pointer-events: auto !important;
+  z-index: 70 !important;
+  flex-shrink: 0 !important;
+}
+
+
+/* ==================== SETTINGS MODAL TABS & KEYBINDINGS ==================== */
+.settings-nav-tabs {
+  display: flex;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.settings-tab-btn {
+  flex: 1;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  color: #94a3b8;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+.settings-tab-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.settings-tab-btn.active {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #000;
+  font-weight: 800;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+.keybind-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+@media (max-width: 580px) {
+  .keybind-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.keybind-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(30, 41, 59, 0.65);
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 6px 10px;
+  transition: border-color 0.2s;
+}
+
+.keybind-row.highlight-row {
+  border-color: rgba(245, 158, 11, 0.5);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.keybind-label {
+  font-size: 13px;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.btn-keybind {
+  min-width: 80px;
+  padding: 6px 12px;
+  background: #0f172a;
+  border: 1.5px solid #64748b;
+  border-radius: 6px;
+  color: #38bdf8;
+  font-family: 'Cinzel', monospace, sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.18s ease;
+}
+
+.btn-keybind:hover {
+  border-color: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+}
+
+.btn-keybind.highlight {
+  border-color: #f59e0b;
+  color: #fbbf24;
+}
+
+.btn-keybind.listening {
+  background: #ef4444 !important;
+  border-color: #fecaca !important;
+  color: #fff !important;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.8) !important;
+  animation: pulseListen 0.8s infinite alternate ease-in-out;
+}
+
+@keyframes pulseListen {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.06); }
+}
+
+.btn-keybind-reset {
+  background: transparent;
+  border: 1px dashed #64748b;
+  color: #94a3b8;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-keybind-reset:hover {
+  border-color: #cbd5e1;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.touch-setting-group {
+  margin-bottom: 12px;
+}
+
+.touch-setting-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin-bottom: 6px;
+}
+
+.touch-btn-options {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-touch-opt {
+  flex: 1;
+  min-width: 90px;
+  padding: 8px 10px;
+  background: rgba(30, 41, 59, 0.75);
+  border: 1.5px solid #475569;
+  border-radius: 8px;
+  color: #94a3b8;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: center;
+}
+
+.btn-touch-opt:hover {
+  border-color: #94a3b8;
+  color: #fff;
+}
+
+.btn-touch-opt.active {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border-color: #38bdf8;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+/* QUICK SAVE BUTTON IN TOP NAV */
+.btn-quick-save:hover {
+  background: linear-gradient(135deg, #047857, #059669) !important;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.6) !important;
+}
+
+/* TOAST NOTIFICATION */
+.game-toast {
+  position: fixed;
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(15, 23, 42, 0.95);
+  border: 1.5px solid #10b981;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(16, 185, 129, 0.4);
+  z-index: 99999;
+  opacity: 0;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+
+.game-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+</style>
+</head>
+<body>
+
+  <!-- Game Canvas -->
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- TOP NAVIGATION BAR (LOBBY HEADER) -->
+  <div id="topNavBar">
+    <div class="top-nav-left">
+      <div class="brand-logo-text">BLACK CLOVER<br>SURVIVORS</div>
+      <div class="currency-pill gold" title="Clover Coins">🪙 <span id="currencyCoins">5,000</span></div>
+      <div class="currency-pill ticket" title="Vé Triệu Hồi (Vàng)">🎫 <span id="currencyTickets">30</span></div>
+    </div>
+
+    <div class="top-nav-center">
+      <button class="nav-tab-btn btn-phapsu" onclick="openCharSelectModal()">🧙‍♂️ PHÁP SƯ</button>
+      <button class="nav-tab-btn btn-tienhoa" onclick="openEvolutionModal()" style="border-color: #38bdf8; color: #38bdf8;">📖 TIẾN HÓA</button>
+      <button class="nav-tab-btn btn-taovat" onclick="openArtifactsModal()">🏺 TẠO VẬT</button>
+      <button class="nav-tab-btn btn-gacha" onclick="openGachaModal()">🎰 GACHA</button>
+      <button class="nav-tab-btn btn-upgrades" onclick="openUpgradesModal()">⚡ UPGRADES</button>
+      <button class="nav-tab-btn btn-bando" onclick="openMapModal()">🗺️ BẢN ĐỒ</button>
+    </div>
+
+    <div class="top-nav-right">
+      <button id="btnTopNavAuth" class="nav-tab-btn btn-auth" onclick="openAuthModal()" title="Đăng nhập để lưu tiến trình game lên đám mây">🔑 ĐĂNG NHẬP</button>
+      <div id="topNavUserPill" class="currency-pill user" style="display: none; cursor: pointer;" onclick="openAccountModal()" title="Tài khoản Ma Đạo Sĩ (Bấm để xem hồ sơ / đồng bộ)">👤 <span id="topNavUsernameText">Player</span> <span id="authSyncStatusDot">☁️</span></div>
+      <button id="btnTopNavSave" class="nav-tab-btn btn-save" style="display: none; background: linear-gradient(135deg, #059669, #10b981); color: #fff; font-weight: 700; border: 1px solid #34d399; box-shadow: 0 0 10px rgba(16,185,129,0.4); padding: 5px 12px; border-radius: 8px; cursor: pointer; align-items: center; gap: 4px;" onclick="manualCloudSave(event)" title="Lưu game ngay lập tức lên đám mây"><span>💾</span> <span>LƯU GAME</span></button>
+      <button class="nav-icon-btn" onclick="toggleSoundSFX()" title="Âm thanh SFX">🔊</button>
+      <button class="nav-icon-btn" onclick="toggleFullscreen()" title="Toàn màn hình">⛶</button>
+      <button class="nav-icon-btn" onclick="openSettingsModal()" title="Cài đặt">⚙️</button>
+    </div>
+  </div>
+
+
+
+  <!-- IN-GAME HUD -->
+  <div id="hud" class="hidden">
+    <!-- Top Status Bar -->
+    <div class="hud-top">
+      <div class="hud-left">
+        <div id="levelBadge" class="level-badge">Lv.1</div>
+        <div class="bars-group">
+          <!-- HP Bar -->
+          <div class="bar-container">
+            <div id="hpFill" class="hp-fill"></div>
+            <div id="hpText" class="bar-text">160 / 160</div>
+          </div>
+          <!-- EXP Bar -->
+          <div class="bar-container">
+            <div id="expFill" class="exp-fill"></div>
+            <div class="bar-text">MANA / EXP</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hud-center">
+        <div id="timerText" class="timer-box">00:00</div>
+        <div id="killText" class="kill-box">💀 0</div>
+        <div id="targetLockPill" class="target-lock-pill hidden">🎯 ĐÃ GHIM</div>
+      </div>
+
+      <div class="hud-right">
+        <button id="btnStatsInspector" class="hud-btn" title="Xem Toàn Bộ Chỉ Số Nhân Vật (Phím C)" onclick="openStatsInspector()">📊 CHỈ SỐ</button>
+        <button id="btnEvoInspector" class="hud-btn" title="Xem Toàn Bộ Công Thức & Yêu Cầu Tiến Hóa (Phím B)" onclick="openEvolutionModal()" style="border-color: #38bdf8; color: #38bdf8;">📖 TIẾN HÓA</button>
+        <button id="btnSpeedToggle" class="hud-btn" title="Chỉnh nhanh tốc độ (1x - 10x)" onclick="cycleSpeedToggle()">⚡ 1x</button>
+        <button id="btnAutoTarget" class="hud-btn" title="Bật/Tắt tự động ghim mục tiêu" onclick="toggleTargetLock()">🎯 GHIM: BẬT</button>
+        <button id="btnSoundToggle" class="hud-btn" title="Âm thanh SFX" onclick="toggleSoundSFX()">🔊 SFX</button>
+        <button id="btnBgmToggle" class="hud-btn" title="Nhạc nền BGM" onclick="toggleSoundBGM()">🎵 BGM</button>
+        <button id="btnSettingsToggle" class="hud-btn" title="Cài đặt hệ thống" onclick="openSettingsModal()">⚙️</button>
+        <button id="btnPause" class="hud-btn" title="Tạm dừng" onclick="togglePauseGame()">⏸️</button>
+      </div>
+    </div>
+
+    <!-- Boss Warning Banner -->
+    <div id="bossBanner" class="boss-banner hidden">CẢNH BÁO: BOSS XUẤT HIỆN!</div>
+
+    <!-- Boss HP Bar -->
+    <div id="bossBarContainer" class="boss-bar-wrap hidden">
+      <div id="bossNameText" class="boss-name">BOSS TÊN</div>
+      <div class="bar-container" style="height: 12px;">
+        <div id="bossHpFill" class="boss-fill"></div>
+      </div>
+    </div>
+
+    <!-- Active Weapons, Passives & Artifacts Inventory Dock -->
+    <div class="inventory-dock">
+      <div id="activeWeapons" class="slot-row"></div>
+      <div id="activePassives" class="slot-row"></div>
+      <div id="activeArtifacts" class="slot-row" title="Cổ Vật & Tạo Vật Đang Kích Hoạt"></div>
+    </div>
+
+    <!-- Dash Cooldown & Button -->
+    <div class="dash-dock">
+      <button id="dashBtn" class="dash-btn" onclick="triggerDash()"><span class="dash-main-txt">LƯỚT</span><span id="dashBtnSubKey" class="dash-sub-txt"><br>(Space)</span></button>
+      <div class="dash-meter-container">
+        <div id="dashIndicator" class="dash-meter-fill"></div>
+      </div>
+    </div>
+
+    <!-- Touch Joystick for Mobile/Tablet -->
+    <div id="joystickZone">
+      <div id="joystickKnob"></div>
+    </div>
+  </div>
+
+
+
+  <!-- MAIN MENU / LOBBY HERO SHOWCASE (SCREENSHOT 3 STYLE) -->
+  <div id="menuOverlay" class="overlay">
+    <div class="lobby-center-card">
+      <h1 class="game-title" style="margin-bottom: 2px;">BLACK CLOVER: MA PHÁP SINH TỒN</h1>
+      <p class="game-subtitle" style="margin-bottom: 8px;">Game Roguelite Sinh Tồn Tự Động chuẩn phong cách Vampire Survivors & PokeSurvivor</p>
+
+      <!-- Active Selected Hero Showcase Box -->
+      <div class="showcase-hero-container">
+        <div class="showcase-hero-header">
+          <div id="scAvatarRing" class="showcase-avatar-ring">🗡️</div>
+          <div class="showcase-title-block">
+            <div class="showcase-hero-name">
+              <span id="scHeroName">ASTA</span>
+              <span id="scRarityBadge" class="showcase-rarity-badge common">PHỔ THÔNG</span>
+            </div>
+            <div id="scHeroTitle" class="showcase-hero-sub">Tam Diệp Thảo (Ngũ Diệp Thức Tỉnh)</div>
+            <div class="showcase-badges-row">
+              <span id="scSquadBadge" class="hero-pill-tag">🛡️ Hắc Bộc Ngưu</span>
+              <span id="scMagicBadge" class="hero-pill-tag">✨ Kháng Ma Pháp</span>
+              <span id="scOwnedBadge" class="hero-pill-tag" style="color: #fde047;">🏆 Sở Hữu: 26/26</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="showcase-details-grid">
+          <div class="showcase-box">
+            <div class="showcase-box-label">⚔️ VŨ KHÍ KHỞI ĐẦU</div>
+            <div id="scWeaponName" class="showcase-box-val">Kiếm Diệt Ma (Demon-Slayer)</div>
+          </div>
+          <div class="showcase-box">
+            <div class="showcase-box-label">⭐ TIẾN HÓA CẤP 5 (TIER 2)</div>
+            <div id="scEvoName" class="showcase-box-val gold">Hắc Đại Kiếm Hủy Diệt (Black Divider)</div>
+            <div id="scEvoReq" style="font-size: 11px; color: #94a3b8; margin-top: 3px;">Yêu cầu: Vũ khí Cấp 5 + Sách Giao Ước Quỷ Dữ</div>
+          </div>
+          <div class="showcase-box">
+            <div class="showcase-box-label">🌟 SIÊU TIẾN HÓA LẦN 2 (TIER 3)</div>
+            <div id="scSuperEvoName" class="showcase-box-val purple">Tuyệt Ma Kiếm Vô Cực (Demon Slasher Infinity)</div>
+            <div id="scSuperEvoReq" style="font-size: 11px; color: #c084fc; margin-top: 3px;">Yêu cầu: Kỹ năng chính + Nhân vật đạt Cấp 10+</div>
+          </div>
+          <div class="showcase-box">
+            <div class="showcase-box-label">🗺️ BẢN ĐỒ CHIẾN TRƯỜNG</div>
+            <div id="scMapName" class="showcase-box-val cyan" style="cursor: pointer;" onclick="openMapModal()" title="Nhấn để đổi bản đồ">Map 1: Vương Quốc Clover ▾</div>
+          </div>
+          <div class="showcase-box" style="grid-column: span 2;">
+            <div class="showcase-box-label">📊 CHỈ SỐ CƠ BẢN</div>
+            <div id="scStatsSummary" class="showcase-box-val">HP: 160 | Tốc Độ: 175 | Giáp: 15%</div>
+          </div>
+        </div>
+
+        <div class="showcase-trait-box">
+          <b>Đặc Kỹ Nội Tại:</b> <span id="scSpecialTrait">+15% Kháng Sát Thương & Cận chiến xóa tan ma pháp đạn. Cấp 8+ kích hoạt Black Asta!</span>
+        </div>
+      </div>
+
+      <!-- Start Match Button with direct onclick -->
+      <button id="btnStartGame" class="btn-start" style="font-size: 19px; padding: 14px 52px; width: auto; max-width: 450px;" onclick="startGameNow()">⚔️ XUẤT TRẬN CHIẾN ĐẤU ⚔️</button>
+
+      <div class="controls-hint" style="margin-top: 8px;">
+        <span class="pc-controls">🎮 <b>PC:</b> Di chuyển bằng <b>WASD / Mũi tên</b> • <b>Space</b>: Lướt • <b>C</b>: Chỉ Số • <b>B</b>: Tiến Hóa</span>
+        <span class="mobile-controls">📱 <b>Mobile:</b> Dùng <b>cần gạt ảo bên trái</b> để di chuyển • Nút <b>LƯỚT bên phải</b> để né chiêu!</span>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- DEDICATED CHARACTER SELECT MODAL (MỤC RIÊNG CHỌN NHÂN VẬT) -->
+  <div id="charSelectModal" class="modal-overlay-custom hidden">
+    <div class="modal-dialog-box" style="max-width: 960px;">
+      <div class="modal-header-bar">
+        <div class="modal-header-title">🧙‍♂️ DANH SÁCH MA ĐẠO SĨ (39 PHÁP SƯ HUYỀN THOẠI)</div>
+        <button class="modal-btn-close" onclick="closeCharSelectModal()">✕</button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <div class="char-filter-tabs">
+          <button class="char-filter-tab active" data-filter="all" onclick="filterCharRoster('all', this)">Tất Cả (39)</button>
+          <button class="char-filter-tab" data-filter="legendary" onclick="filterCharRoster('legendary', this)">⭐ Thần Thoại</button>
+          <button class="char-filter-tab" data-filter="epic" onclick="filterCharRoster('epic', this)">✨ Sử Thi</button>
+          <button class="char-filter-tab" data-filter="rare" onclick="filterCharRoster('rare', this)">🌟 Hiếm</button>
+          <button class="char-filter-tab" data-filter="common" onclick="filterCharRoster('common', this)">🔹 Phổ Thông</button>
+          <button class="char-filter-tab" data-filter="bulls" onclick="filterCharRoster('bulls', this)">🛡️ Hắc Bộc Ngưu</button>
+          <button class="char-filter-tab" data-filter="captains" onclick="filterCharRoster('captains', this)">👑 Đoàn Trưởng</button>
+          <button class="char-filter-tab" data-filter="owned" onclick="filterCharRoster('owned', this)">🔓 Đã Mở Khóa</button>
+        </div>
+
+        <div id="charRosterGrid" class="full-char-grid">
+          <!-- Dynamically populated via renderCharRosterGrid() -->
+        </div>
+      </div>
+
+      <div style="padding: 12px 20px; background: rgba(15, 23, 42, 0.95); border-top: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+        <button class="nav-tab-btn btn-gacha" style="margin: 0; padding: 8px 18px; font-size: 13px; background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; border: 1px solid #c084fc; border-radius: 8px; cursor: pointer; font-weight: 800;" onclick="closeCharSelectModal(); openGachaModal(); switchGachaBannerMode('heroes');">
+          🎰 TRIỆU HỒI GACHA PHÁP SƯ
+        </button>
+        <button class="btn-start" style="padding: 10px 32px; font-size: 15px;" onclick="closeCharSelectModal()">XÁC NHẬN CHỌN</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- DEDICATED GACHA SUMMON MODAL -->
+  <div id="gachaModal" class="modal-overlay-custom hidden">
+    <div class="modal-dialog-box" style="max-width: 780px;">
+      <div class="modal-header-bar">
+        <div class="modal-header-title" id="gachaModalTitle">🎰 TRIỆU HỒI MA PHÁP & TẠO VẬT CỔ ĐẠI</div>
+        <button class="modal-btn-close" onclick="closeGachaModal()">✕</button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <div class="gacha-tab-switcher">
+          <button id="gachaTabHeroes" class="gacha-mode-tab active" onclick="switchGachaBannerMode('heroes')">
+            🧙‍♂️ BANNER PHÁP SƯ
+          </button>
+          <button id="gachaTabArtifacts" class="gacha-mode-tab" onclick="switchGachaBannerMode('artifacts')">
+            🏺 BANNER TẠO VẬT CỔ ĐẠI
+          </button>
+        </div>
+
+        <div class="gacha-banner-hero-showcase" id="gachaHeroShowcase">
+          <div style="z-index: 2; max-width: 480px;">
+            <div style="font-size: 12px; font-weight: 800; color: #f59e0b; text-transform: uppercase;" id="gachaBannerSubtitle">BANNER ĐẶC BIỆT TỶ LỆ CAO</div>
+            <div style="font-size: 24px; font-weight: 900; color: #fff; margin: 4px 0;" id="gachaBannerMainTitle">ĐẠI CHIẾN MA PHÁP & QUỶ THẦN</div>
+            <div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;" id="gachaBannerDesc">
+              Cơ hội triệu hồi Julius, Lumiere, Black Asta, Zenon, Dante, Vanica cùng 39 Ma Đạo Sĩ hùng mạnh! Mở khóa nhân vật mới hoặc nhận thưởng Coins & Vé khi trùng lặp!
+            </div>
+          </div>
+          <div style="font-size: 64px; text-shadow: 0 0 25px rgba(245, 158, 11, 0.8);" id="gachaBannerIcon">📖✨</div>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 20px; font-weight: 800; font-size: 14px; margin-top: 12px;">
+          <div>Vé Hiện Có: <b style="color: #38bdf8;" id="gachaTicketDisplay">30 🎫</b></div>
+          <div>Coins Hiện Có: <b style="color: #fde047;" id="gachaCoinDisplay">5,000 🪙</b></div>
+        </div>
+
+        <!-- PITY 1000 COUNTER BAR -->
+        <div class="gacha-pity-tracker" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 10px 16px; margin: 12px 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="font-size: 12px; font-weight: 900; color: #fbbf24;">
+              🎯 BẢO HIỂM TƯỚNG CHƯA MỞ: <span id="pity1000Text" style="color: #fff; font-size: 13px;">0 / 1000 lượt</span>
+            </div>
+            <div style="font-size: 11px; font-weight: 800; color: #38bdf8;" id="pity1000RewardText">
+              🎁 Đủ 1000 lượt: 100% Ra Tướng Mới Chưa Sở Hữu!
+            </div>
+          </div>
+          <div style="width: 100%; height: 9px; background: rgba(0, 0, 0, 0.6); border-radius: 5px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1);">
+            <div id="pity1000Fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #f59e0b, #ef4444); border-radius: 5px; transition: width 0.3s ease;"></div>
+          </div>
+        </div>
+
+        <div class="gacha-btn-group">
+          <button class="btn-gacha-pull single" onclick="handleActiveGachaPull(1)">
+            <span id="gachaPullBtnSingle">🔮 TRIỆU HỒI x1</span>
+            <small style="font-size: 11px; opacity: 0.9;">1 Vé hoặc 100 Coins</small>
+          </button>
+          <button class="btn-gacha-pull multi" onclick="handleActiveGachaPull(10)">
+            <span id="gachaPullBtnMulti">🌟 TRIỆU HỒI x10</span>
+            <small style="font-size: 11px; opacity: 0.9;">10 Vé hoặc 900 Coins (Tiết Kiệm!)</small>
+          </button>
+          <button class="btn-gacha-pull mega" onclick="handleActiveGachaPull(100)">
+            <span id="gachaPullBtnMega">🔥 TRIỆU HỒI x100</span>
+            <small style="font-size: 11px; opacity: 0.9;">100 Vé hoặc 8,500 Coins (Siêu Hời!)</small>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- GACHA RESULT OVERLAY -->
+  <div id="gachaResultOverlay" class="modal-overlay-custom hidden" style="z-index: 120;">
+    <div class="modal-dialog-box" style="max-width: 880px;">
+      <div class="modal-header-bar">
+        <div class="modal-header-title">🎉 KẾT QUẢ TRIỆU HỒI MA PHÁP</div>
+        <button class="modal-btn-close" onclick="closeGachaResults()">✕</button>
+      </div>
+      <div class="modal-body-scrollable">
+        <div id="gachaCardsContainer" style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;">
+          <!-- Dynamically injected -->
+        </div>
+      </div>
+      <div style="padding: 12px 20px; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: center;">
+        <button class="btn-start" style="padding: 10px 36px; font-size: 15px;" onclick="closeGachaResults()">TUYỆT VỜI (TIẾP TỤC)</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- DEDICATED UPGRADES MODAL (MỤC NÂNG CẤP CHỈ SỐ NHÂN VẬT) -->
+  <div id="upgradesModal" class="modal-overlay-custom hidden">
+    <div class="modal-dialog-box" style="max-width: 920px;">
+      <div class="modal-header-bar">
+        <div class="modal-header-title">⚡ CÂY NÂNG CẤP CHỈ SỐ VĨNH VIỄN</div>
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div class="currency-pill gold">🪙 <span id="upgradeMenuCoins">5,000</span></div>
+          <button class="modal-btn-close" onclick="closeUpgradesModal()">✕</button>
+        </div>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+          <p style="color: #94a3b8; font-size: 13px; margin: 0;">Gia tăng chỉ số cơ bản vĩnh viễn cho tất cả nhân vật khi bước vào chiến trường:</p>
+          <button class="nav-tab-btn" style="background: #991b1b; border-color: #ef4444; color: #fff;" onclick="resetAllUpgrades()">🔄 HOÀN TRẢ 100% TIỀN</button>
+        </div>
+
+        <div id="talentsGridContainer" class="talents-grid">
+          <!-- Injected via renderUpgradesTalentGrid() -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- DEDICATED ARTIFACTS / CỔ VẬT MA THUẬT MODAL -->
+  <div id="artifactsModal" class="modal-overlay-custom hidden" style="z-index: 100;">
+    <div class="modal-dialog-box" style="max-width: 1040px;">
+      <div class="modal-header-bar">
+        <div class="modal-header-title">🏺 BẢO TÀNG TẠO VẬT & CỔ VẬT MA THUẬT</div>
+        <button class="modal-btn-close" onclick="closeArtifactsModal()">✕</button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <!-- 3 EQUIPPED RELIC SLOTS -->
+        <div style="font-size: 13px; font-weight: 800; color: #fbbf24; text-transform: uppercase; margin-bottom: 8px;">
+          ⚡ 3 Ô TRANG BỊ CỔ VẬT (KÍCH HOẠT CHỈ SỐ & KỸ NĂNG VÀO TRẬN ĐẤU):
+        </div>
+        <div id="relicEquippedSlotsContainer" class="relic-slots-grid">
+          <!-- Injected via renderArtifactsModal() -->
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 18px 0 10px 0; border-top: 1px solid rgba(148,163,184,0.2); padding-top: 14px;">
+          <div>
+            <div style="font-size: 13px; font-weight: 800; color: #38bdf8; text-transform: uppercase;">
+              📖 BỘ SƯU TẬP TẠO VẬT CỔ ĐẠI (<span id="relicCollectionCount">0/14</span> ĐÃ THU HOẠCH):
+            </div>
+            <small style="color: #94a3b8; font-size: 11.5px;">Tiêu diệt Boss & Boss Nhỏ trong trận chiến để rơi ra Tạo Vật Thần Bí!</small>
+          </div>
+          <!-- Filter Tabs -->
+          <div class="evo-filter-pills">
+            <button class="evo-filter-btn active" onclick="setArtifactFilter('all', this)">Tất Cả</button>
+            <button class="evo-filter-btn" onclick="setArtifactFilter('legendary', this)">⭐ Thần Thoại</button>
+            <button class="evo-filter-btn" onclick="setArtifactFilter('epic', this)">✨ Sử Thi</button>
+            <button class="evo-filter-btn" onclick="setArtifactFilter('rare', this)">🌟 Hiếm</button>
+          </div>
+        </div>
+
+        <!-- RELIC CARDS GRID -->
+        <div id="relicsGridContainer" class="relics-grid">
+          <!-- Injected via renderArtifactsModal() -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOSS ARTIFACT DISCOVERY OVERLAY (POPUP KHI BOSS RƠI CỔ VẬT) -->
+  <div id="artifactDiscoveryModal" class="modal-overlay-custom hidden" style="z-index: 130;">
+    <div class="modal-dialog-box" style="max-width: 580px; text-align: center; border: 2px solid #f59e0b; box-shadow: 0 0 35px rgba(245, 158, 11, 0.65);">
+      <div class="modal-header-bar" style="justify-content: center; background: linear-gradient(135deg, rgba(245,158,11,0.3), rgba(15,23,42,0.95));">
+        <div class="modal-header-title" style="color: #fde047; font-size: 17px;">🏺 TẠO VẬT CỔ ĐẠI ĐÃ XUẤT THẾ!</div>
+      </div>
+      <div class="modal-body-scrollable" style="padding: 24px 20px;">
+        <div id="adIcon" style="font-size: 58px; margin-bottom: 8px; filter: drop-shadow(0 0 16px rgba(245,158,11,0.8));">🏺</div>
+        <div id="adName" style="font-size: 20px; font-weight: 900; color: #fbbf24; margin-bottom: 4px;">Tên Cổ Vật</div>
+        <div style="display: flex; justify-content: center; gap: 10px; align-items: center; margin-bottom: 14px;">
+          <span id="adBadge" class="showcase-rarity-badge legendary">⭐ THẦN THOẠI</span>
+          <span id="adStars" style="color: #fbbf24; font-weight: 800; font-size: 13px;">★★★ (Cấp 1/3)</span>
+        </div>
+
+        <div style="font-size: 12px; font-weight: 800; color: #38bdf8; text-transform: uppercase; margin-bottom: 6px;">CHỈ SỐ CƯỜNG HÓA VĨNH VIỄN:</div>
+        <div id="adStats" class="stat-pills-container" style="justify-content: center; margin-bottom: 14px;"></div>
+
+        <div style="font-size: 12px; font-weight: 800; color: #f59e0b; text-transform: uppercase; margin-bottom: 6px;">KỸ NĂNG ĐỘC QUYỀN:</div>
+        <div id="adSkill" style="font-size: 13px; color: #e2e8f0; background: rgba(30,41,59,0.7); padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(245,158,11,0.3); margin-bottom: 14px; line-height: 1.45;"></div>
+
+        <div id="adEquipNote" style="font-size: 12px; margin-bottom: 16px;"></div>
+
+        <button class="btn-start" style="padding: 10px 42px; font-size: 16px;" onclick="closeArtifactDiscoveryModal()">TIẾP TỤC CHIẾN ĐẤU</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEDICATED MAP & DIFFICULTY SELECT MODAL -->
+  <div id="mapSelectModal" class="modal-overlay-custom hidden">
+    <div class="modal-dialog-box" style="max-width: 720px;">
+      <div class="modal-header-bar">
+        <div class="modal-header-title">🗺️ CHỌN BẢN ĐỒ & ĐỘ KHÓ CHIẾN TRƯỜNG</div>
+        <button class="modal-btn-close" onclick="closeMapModal()">✕</button>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <div style="font-size: 13px; font-weight: 800; color: #38bdf8; text-transform: uppercase; margin-bottom: 8px;">1. CHỌN BẢN ĐỒ CHIẾN TRƯỜNG:</div>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px;">
+          <div id="mapCard1" class="char-roster-card selected" style="padding: 14px 16px; text-align: left; align-items: flex-start;" onclick="chooseMapOption('clover_plains')">
+            <div style="font-size: 15px; font-weight: 800; color: #fbbf24;">Map 1: Vương Quốc Clover (Cỏ Xanh)</div>
+            <div style="font-size: 11.5px; color: #34d399; font-weight: 700; margin: 3px 0;">CHIẾN TRƯỜNG ĐỒNG CỎ · BOSS CUỐI: ZAGRED (PHÚT 30)</div>
+            <div style="font-size: 12.5px; color: #cbd5e1;">Đồng cỏ thanh bình và phế tích tàn thành nơi các đạo tặc và tà giáo Bạch Dạ hoành hành. Thích hợp tu luyện và vượt ải!</div>
+          </div>
+
+          <div id="mapCard2" class="char-roster-card" style="padding: 14px 16px; text-align: left; align-items: flex-start;" onclick="chooseMapOption('underworld_palace')">
+            <div style="font-size: 15px; font-weight: 800; color: #f87171;">Map 2: Đại Ma Cung Minh Giới (Khó)</div>
+            <div style="font-size: 11.5px; color: #ef4444; font-weight: 700; margin: 3px 0;">LÃNH ĐỊA QUỶ DỮ · BOSS CUỐI: LUCIFERO (PHÚT 30)</div>
+            <div style="font-size: 12.5px; color: #cbd5e1;">Lãnh địa nham thạch ma giới với lũ quỷ vương khát máu và ma áp cực nặng. Thử thách đỉnh cao cho Ma Pháp Đế!</div>
+          </div>
+        </div>
+
+        <div style="font-size: 13px; font-weight: 800; color: #fbbf24; text-transform: uppercase; margin-bottom: 8px;">2. CHỌN ĐỘ KHÓ BẢN ĐỒ (QUÁI TRÂU & THƯỞNG KHỦNG):</div>
+        <div class="diff-select-grid">
+          <div id="diffCard_normal" class="diff-card selected" onclick="chooseDifficultyOption('normal')">
+            <div style="font-size: 14px; font-weight: 800; color: #4ade80;">🟢 Bình Thường</div>
+            <div style="font-size: 11px; color: #86efac; font-weight: 700;">1.0x Máu Quái & Boss · 1.0x Thưởng</div>
+            <div style="font-size: 11.5px; color: #94a3b8;">Chỉ số chuẩn, trải nghiệm vượt ải cân bằng và khám phá cơ chế.</div>
+          </div>
+
+          <div id="diffCard_nightmare" class="diff-card" onclick="chooseDifficultyOption('nightmare')">
+            <div style="font-size: 14px; font-weight: 800; color: #fbbf24;">🟡 Ác Mộng</div>
+            <div style="font-size: 11px; color: #fde047; font-weight: 700;">1.8x Máu Quái & Boss · +50% Vàng & EXP</div>
+            <div style="font-size: 11.5px; color: #94a3b8;">Quái trâu hơn +80%, sát thương +25%, nhận thêm +50% Vàng & EXP!</div>
+          </div>
+
+          <div id="diffCard_hell" class="diff-card" onclick="chooseDifficultyOption('hell')">
+            <div style="font-size: 14px; font-weight: 800; color: #f87171;">🔴 Địa Ngục</div>
+            <div style="font-size: 11px; color: #fca5a5; font-weight: 700;">3.0x Máu Quái & Boss · +120% Vàng & EXP</div>
+            <div style="font-size: 11.5px; color: #94a3b8;">Quái cực trâu x3.0 lần, sát thương +50%, nhận khủng +120% Vàng & EXP!</div>
+          </div>
+
+          <div id="diffCard_chaos" class="diff-card" onclick="chooseDifficultyOption('chaos')">
+            <div style="font-size: 14px; font-weight: 800; color: #c084fc;">🟣 Hỗn Mang</div>
+            <div style="font-size: 11px; color: #d8b4fe; font-weight: 700;">5.0x Máu Quái & Boss · +250% Vàng & EXP</div>
+            <div style="font-size: 11.5px; color: #94a3b8;">Cực hạn sinh tồn! Quái x5.0 lần Máu, sát thương x2, thưởng +250% Vàng & EXP!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <!-- IN-GAME FULL STATS INSPECTOR (XEM TOÀN BỘ CHỈ SỐ NHÂN VẬT) -->
+  <div id="statsInspectorOverlay" class="modal-overlay-custom hidden" style="z-index: 90;">
+    <div class="stats-sheet-container">
+      <div class="stat-sheet-header">
+        <div class="stat-sheet-hero-info">
+          <div id="statCharAvatar" class="stat-hero-avatar-box">🗡️</div>
+          <div>
+            <div id="statCharName" style="font-size: 20px; font-weight: 900; color: #fbbf24;">Asta</div>
+            <div id="statCharTitle" style="font-size: 12px; color: #94a3b8; font-weight: 700;">Tam Diệp Thảo · Hắc Bộc Ngưu</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 14px; align-items: center;">
+          <div id="statCharLevel" class="currency-pill gold">Cấp Độ: Lv.1</div>
+          <div class="currency-pill">⏱️ <span id="statSurviveTime">00:00</span></div>
+          <div class="currency-pill">💀 <span id="statKillCount">0</span></div>
+          <button class="modal-btn-close" onclick="closeStatsInspector()">✕</button>
+        </div>
+      </div>
+
+      <div class="modal-body-scrollable">
+        <!-- 1. Sinh Lực & Phòng Ngự -->
+        <div style="font-size: 12px; font-weight: 800; color: #38bdf8; text-transform: uppercase;">🛡️ SINH LỰC & PHÒNG THỦ</div>
+        <div class="stat-grid-3col">
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Máu Hiện Tại / Tối Đa</span>
+            <span id="stValHp" class="stat-sheet-box-val green">160 / 160</span>
+          </div>
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Hồi Máu Mỗi Giây</span>
+            <span id="stValRegen" class="stat-sheet-box-val green">+0.0 HP/s</span>
+          </div>
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Giáp Phòng Ngự</span>
+            <span id="stValArmor" class="stat-sheet-box-val cyan">15% Giảm ST</span>
+          </div>
+        </div>
+
+        <!-- 2. Tấn Công & Uy Lực -->
+        <div style="font-size: 12px; font-weight: 800; color: #f59e0b; text-transform: uppercase; margin-top: 6px;">⚔️ TẤN CÔNG & SÁT THƯƠNG</div>
+        <div class="stat-grid-3col">
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Tăng Sát Thương Phép</span>
+            <span id="stValDmg" class="stat-sheet-box-val gold">+0%</span>
+          </div>
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Tỉ Lệ Chí Mạng</span>
+            <span id="stValCrit" class="stat-sheet-box-val gold">5%</span>
+          </div>
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Sát Thương Chí Mạng</span>
+            <span id="stValCritDmg" class="stat-sheet-box-val gold">200%</span>
+          </div>
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Giảm Hồi Chiêu (CDR)</span>
+            <span id="stValCdr" class="stat-sheet-box-val purple">0%</span>
+          </div>
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Phạm Vi Chiêu Thức (AoE)</span>
+            <span id="stValAoe" class="stat-sheet-box-val cyan">+0%</span>
+          </div>
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Tốc Độ Di Chuyển</span>
+            <span id="stValSpeed" class="stat-sheet-box-val">175 px/s</span>
+          </div>
+        </div>
+
+        <!-- 3. Tiện Ích & Tài Phú -->
+        <div style="font-size: 12px; font-weight: 800; color: #a855f7; text-transform: uppercase; margin-top: 6px;">🧲 TIỆN ÍCH & THU HOẠCH</div>
+        <div class="stat-grid-3col">
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Bán Kính Nam Châm</span>
+            <span id="stValMagnet" class="stat-sheet-box-val">80 px</span>
+          </div>
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Thưởng Kinh Nghiệm</span>
+            <span id="stValExp" class="stat-sheet-box-val green">+0%</span>
+          </div>
+          <div class="stat-sheet-box">
+            <span class="stat-sheet-box-lbl">Thưởng Tiền Xu</span>
+            <span id="stValGreed" class="stat-sheet-box-val gold">+0%</span>
+          </div>
+        </div>
+
+        <!-- 4. Ma Pháp & Vũ Khí Đang Dùng -->
+        <div style="font-size: 12px; font-weight: 800; color: #fbbf24; text-transform: uppercase; margin-top: 6px;">🗡️ VŨ KHÍ & TIẾN HÓA ĐANG TRANG BỊ</div>
+        <div id="stEquippedWeapons" class="stat-gear-list"></div>
+
+        <!-- 5. Sách Bổ Trợ -->
+        <div style="font-size: 12px; font-weight: 800; color: #6ee7b7; text-transform: uppercase; margin-top: 6px;">📘 SÁCH MA PHÁP BỔ TRỢ ĐANG DÙNG</div>
+        <div id="stEquippedPassives" class="stat-gear-list"></div>
+
+        <!-- 6. Cổ Vật & Tạo Vật Đang Trang Bị -->
+        <div style="font-size: 12px; font-weight: 800; color: #f59e0b; text-transform: uppercase; margin-top: 6px;">🏺 TẠO VẬT & CỔ VẬT MA THUẬT ĐANG TRANG BỊ</div>
+        <div id="stEquippedArtifacts" class="stat-gear-list"></div>
+      </div>
+
+      <div style="padding: 10px 20px; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: center; gap: 14px;">
+        <button class="hud-btn" style="border-color: #38bdf8; color: #38bdf8; padding: 8px 22px; font-size: 13px;" onclick="openEvolutionModal()">📖 BẢNG CÔNG THỨC TIẾN HÓA (B)</button>
+        <button class="btn-start" style="padding: 8px 36px; font-size: 14px;" onclick="closeStatsInspector()">TIẾP TỤC CHIẾN ĐẤU (ESC / C)</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- EVOLUTION GRIMOIRE / CÔNG THỨC TIẾN HÓA MODAL -->
+  <div id="evolutionModal" class="modal-overlay-custom hidden" style="z-index: 95;">
+    <div class="modal-dialog-box" style="max-width: 980px;">
+      <div class="modal-header-bar">
+        <div class="modal-header-title">📖 MA ĐẠO THƯ: BẢNG CÔNG THỨC & ĐIỀU KIỆN TIẾN HÓA CHIÊU THỨC</div>
+        <button class="modal-btn-close" onclick="closeEvolutionModal()">✕</button>
+      </div>
+
+      <!-- Quick Rule Guide Box -->
+      <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 12px 18px; margin: 12px 18px 0 18px; font-size: 13px; line-height: 1.5;">
+        <div style="color: #fbbf24; font-weight: 800; font-size: 13.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+          <span>⚡ ĐIỀU KIỆN TIẾN HÓA CHIÊU THỨC:</span>
+        </div>
+        <div style="color: #e2e8f0;">
+          <b style="color: #38bdf8;">1. Tiến Hóa Cấp 1 (Tier 2):</b> Nâng Vũ Khí lên <b>Cấp 5 (Tối Đa)</b> + Sở hữu <b>Sách Bổ Trợ Tương Ứng (Lv.1+)</b> ➔ Nhận khi Thăng Cấp hoặc Mở Rương!
+        </div>
+        <div style="color: #e2e8f0; margin-top: 4px;">
+          <b style="color: #f472b6;">2. Siêu Tiến Hóa Lần 2 (Tier 3):</b> Dành riêng cho <b>Vũ Khí Khởi Đầu của Pháp sư xuất trận</b> + Nhân vật đạt <b>Cấp 10+</b> trong trận!
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="filter-tab-bar" style="margin: 12px 18px 8px 18px;">
+        <button class="filter-tab-btn active" id="tabEvoAll" onclick="setEvolutionTab('all')">TẤT CẢ (30 CÔNG THỨC)</button>
+        <button class="filter-tab-btn" id="tabEvoEquipped" onclick="setEvolutionTab('equipped')">ĐANG TRANG BỊ TRONG TRẬN</button>
+        <button class="filter-tab-btn" id="tabEvoReady" onclick="setEvolutionTab('ready')">ĐÃ ĐỦ ĐIỀU KIỆN ✅</button>
+      </div>
+
+      <!-- Recipe Cards Grid -->
+      <div class="modal-body-scrollable" style="max-height: 58vh; padding: 10px 18px;">
+        <div id="evolutionRecipeGrid" class="evo-recipe-grid"></div>
+      </div>
+
+      <div style="padding: 12px 18px; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <button class="btn-start" style="padding: 8px 36px; font-size: 14px;" onclick="closeEvolutionModal()">ĐÓNG BÍ KÍP (ESC / B)</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- LEVEL UP MODAL -->
+  <div id="levelUpOverlay" class="overlay hidden">
+    <div class="menu-card" style="max-width: 880px;">
+      <h2 class="game-title" style="font-size: 28px;">LẬT TRANG SÁCH MA PHÁP (LEVEL UP!)</h2>
+      <p style="color: #94a3b8; font-size: 14px;">Chọn 1 Ma Pháp hoặc Sách Bổ Trợ để gia tăng sức mạnh vượt qua giới hạn:</p>
+
+      <div id="levelUpCards" class="level-cards-container">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- SETTINGS MODAL -->
+  <div id="settingsOverlay" class="overlay hidden" style="z-index: 95;">
+    <div class="results-modal settings-modal-box" style="max-width: 600px; width: 95%; max-height: 88vh; display: flex; flex-direction: column;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 10px;">
+        <h2 class="modal-title" style="color: var(--gold); font-size: 22px; margin: 0;">⚙️ CÀI ĐẶT HỆ THỐNG</h2>
+        <button class="modal-btn-close" onclick="closeSettingsModal()" style="font-size: 20px; background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px 8px;">✕</button>
+      </div>
+
+      <!-- TABS NAVIGATION BAR -->
+      <div class="settings-nav-tabs">
+        <button id="tabBtnAudio" class="settings-tab-btn active" onclick="switchSettingsTab('audio')">🔊 Âm Thanh</button>
+        <button id="tabBtnKeyboard" class="settings-tab-btn" onclick="switchSettingsTab('keyboard')">🎮 Bàn Phím (PC)</button>
+        <button id="tabBtnTouch" class="settings-tab-btn" onclick="switchSettingsTab('touch')">📱 Cảm Ứng (Mobile)</button>
+      </div>
+
+      <!-- SCROLLABLE BODY -->
+      <div style="overflow-y: auto; flex: 1; padding-right: 4px;">
+        <!-- TAB 1: AUDIO & GENERAL -->
+        <div id="tabContentAudio" class="settings-tab-content">
+          <div class="settings-list">
+            <div class="setting-item">
+              <div class="setting-header">
+                <span>🔊 Âm Lượng Hiệu Ứng (SFX):</span>
+                <span id="sfxValText" class="setting-val-badge">80%</span>
+              </div>
+              <input type="range" id="sliderSfx" min="0" max="100" value="80" class="setting-slider" oninput="changeSFX(this.value)">
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-header">
+                <span>🎵 Âm Lượng Nhạc Nền (BGM):</span>
+                <span id="bgmValText" class="setting-val-badge">60%</span>
+              </div>
+              <input type="range" id="sliderBgm" min="0" max="100" value="60" class="setting-slider" oninput="changeBGM(this.value)">
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-header">
+                <span>📳 Rung Màn Hình Khi Trúng Đòn:</span>
+                <span id="shakeStatusText" class="setting-val-badge on">BẬT</span>
+              </div>
+              <button id="btnToggleShake" class="btn-setting-toggle" onclick="toggleShakeSetting()">BẬT (Khuyên Dùng)</button>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-header">
+                <span>⚡ Tốc Độ Trận Đấu (Game Speed):</span>
+                <span id="speedValText" class="setting-val-badge gold">1.0x (Chuẩn)</span>
+              </div>
+              <input type="range" id="sliderSpeed" min="50" max="1000" step="25" value="100" class="setting-slider gold" oninput="changeSpeed(this.value)">
+              <div class="speed-presets">
+                <button class="preset-btn active" data-speed="1.0" onclick="setSpeedPreset(1.0)">1.0x</button>
+                <button class="preset-btn" data-speed="2.0" onclick="setSpeedPreset(2.0)">2.0x</button>
+                <button class="preset-btn" data-speed="3.0" onclick="setSpeedPreset(3.0)">3.0x</button>
+                <button class="preset-btn" data-speed="5.0" onclick="setSpeedPreset(5.0)">5.0x</button>
+                <button class="preset-btn" data-speed="10.0" onclick="setSpeedPreset(10.0)">⚡ 10.0x</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: KEYBOARD (PC) -->
+        <div id="tabContentKeyboard" class="settings-tab-content hidden">
+          <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 12px; background: rgba(15, 23, 42, 0.7); padding: 8px 12px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+            💡 <strong>Cách đổi phím:</strong> Bấm vào nút phím bất kỳ bên dưới, sau đó ấn phím mới trên bàn phím của bạn. Nhấn <strong>Esc</strong> để hủy thao tác đổi.
+          </div>
+
+          <div class="keybind-grid">
+            <div class="keybind-row">
+              <span class="keybind-label">⬆️ Di chuyển LÊN:</span>
+              <button id="btnKey_up" class="btn-keybind" onclick="startKeybindListening('up', this)">W</button>
+            </div>
+            <div class="keybind-row">
+              <span class="keybind-label">⬇️ Di chuyển XUỐNG:</span>
+              <button id="btnKey_down" class="btn-keybind" onclick="startKeybindListening('down', this)">S</button>
+            </div>
+            <div class="keybind-row">
+              <span class="keybind-label">⬅️ Di chuyển TRÁI:</span>
+              <button id="btnKey_left" class="btn-keybind" onclick="startKeybindListening('left', this)">A</button>
+            </div>
+            <div class="keybind-row">
+              <span class="keybind-label">➡️ Di chuyển PHẢI:</span>
+              <button id="btnKey_right" class="btn-keybind" onclick="startKeybindListening('right', this)">D</button>
+            </div>
+            <div class="keybind-row highlight-row">
+              <span class="keybind-label">⚡ LƯỚT / NHẢY (Dash):</span>
+              <button id="btnKey_dash" class="btn-keybind highlight" onclick="startKeybindListening('dash', this)">Space</button>
+            </div>
+            <div class="keybind-row">
+              <span class="keybind-label">📊 Bảng CHỈ SỐ:</span>
+              <button id="btnKey_stats" class="btn-keybind" onclick="startKeybindListening('stats', this)">C</button>
+            </div>
+            <div class="keybind-row">
+              <span class="keybind-label">📖 Sách TIẾN HÓA:</span>
+              <button id="btnKey_evo" class="btn-keybind" onclick="startKeybindListening('evo', this)">B</button>
+            </div>
+            <div class="keybind-row">
+              <span class="keybind-label">⏸️ TẠM DỪNG (Pause):</span>
+              <button id="btnKey_pause" class="btn-keybind" onclick="startKeybindListening('pause', this)">Esc</button>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+            <button class="btn-keybind-reset" onclick="resetKeybindsToDefault()">🔄 Đặt Lại Phím Mặc Định</button>
+          </div>
+        </div>
+
+        <!-- TAB 3: TOUCH (MOBILE) -->
+        <div id="tabContentTouch" class="settings-tab-content hidden">
+          <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 12px; background: rgba(15, 23, 42, 0.7); padding: 8px 12px; border-radius: 8px; border-left: 3px solid #f59e0b;">
+            📱 <strong>Cài đặt cảm ứng:</strong> Tùy chỉnh vị trí và độ to nhỏ của cần Joystick và nút Lướt để tay thao tác thoải mái nhất trên điện thoại.
+          </div>
+
+          <div class="touch-setting-group">
+            <label class="touch-setting-title">🎮 Bố cục tay cầm:</label>
+            <div class="touch-btn-options">
+              <button id="optLayoutRight" class="btn-touch-opt active" onclick="setTouchOption('layout', 'right')">
+                👉 Thuận tay Phải (Joy Trái - Lướt Phải)
+              </button>
+              <button id="optLayoutLeft" class="btn-touch-opt" onclick="setTouchOption('layout', 'left')">
+                👈 Thuận tay Trái (Joy Phải - Lướt Trái)
+              </button>
+            </div>
+          </div>
+
+          <div class="touch-setting-group">
+            <label class="touch-setting-title">🕹️ Kích thước Cần Điều Khiển (Joystick):</label>
+            <div class="touch-btn-options">
+              <button id="optJoySmall" class="btn-touch-opt" onclick="setTouchOption('joystickSize', 'small')">Nhỏ (88px)</button>
+              <button id="optJoyMedium" class="btn-touch-opt active" onclick="setTouchOption('joystickSize', 'medium')">Vừa (116px)</button>
+              <button id="optJoyLarge" class="btn-touch-opt" onclick="setTouchOption('joystickSize', 'large')">Lớn (148px)</button>
+            </div>
+          </div>
+
+          <div class="touch-setting-group">
+            <label class="touch-setting-title">⚡ Kích thước Nút Lướt / Nhảy (Dash):</label>
+            <div class="touch-btn-options">
+              <button id="optDashSmall" class="btn-touch-opt" onclick="setTouchOption('dashSize', 'small')">Nhỏ (60px)</button>
+              <button id="optDashMedium" class="btn-touch-opt active" onclick="setTouchOption('dashSize', 'medium')">Vừa (74px)</button>
+              <button id="optDashLarge" class="btn-touch-opt" onclick="setTouchOption('dashSize', 'large')">Lớn (92px)</button>
+            </div>
+          </div>
+
+          <div class="touch-setting-group">
+            <label class="touch-setting-title">🎯 Độ nhạy Cần Điều Khiển (Sensitivity):</label>
+            <div class="touch-btn-options">
+              <button id="optSens08" class="btn-touch-opt" onclick="setTouchOption('sensitivity', 0.8)">0.8x (Chính xác)</button>
+              <button id="optSens10" class="btn-touch-opt active" onclick="setTouchOption('sensitivity', 1.0)">1.0x (Chuẩn)</button>
+              <button id="optSens12" class="btn-touch-opt" onclick="setTouchOption('sensitivity', 1.2)">1.2x (Nhanh)</button>
+              <button id="optSens15" class="btn-touch-opt" onclick="setTouchOption('sensitivity', 1.5)">1.5x (Siêu nhạy)</button>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 14px;">
+            <button class="btn-keybind-reset" onclick="resetTouchConfigToDefault()">🔄 Đặt Lại Cảm Ứng Mặc Định</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div style="display: flex; gap: 16px; justify-content: center; margin-top: 14px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px;">
+        <button id="btnCloseSettings" class="btn-start" style="font-size: 15px; padding: 9px 36px;" onclick="closeSettingsModal()">HOÀN TẤT & ĐÓNG</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- PAUSE MODAL -->
+  <div id="pauseOverlay" class="overlay hidden">
+    <div class="results-modal">
+      <h2 class="modal-title" style="color: var(--gold);">TẠM DỪNG TRẬN CHIẾN</h2>
+      <p style="color: #94a3b8;">Nghỉ lấy lại hơi trước khi tiếp tục chiến đấu!</p>
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+        <button id="btnResume" class="btn-start" style="font-size: 16px; padding: 10px 28px;" onclick="togglePauseGame()">TIẾP TỤC</button>
+        <button id="btnRestart" class="hud-btn" style="font-size: 16px; padding: 10px 20px;" onclick="restartGameNow()">CHƠI LẠI</button>
+        <button id="btnPauseSettings" class="hud-btn" style="font-size: 16px; padding: 10px 20px;" onclick="openSettingsModal()">⚙️ CÀI ĐẶT</button>
+        <button id="btnPauseQuitRun" class="hud-btn" style="font-size: 16px; padding: 10px 20px; background: #991b1b; border-color: #ef4444;" onclick="quitToLobby()">THOÁT RA SẢNH</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- GAME OVER MODAL -->
+  <div id="gameOverOverlay" class="overlay hidden">
+    <div class="results-modal">
+      <h2 class="modal-title">BẠN ĐÃ GỤC NGÃ!</h2>
+      <p style="color: #cbd5e1;">"Đừng bao giờ từ bỏ... Không từ bỏ chính là ma pháp của ta!" - Asta</p>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div id="goTime" class="stat-val">00:00</div>
+          <div class="stat-lbl">Thời Gian Sống</div>
+        </div>
+        <div class="stat-item">
+          <div id="goKills" class="stat-val">0</div>
+          <div class="stat-lbl">Kẻ Địch Hạ Gục</div>
+        </div>
+        <div class="stat-item">
+          <div id="goLevel" class="stat-val">1</div>
+          <div class="stat-lbl">Cấp Độ Đạt Được</div>
+        </div>
+      </div>
+
+      <button id="btnRetry" class="btn-start" onclick="retryFromGameOver()">THỬ LẠI NGAY</button>
+    </div>
+  </div>
+
+
+
+  <!-- VICTORY MODAL (Sau khi hạ Boss cuối phút 30) -->
+  <div id="victoryOverlay" class="overlay hidden">
+    <div class="results-modal" style="border-color: var(--gold); box-shadow: 0 0 40px rgba(245, 158, 11, 0.6); max-width: 600px;">
+      <h2 class="modal-title victory">👑 CHIẾN THẮNG HUYỀN THOẠI! 👑</h2>
+      <p style="color: #fde68a; font-size: 16px; font-weight: 700;">
+        Bạn đã tiêu diệt Đại Boss Tối Cao ở phút 30 và cứu rỗi Vương Quốc Clover! Danh hiệu <b>MA PHÁP ĐẾ (WIZARD KING)</b> thuộc về bạn!
+      </p>
+
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div id="vicTime" class="stat-val">30:00</div>
+          <div class="stat-lbl">Thời Gian Sống Sót</div>
+        </div>
+        <div class="stat-item">
+          <div id="vicKills" class="stat-val">0</div>
+          <div class="stat-lbl">Kẻ Địch Đã Quét Sạch</div>
+        </div>
+        <div class="stat-item">
+          <div id="vicLevel" class="stat-val">0</div>
+          <div class="stat-lbl">Cấp Độ Tối Thượng</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 16px; justify-content: center; width: 100%; margin-top: 14px;">
+        <button id="btnContinueEndless" class="btn-start" style="font-size: 16px; padding: 12px 24px; background: linear-gradient(135deg, #10b981, #059669); border-color: #6ee7b7;" onclick="continueEndless()">TIẾP TỤC (CHẾ ĐỘ VÔ TẬN)</button>
+        <button id="btnFinishRun" class="hud-btn" style="font-size: 16px; padding: 12px 24px; background: #1e293b; border-color: #f59e0b; color: #fbbf24;" onclick="quitToLobby()">KẾT THÚC MÀN CHƠI</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Core Scripts with Cache-Buster Queries -->
+  <script src="src/audio.js?v=bc131"></script>
+  <script src="src/sprites.js?v=bc131"></script>
+  <script src="src/spells.js?v=bc131"></script>
+  <script src="src/enemies.js?v=bc131"></script>
+  <script src="src/artifacts.js?v=bc131"></script>
+  <script src="src/auth.js?v=bc131"></script>
+  <script src="src/game.js?v=bc131"></script>
+
+  <!-- Global App Controller & Event Handlers -->
+  <script>
+    let gameInstance = null;
+    let selectedHeroId = 'asta';
+    let selectedMapId = 'clover_plains';
+    let selectedDifficulty = 'normal';
+    let pausedBySettings = false;
+    let pausedByStats = false;
+
+    function ensureGameInstance() {
+      if (!gameInstance && typeof Game !== 'undefined') {
+        try {
+          gameInstance = new Game();
+          window.gameInstance = gameInstance;
+          gameInstance.selectedCharId = selectedHeroId;
+          gameInstance.selectedMapId = selectedMapId;
+          gameInstance.selectedDifficulty = selectedDifficulty;
+        } catch (e) {
+          console.error('Init Game error:', e);
+        }
+      }
+      return gameInstance;
+    }
+    window.ensureGameInstance = ensureGameInstance;
+    window.updateSelectedCharInfo = updateSelectedCharInfo;
+    window.renderCharRosterGrid = renderCharRosterGrid;
+    window.renderArtifactsModal = (typeof renderArtifactsModal !== 'undefined') ? renderArtifactsModal : null;
+
+    // Showcase & Char Info Sync
+    function selectHero(charId) {
+      selectedHeroId = charId;
+      if (gameInstance) gameInstance.selectedCharId = charId;
+      updateSelectedCharInfo(charId);
+      renderCharRosterGrid();
+    }
+
+    function updateSelectedCharInfo(id) {
+      const allChars = (typeof CHARACTERS !== 'undefined') ? CHARACTERS : (window.CHARACTERS || {});
+      const allSpells = (typeof SPELL_DEFS !== 'undefined') ? SPELL_DEFS : (window.SPELL_DEFS || {});
+      const c = allChars[id] || allChars['asta'];
+      if (!c) return;
+
+      const avEl = document.getElementById('scAvatarRing');
+      const nameEl = document.getElementById('scHeroName');
+      const badgeEl = document.getElementById('scRarityBadge');
+      const titleEl = document.getElementById('scHeroTitle');
+      const squadEl = document.getElementById('scSquadBadge');
+      const magicEl = document.getElementById('scMagicBadge');
+      const ownedEl = document.getElementById('scOwnedBadge');
+      const weaponEl = document.getElementById('scWeaponName');
+      const evoEl = document.getElementById('scEvoName');
+      const superEvoEl = document.getElementById('scSuperEvoName');
+      const mapEl = document.getElementById('scMapName');
+      const statsEl = document.getElementById('scStatsSummary');
+      const traitEl = document.getElementById('scSpecialTrait');
+
+      const g = ensureGameInstance();
+      if (avEl) avEl.innerText = (window.CHAR_EMOJIS && window.CHAR_EMOJIS[id]) || '🍀';
+      if (nameEl) nameEl.innerText = c.name.toUpperCase();
+      if (badgeEl) {
+        badgeEl.className = `showcase-rarity-badge ${c.rarity}`;
+        badgeEl.innerText = {
+          legendary: '⭐ THẦN THOẠI',
+          epic: '✨ SỬ THI',
+          rare: '🌟 HIẾM',
+          common: '🔹 PHỔ THÔNG'
+        }[c.rarity] || c.rarity.toUpperCase();
+      }
+      if (titleEl) titleEl.innerText = c.title || '';
+      if (squadEl) squadEl.innerText = `🛡️ ${c.squad || 'Clover'}`;
+      if (magicEl) magicEl.innerText = `✨ ${c.magic || 'Ma Pháp'}`;
+      if (ownedEl && g) {
+        const total = Object.keys(allChars).length;
+        ownedEl.innerText = `🏆 Sở Hữu: ${g.unlockedCharacters ? g.unlockedCharacters.size : total}/${total}`;
+      }
+
+      const wDef = allSpells[c.startingWeapon];
+      if (weaponEl) weaponEl.innerText = wDef ? `${wDef.icon || '⚔️'} ${wDef.name}` : c.startingWeapon;
+
+      const evoDef = wDef && wDef.evolution ? allSpells[wDef.evolution] : null;
+      const reqDef = wDef && wDef.requires ? allSpells[wDef.requires] : null;
+      const superDef = evoDef && evoDef.evolution ? allSpells[evoDef.evolution] : null;
+
+      if (evoEl) evoEl.innerText = evoDef ? `${evoDef.icon || '⭐'} ${evoDef.name}` : 'Chưa Khai Mở';
+      const evoReqEl = document.getElementById('scEvoReq');
+      if (evoReqEl) {
+        evoReqEl.innerHTML = evoDef ? `Yêu cầu: <b>Vũ khí Cấp 5</b> + <b>Sách ${reqDef ? reqDef.name : 'Không cần'}</b>` : '';
+      }
+
+      if (superEvoEl) superEvoEl.innerText = superDef ? `${superDef.icon || '🌟'} ${superDef.name}` : 'Chưa Khai Mở';
+      const superEvoReqEl = document.getElementById('scSuperEvoReq');
+      if (superEvoReqEl) {
+        superEvoReqEl.innerHTML = superDef ? `Yêu cầu: Kỹ năng chính + <b>Nhân vật đạt Cấp 10+</b>` : '';
+      }
+
+      if (mapEl) {
+        const diffDef = (window.MAP_DIFFICULTIES && window.MAP_DIFFICULTIES[selectedDifficulty]) || { icon: '🟢', name: 'Bình Thường' };
+        const mapName = selectedMapId === 'underworld_palace' ? 'Map 2: Đại Ma Cung Minh Giới' : 'Map 1: Vương Quốc Clover';
+        mapEl.innerText = `${mapName} (${diffDef.icon} ${diffDef.name}) ▾`;
+      }
+
+      if (statsEl) {
+        statsEl.innerText = `HP: ${c.baseHp} | Tốc Độ: ${c.baseSpeed} | Giáp: ${Math.round((c.baseArmor || 0) * 100)}%`;
+      }
+      if (traitEl) traitEl.innerText = c.specialTrait || '';
+    }
+
+    // Modal Controllers
+    function openCharSelectModal() {
+      renderCharRosterGrid();
+      document.getElementById('charSelectModal').classList.remove('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function closeCharSelectModal() {
+      document.getElementById('charSelectModal').classList.add('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    let currentRosterFilter = 'all';
+    function filterCharRoster(filter, el) {
+      currentRosterFilter = filter;
+      document.querySelectorAll('.char-filter-tab').forEach(b => b.classList.remove('active'));
+      if (el) el.classList.add('active');
+      renderCharRosterGrid();
+    }
+
+    function renderCharRosterGrid() {
+      const container = document.getElementById('charRosterGrid');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const allChars = (typeof CHARACTERS !== 'undefined') ? CHARACTERS : (window.CHARACTERS || {});
+      const g = ensureGameInstance();
+
+      const rarityWeight = { legendary: 4, epic: 3, rare: 2, common: 1 };
+      const rarityNameMap = {
+        legendary: '⭐ THẦN THOẠI',
+        epic: '✨ SỬ THI',
+        rare: '🌟 HIẾM',
+        common: '🔹 PHỔ THÔNG'
+      };
+      const rarityColorMap = {
+        legendary: '#f59e0b',
+        epic: '#c084fc',
+        rare: '#38bdf8',
+        common: '#94a3b8'
+      };
+
+      const sortedEntries = Object.entries(allChars).sort((a, b) => {
+        return (rarityWeight[b[1].rarity] || 0) - (rarityWeight[a[1].rarity] || 0);
+      });
+
+      for (const [id, c] of sortedEntries) {
+        // Apply filter
+        if (currentRosterFilter === 'owned' && g && !g.unlockedCharacters.has(id)) continue;
+        if (currentRosterFilter === 'bulls' && !c.squad.includes('Black Bulls') && !c.squad.includes('Hắc Bộc Ngưu')) continue;
+        if (currentRosterFilter === 'captains' && !c.title.includes('Đoàn Trưởng') && !c.title.includes('Hoàng Kim') && !c.title.includes('Ma Pháp Đế')) continue;
+        if (currentRosterFilter === 'legendary' && c.rarity !== 'legendary') continue;
+        if (currentRosterFilter === 'epic' && c.rarity !== 'epic') continue;
+        if (currentRosterFilter === 'rare' && c.rarity !== 'rare') continue;
+        if (currentRosterFilter === 'common' && c.rarity !== 'common') continue;
+
+        const isUnlocked = g ? g.unlockedCharacters.has(id) : (c.unlocked !== false);
+        const card = document.createElement('div');
+        card.className = `char-roster-card ${c.rarity} ${id === selectedHeroId ? 'selected' : ''} ${!isUnlocked ? 'locked' : ''}`;
+        card.onclick = () => {
+          if (!isUnlocked) {
+            const goToGacha = confirm(`🔒 Nhân vật [${c.name}] (${rName}) chưa được mở khóa!\n\nBạn có muốn mở ngay Bảng Triệu Hồi (Gacha) để triệu hồi nhân vật này không?`);
+            if (goToGacha) {
+              closeCharSelectModal();
+              openGachaModal();
+              switchGachaBannerMode('heroes');
+            }
+            if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+            return;
+          }
+          selectHero(id);
+          if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+        };
+
+        const emoji = (window.CHAR_EMOJIS && window.CHAR_EMOJIS[id]) || '🍀';
+        const rName = rarityNameMap[c.rarity] || c.rarity.toUpperCase();
+        const rColor = rarityColorMap[c.rarity] || '#ffffff';
+
+        card.innerHTML = `
+          <div class="roster-avatar">${emoji}</div>
+          <div class="roster-name">${c.name}</div>
+          <div class="roster-squad">${c.squad.split('(')[0]}</div>
+          <div style="font-size: 10px; font-weight: 800; color: ${rColor}; margin-top: 3px; letter-spacing: 0.5px;">
+            ${rName}
+          </div>
+          ${!isUnlocked ? '<div class="roster-lock-badge">🔒 CHƯA MỞ</div>' : ''}
+        `;
+        container.appendChild(card);
+      }
+    }
+
+    let activeGachaMode = 'heroes';
+
+    function switchGachaBannerMode(mode) {
+      activeGachaMode = mode;
+      const tabHeroes = document.getElementById('gachaTabHeroes');
+      const tabArtifacts = document.getElementById('gachaTabArtifacts');
+      const subtitle = document.getElementById('gachaBannerSubtitle');
+      const title = document.getElementById('gachaBannerMainTitle');
+      const desc = document.getElementById('gachaBannerDesc');
+      const icon = document.getElementById('gachaBannerIcon');
+      const singleBtn = document.getElementById('gachaPullBtnSingle');
+      const multiBtn = document.getElementById('gachaPullBtnMulti');
+
+      const megaBtn = document.getElementById('gachaPullBtnMega');
+
+      if (mode === 'heroes') {
+        if (tabHeroes) tabHeroes.classList.add('active');
+        if (tabArtifacts) tabArtifacts.classList.remove('active');
+        if (subtitle) subtitle.innerText = 'BANNER ĐẶC BIỆT TỶ LỆ CAO';
+        if (title) title.innerText = 'ĐẠI CHIẾN MA PHÁP & QUỶ THẦN';
+        if (desc) desc.innerText = 'Cơ hội triệu hồi Julius, Lumiere, Black Asta, Zenon, Dante, Vanica cùng 39 Ma Đạo Sĩ hùng mạnh! Mở khóa nhân vật mới hoặc nhận thưởng Coins & Vé khi trùng lặp!';
+        if (icon) icon.innerText = '📖✨';
+        if (singleBtn) singleBtn.innerText = '🔮 TRIỆU HỒI PHÁP SƯ x1';
+        if (multiBtn) multiBtn.innerText = '🌟 TRIỆU HỒI PHÁP SƯ x10';
+        if (megaBtn) megaBtn.innerText = '🔥 TRIỆU HỒI PHÁP SƯ x100';
+      } else {
+        if (tabHeroes) tabHeroes.classList.remove('active');
+        if (tabArtifacts) tabArtifacts.classList.add('active');
+        if (subtitle) subtitle.innerText = 'BẢO TÀNG MA THẦN CỔ ĐẠI';
+        if (title) title.innerText = 'KHO TÀNG CỔ VẬT HUYỀN BÍ';
+        if (desc) desc.innerText = 'Khai mở 14 Tạo Vật & Cổ Vật Cổ Đại (Vương Miện Julius, Tàn Kiếm Licht, Sách Quỷ Zagred, Khối Không Thời Gian, Tro Phượng Hoàng...)! Nhận Cổ Vật mới hoặc Nâng Sao lên ★3!';
+        if (icon) icon.innerText = '🏺💫';
+        if (singleBtn) singleBtn.innerText = '🏺 TRIỆU HỒI TẠO VẬT x1';
+        if (multiBtn) multiBtn.innerText = '🌟 TRIỆU HỒI TẠO VẬT x10';
+        if (megaBtn) megaBtn.innerText = '🔥 TRIỆU HỒI TẠO VẬT x100';
+      }
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function handleActiveGachaPull(count) {
+      if (activeGachaMode === 'artifacts') {
+        performArtifactGachaRoll(count);
+      } else {
+        performGachaRoll(count);
+      }
+    }
+
+    function updateGachaModalDisplay() {
+      const g = ensureGameInstance();
+      if (!g) return;
+      const tEl = document.getElementById('gachaTicketDisplay');
+      const cEl = document.getElementById('gachaCoinDisplay');
+      const pText = document.getElementById('pity1000Text');
+      const pFill = document.getElementById('pity1000Fill');
+      const pRew = document.getElementById('pity1000RewardText');
+
+      if (tEl) tEl.innerText = `${(g.currency.tickets || 0).toLocaleString()} 🎫`;
+      if (cEl) cEl.innerText = `${(g.currency.coins || 0).toLocaleString()} 🪙`;
+
+      const pCount = g.pity1000Counter || 0;
+      if (pText) pText.innerText = `${pCount} / 1000 lượt`;
+      if (pFill) pFill.style.width = `${Math.min(100, (pCount / 1000) * 100)}%`;
+
+      const allChars = typeof CHARACTERS !== 'undefined' ? Object.keys(CHARACTERS) : [];
+      const totalChars = allChars.length || 39;
+      const owned = g.unlockedCharacters ? g.unlockedCharacters.size : 4;
+      if (pRew) {
+        if (owned >= totalChars) {
+          pRew.innerText = `🎉 ĐÃ MỞ KHÓA TẤT CẢ (${owned}/${totalChars}) TƯỚNG!`;
+          pRew.style.color = '#4ade80';
+        } else {
+          pRew.innerText = `🎁 Đủ 1000 lượt: 100% Ra Tướng Mới! (Còn ${totalChars - owned} tướng)`;
+          pRew.style.color = '#38bdf8';
+        }
+      }
+    }
+
+    function openGachaModal() {
+      updateGachaModalDisplay();
+      switchGachaBannerMode(activeGachaMode);
+      document.getElementById('gachaModal').classList.remove('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function closeGachaModal() {
+      document.getElementById('gachaModal').classList.add('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function performGachaRoll(count) {
+      const g = ensureGameInstance();
+      if (g && g.pullGacha) {
+        g.pullGacha(g.currentGachaBanner || 'spooky', count, false);
+        updateGachaModalDisplay();
+      }
+    }
+
+    function performArtifactGachaRoll(count) {
+      const g = ensureGameInstance();
+      if (g && g.pullArtifactGacha) {
+        g.pullArtifactGacha(count);
+        updateGachaModalDisplay();
+      }
+    }
+
+    function closeGachaResults() {
+      document.getElementById('gachaResultOverlay').classList.add('hidden');
+      renderCharRosterGrid();
+      if (typeof renderArtifactsModal === 'function') renderArtifactsModal();
+    }
+
+    // ARTIFACTS / TẠO VẬT MODAL CONTROLLER
+    let currentArtifactFilter = 'all';
+
+    function openArtifactsModal() {
+      renderArtifactsModal();
+      document.getElementById('artifactsModal').classList.remove('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function closeArtifactsModal() {
+      document.getElementById('artifactsModal').classList.add('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function setArtifactFilter(filter, btn) {
+      currentArtifactFilter = filter;
+      document.querySelectorAll('#artifactsModal .evo-filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderArtifactsModal();
+    }
+
+    function renderArtifactsModal() {
+      const g = ensureGameInstance();
+      if (!g || !g.artifacts) return;
+
+      const artSys = g.artifacts;
+      const defs = window.ARTIFACT_DEFS || {};
+
+      // 1. Render 3 Equipped Slots
+      const slotsContainer = document.getElementById('relicEquippedSlotsContainer');
+      if (slotsContainer) {
+        slotsContainer.innerHTML = '';
+        for (let i = 0; i < 3; i++) {
+          const artId = artSys.equipped[i];
+          const slotBox = document.createElement('div');
+          slotBox.className = `relic-slot-box ${artId ? 'filled' : 'empty'}`;
+
+          if (artId && defs[artId]) {
+            const def = defs[artId];
+            const star = artSys.getStar(artId);
+            slotBox.innerHTML = `
+              <div class="slot-label">⚡ Ô TRANG BỊ ${i + 1}</div>
+              <div class="relic-slot-icon">${def.icon}</div>
+              <div class="relic-slot-name">${def.name}</div>
+              <div class="relic-slot-stars">${'★'.repeat(star)}${'☆'.repeat(3 - star)}</div>
+              <button class="btn-unequip-slot" onclick="unequipArtifactSlot(${i})">✕ Tháo Ra</button>
+            `;
+          } else {
+            slotBox.innerHTML = `
+              <div class="slot-label">Ô TRANG BỊ ${i + 1}</div>
+              <div style="font-size: 26px; color: #64748b; margin: 4px 0;">🏺</div>
+              <div style="font-size: 11.5px; color: #94a3b8; font-style: italic;">Chưa trang bị</div>
+              <small style="color: #64748b; font-size: 10px;">Chọn Cổ Vật bên dưới để gắn</small>
+            `;
+          }
+          slotsContainer.appendChild(slotBox);
+        }
+      }
+
+      // 2. Collection Count
+      const allIds = Object.keys(defs);
+      const unlockedCount = allIds.filter(id => artSys.isUnlocked(id)).length;
+      const countEl = document.getElementById('relicCollectionCount');
+      if (countEl) countEl.innerText = `${unlockedCount}/${allIds.length}`;
+
+      // 3. Render Artifacts Grid
+      const gridContainer = document.getElementById('relicsGridContainer');
+      if (gridContainer) {
+        gridContainer.innerHTML = '';
+        let filteredIds = allIds;
+        if (currentArtifactFilter !== 'all') {
+          filteredIds = allIds.filter(id => defs[id].rarity === currentArtifactFilter);
+        }
+
+        filteredIds.forEach(id => {
+          const def = defs[id];
+          const isOwned = artSys.isUnlocked(id);
+          const star = artSys.getStar(id);
+          const equippedSlot = artSys.equipped.indexOf(id);
+          const isEquipped = equippedSlot !== -1;
+
+          const card = document.createElement('div');
+          card.className = `relic-item-card ${def.rarity} ${isOwned ? '' : 'locked'}`;
+
+          // Format stats pills
+          const statLines = [];
+          const s = def.stats;
+          const starMult = 1.0 + (star - 1) * 0.25;
+          if (s.maxHp) statLines.push(`💚 +${Math.round(s.maxHp * starMult)} HP`);
+          if (s.damageBonus) statLines.push(`⚔️ +${Math.round(s.damageBonus * 100 * starMult)}% ST`);
+          if (s.armor) statLines.push(`🛡️ +${Math.round(s.armor * 100 * starMult)}% Giáp`);
+          if (s.speed) statLines.push(`⚡ +${Math.round(s.speed * 100 * starMult)}% Spd`);
+          if (s.cooldownReduction) statLines.push(`⏱️ -${Math.round(s.cooldownReduction * 100 * starMult)}% Hồi Chiêu`);
+          if (s.areaBonus) statLines.push(`💥 +${Math.round(s.areaBonus * 100 * starMult)}% Lan`);
+          if (s.critChance) statLines.push(`🎯 +${Math.round(s.critChance * 100 * starMult)}% Crit`);
+          if (s.hpRegen) statLines.push(`💖 +${(s.hpRegen * starMult).toFixed(1)} HP/s`);
+          if (s.expBonus) statLines.push(`📘 +${Math.round(s.expBonus * 100 * starMult)}% EXP`);
+          if (s.coinBonus) statLines.push(`🪙 +${Math.round(s.coinBonus * 100 * starMult)}% Vàng`);
+
+          let actionButtons = '';
+          if (!isOwned) {
+            actionButtons = `<div style="text-align: center; font-size: 11.5px; color: #ef4444; font-weight: 700; padding: 6px; background: rgba(0,0,0,0.3); border-radius: 6px;">🔒 Chưa sở hữu (Hạ Boss để rơi)</div>`;
+          } else if (isEquipped) {
+            actionButtons = `
+              <button class="btn-equip-relic equipped" onclick="unequipArtifactSlot(${equippedSlot})">
+                ✅ ĐANG TRANG BỊ Ô ${equippedSlot + 1} (Nhấn để Tháo)
+              </button>
+            `;
+          } else {
+            actionButtons = `
+              <div style="display: flex; gap: 6px; width: 100%;">
+                <button class="btn-equip-relic" onclick="equipArtifactToSlot('${id}', 0)">Gắn Ô 1</button>
+                <button class="btn-equip-relic" onclick="equipArtifactToSlot('${id}', 1)">Gắn Ô 2</button>
+                <button class="btn-equip-relic" onclick="equipArtifactToSlot('${id}', 2)">Gắn Ô 3</button>
+              </div>
+            `;
+          }
+
+          card.innerHTML = `
+            <div class="relic-card-header">
+              <div class="relic-card-icon">${def.icon}</div>
+              <div class="relic-card-title-block">
+                <div class="relic-card-name">${def.name}</div>
+                <div class="relic-card-tagline">${def.tagline}</div>
+              </div>
+              <div style="text-align: right;">
+                <span class="showcase-rarity-badge ${def.rarity}" style="font-size: 9.5px; padding: 2px 7px;">
+                  ${def.rarity === 'legendary' ? 'THẦN THOẠI' : (def.rarity === 'epic' ? 'SỬ THI' : 'HIẾM')}
+                </span>
+                ${isOwned ? `<div style="color:#fbbf24; font-size:11px; font-weight:800; margin-top:3px;">${'★'.repeat(star)}${'☆'.repeat(3 - star)}</div>` : ''}
+              </div>
+            </div>
+
+            <div class="relic-card-desc">${def.description}</div>
+
+            <div class="relic-stat-list">
+              ${statLines.map(t => `<span class="relic-stat-pill">${t}</span>`).join('')}
+            </div>
+
+            <div class="relic-skill-box">
+              <div class="skill-title">✨ Kỹ Năng: ${def.skillName}</div>
+              <div>${def.skillDesc}</div>
+            </div>
+
+            <div class="relic-card-actions">
+              ${actionButtons}
+            </div>
+          `;
+          gridContainer.appendChild(card);
+        });
+      }
+    }
+
+    function equipArtifactToSlot(artId, slotIdx) {
+      const g = ensureGameInstance();
+      if (!g || !g.artifacts) return;
+      g.artifacts.equip(artId, slotIdx);
+      renderArtifactsModal();
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function unequipArtifactSlot(slotIdx) {
+      const g = ensureGameInstance();
+      if (!g || !g.artifacts) return;
+      g.artifacts.unequip(slotIdx);
+      renderArtifactsModal();
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function closeArtifactDiscoveryModal() {
+      document.getElementById('artifactDiscoveryModal').classList.add('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function openUpgradesModal() {
+      renderUpgradesTalentGrid();
+      document.getElementById('upgradesModal').classList.remove('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function closeUpgradesModal() {
+      document.getElementById('upgradesModal').classList.add('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function renderUpgradesTalentGrid() {
+      const container = document.getElementById('talentsGridContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      const g = ensureGameInstance();
+      if (!g) return;
+
+      const coinEl = document.getElementById('upgradeMenuCoins');
+      if (coinEl) coinEl.innerText = g.currency.coins.toLocaleString();
+
+      const TALENTS = [
+        { id: 'vitality', name: 'Sinh Lực (Max HP)', desc: '+8 HP mỗi cấp', icon: '❤️', max: 10, cost: 200 },
+        { id: 'strength', name: 'Uy Lực (Damage)', desc: '+4% Sát thương phép', icon: '🥊', max: 10, cost: 200 },
+        { id: 'stride', name: 'Tốc Hành (Speed)', desc: '+3% Tốc độ chạy', icon: '👟', max: 10, cost: 200 },
+        { id: 'reflexes', name: 'Hồi Chiêu (CDR)', desc: '-3% Thời gian hồi', icon: '⏰', max: 10, cost: 200 },
+        { id: 'armor', name: 'Giáp Thép (Defense)', desc: '+2% Giảm sát thương', icon: '🛡️', max: 10, cost: 200 },
+        { id: 'synthesis', name: 'Tự Phục Hồi (Regen)', desc: '+0.2 HP/s hồi phục', icon: '🌿', max: 10, cost: 200 },
+        { id: 'magnet', name: 'Nam Châm (Magnet)', desc: '+15% Bán kính hút', icon: '🧲', max: 10, cost: 200 },
+        { id: 'wisdom', name: 'Trí Tuệ (EXP)', desc: '+5% Điểm kinh nghiệm', icon: '📘', max: 10, cost: 200 },
+        { id: 'fortune', name: 'Thần Tài (Greed)', desc: '+8% Clover Coins rơi', icon: '🪙', max: 10, cost: 200 },
+        { id: 'repertoire', name: 'Khởi Điểm (2 Moves)', desc: 'Vào trận với 2 vũ khí', icon: '🃏', max: 1, cost: 800 },
+        { id: 'crit', name: 'Bạo Kích (Crit Rate)', desc: '+3% Tỉ lệ chí mạng', icon: '⭐', max: 10, cost: 200 },
+        { id: 'reroll', name: 'Đổi Bài (Rerolls)', desc: '+1 Lần đổi lá bài nâng cấp', icon: '🔄', max: 5, cost: 500 }
+      ];
+
+      const u = g.upgrades || {};
+
+      TALENTS.forEach(t => {
+        const lv = u[t.id] || 0;
+        const isMax = lv >= t.max;
+        const cost = Math.round(t.cost * Math.pow(1.3, lv));
+
+        const card = document.createElement('div');
+        card.className = 'talent-card';
+
+        let dotsHtml = '';
+        for (let i = 0; i < t.max; i++) {
+          dotsHtml += `<div class="talent-dot ${i < lv ? 'active' : ''}"></div>`;
+        }
+
+        card.innerHTML = `
+          <div class="talent-info">
+            <div class="talent-name-row">
+              <span>${t.icon}</span>
+              <span>${t.name}</span>
+            </div>
+            <div class="talent-desc">${t.desc}</div>
+            <div class="talent-level-dots">${dotsHtml}</div>
+          </div>
+          <div>
+            <button class="btn-buy-talent" ${isMax || g.currency.coins < cost ? 'disabled' : ''} onclick="buyTalent('${t.id}', ${cost})">
+              ${isMax ? 'TỐI ĐA' : `🪙 ${cost.toLocaleString()}`}
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function buyTalent(id, cost) {
+      const g = ensureGameInstance();
+      if (!g || g.currency.coins < cost) return;
+      g.currency.coins -= cost;
+      g.upgrades[id] = (g.upgrades[id] || 0) + 1;
+      if (window.soundEngine && window.soundEngine.upgradeBuy) window.soundEngine.upgradeBuy();
+      g.saveGameData();
+      renderUpgradesTalentGrid();
+    }
+
+    function resetAllUpgrades() {
+      const g = ensureGameInstance();
+      if (!g) return;
+      if (!confirm('Bạn có chắc muốn hoàn trả toàn bộ điểm nâng cấp và nhận lại 100% Coins?')) return;
+      // Refund calculation
+      let refund = 0;
+      const TALENTS = { vitality: 200, strength: 200, stride: 200, reflexes: 200, armor: 200, synthesis: 200, magnet: 200, wisdom: 200, fortune: 200, repertoire: 800, crit: 200, reroll: 500 };
+      for (const [id, lv] of Object.entries(g.upgrades)) {
+        const baseCost = TALENTS[id] || 200;
+        for (let i = 0; i < lv; i++) {
+          refund += Math.round(baseCost * Math.pow(1.3, i));
+        }
+        g.upgrades[id] = 0;
+      }
+      g.currency.coins += refund;
+      g.saveGameData();
+      renderUpgradesTalentGrid();
+    }
+
+    function openMapModal() {
+      document.querySelectorAll('#mapSelectModal .char-roster-card').forEach(c => c.classList.remove('selected'));
+      const activeCard = selectedMapId === 'underworld_palace' ? document.getElementById('mapCard2') : document.getElementById('mapCard1');
+      if (activeCard) activeCard.classList.add('selected');
+
+      document.querySelectorAll('.diff-card').forEach(c => c.classList.remove('selected'));
+      const activeDiff = document.getElementById(`diffCard_${selectedDifficulty}`);
+      if (activeDiff) activeDiff.classList.add('selected');
+
+      document.getElementById('mapSelectModal').classList.remove('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function closeMapModal() {
+      document.getElementById('mapSelectModal').classList.add('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function chooseMapOption(mapId) {
+      selectedMapId = mapId;
+      if (gameInstance) gameInstance.selectedMapId = mapId;
+      document.querySelectorAll('#mapSelectModal .char-roster-card').forEach(c => c.classList.remove('selected'));
+      const activeCard = selectedMapId === 'underworld_palace' ? document.getElementById('mapCard2') : document.getElementById('mapCard1');
+      if (activeCard) activeCard.classList.add('selected');
+      updateSelectedCharInfo(selectedHeroId);
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function chooseDifficultyOption(diffId) {
+      selectedDifficulty = diffId;
+      if (gameInstance) gameInstance.selectedDifficulty = diffId;
+      document.querySelectorAll('.diff-card').forEach(c => c.classList.remove('selected'));
+      const activeDiff = document.getElementById(`diffCard_${diffId}`);
+      if (activeDiff) activeDiff.classList.add('selected');
+      updateSelectedCharInfo(selectedHeroId);
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+
+    // In-Game Stats Inspector Modal
+    function openStatsInspector() {
+      const g = ensureGameInstance();
+      if (g) g.toggleStatsInspector();
+    }
+
+    function closeStatsInspector() {
+      const g = ensureGameInstance();
+      if (g) g.toggleStatsInspector();
+    }
+
+    // Evolution Grimoire Modal (Bí Kíp Công Thức & Yêu Cầu Tiến Hóa)
+    let currentEvoFilter = 'all';
+
+    function openEvolutionModal() {
+      const modal = document.getElementById('evolutionModal');
+      if (!modal) return;
+      modal.classList.remove('hidden');
+      renderEvolutionRecipes(currentEvoFilter);
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function closeEvolutionModal() {
+      const modal = document.getElementById('evolutionModal');
+      if (modal) modal.classList.add('hidden');
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function toggleEvolutionModal() {
+      const modal = document.getElementById('evolutionModal');
+      if (!modal) return;
+      if (modal.classList.contains('hidden')) {
+        openEvolutionModal();
+      } else {
+        closeEvolutionModal();
+      }
+    }
+
+    function setEvolutionTab(tab) {
+      currentEvoFilter = tab;
+      const tabs = ['all', 'equipped', 'ready'];
+      tabs.forEach(t => {
+        const btn = document.getElementById('tabEvo' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (btn) {
+          if (t === tab) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+      });
+      renderEvolutionRecipes(tab);
+      if (window.soundEngine && window.soundEngine.uiClick) window.soundEngine.uiClick();
+    }
+
+    function renderEvolutionRecipes(filter = 'all') {
+      const g = ensureGameInstance();
+      const p = g ? g.player : null;
+      const defs = (typeof SPELL_DEFS !== 'undefined') ? SPELL_DEFS : (window.SPELL_DEFS || {});
+      const container = document.getElementById('evolutionRecipeGrid');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const startingWeaponId = p ? p.startingWeaponId : null;
+
+      const recipeList = [];
+      for (const [wId, wDef] of Object.entries(defs)) {
+        if (wDef.type !== 'weapon' || !wDef.evolution) continue;
+
+        const evoDef = defs[wDef.evolution];
+        const superDef = (evoDef && evoDef.evolution) ? defs[evoDef.evolution] : null;
+        const reqBookDef = wDef.requires ? defs[wDef.requires] : null;
+
+        // In-game dynamic status
+        const isEquipped = p && !!p.weapons[wId];
+        const currentWepLv = (p && p.weapons[wId]) ? p.weapons[wId].level : 0;
+        const hasReqBook = p ? (!wDef.requires || !!p.passives[wDef.requires]) : false;
+        const isEvoAcquired = p && !!p.weapons[wDef.evolution];
+        const isSuperAcquired = p && superDef && !!p.weapons[superDef.id];
+        const isStartingWeapon = p && (wId === startingWeaponId);
+
+        const isReadyForEvo = isEquipped && currentWepLv >= 5 && hasReqBook && !isEvoAcquired;
+        const isReadyForSuper = isStartingWeapon && isEvoAcquired && p.level >= 10 && !isSuperAcquired;
+
+        if (filter === 'equipped' && !isEquipped && !isEvoAcquired && !isSuperAcquired) continue;
+        if (filter === 'ready' && !isReadyForEvo && !isReadyForSuper) continue;
+
+        recipeList.push({
+          wId, wDef, evoDef, superDef, reqBookDef,
+          isEquipped, currentWepLv, hasReqBook, isEvoAcquired, isSuperAcquired,
+          isStartingWeapon, isReadyForEvo, isReadyForSuper
+        });
+      }
+
+      if (recipeList.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; color: #94a3b8; padding: 40px 20px; font-style: italic; line-height: 1.6;">
+            ${filter === 'ready' ? '⚡ Hiện tại chưa có chiêu thức nào đủ điều kiện tiến hóa ngay lập tức.<br>Hãy nâng cấp vũ khí lên Cấp 5 và nhặt đúng Sách Bổ Trợ tương ứng!' : 'Chưa có chiêu thức nào phù hợp với bộ lọc.'}
+          </div>
+        `;
+        return;
+      }
+
+      // Sort ready first, then equipped, then rest
+      recipeList.sort((a, b) => {
+        const scoreA = (a.isReadyForEvo || a.isReadyForSuper ? 4 : 0) + (a.isEquipped ? 2 : 0);
+        const scoreB = (b.isReadyForEvo || b.isReadyForSuper ? 4 : 0) + (b.isEquipped ? 2 : 0);
+        return scoreB - scoreA;
+      });
+
+      recipeList.forEach(r => {
+        let statusBadge = '';
+        let cardStateClass = '';
+
+        if (r.isSuperAcquired) {
+          cardStateClass = 'ready';
+          statusBadge = '<span class="evo-status-pill super-unlocked">🌟 ĐÃ THỨC TỈNH SIÊU CẤP 2</span>';
+        } else if (r.isReadyForSuper) {
+          cardStateClass = 'ready';
+          statusBadge = `<span class="evo-status-pill ready">🔥 ĐỦ ĐK SIÊU TIẾN HÓA LẦN 2 (Cấp ${p ? p.level : 10}/10 ✅)</span>`;
+        } else if (r.isEvoAcquired) {
+          cardStateClass = 'ready';
+          if (r.isStartingWeapon) {
+            statusBadge = `<span class="evo-status-pill in-progress">⭐ ĐÃ TIẾN HÓA &bull; Cần Cấp 10 để Siêu Cấp 2 (${p ? p.level : 1}/10)</span>`;
+          } else {
+            statusBadge = '<span class="evo-status-pill in-progress">⭐ ĐÃ TIẾN HÓA CẤP CỰC HẠN</span>';
+          }
+        } else if (r.isReadyForEvo) {
+          cardStateClass = 'ready';
+          statusBadge = '<span class="evo-status-pill ready">🔥 ĐÃ ĐỦ ĐIỀU KIỆN TIẾN HÓA! (Chờ lên cấp hoặc rương)</span>';
+        } else if (r.isEquipped) {
+          cardStateClass = 'equipped';
+          statusBadge = `<span class="evo-status-pill in-progress">⚡ Đang Trang Bị: Cấp ${r.currentWepLv}/5 ${r.currentWepLv >= 5 ? '✅' : '⚠️'} &bull; Sách ${r.hasReqBook ? '✅' : '❌'}</span>`;
+        } else {
+          statusBadge = '<span class="evo-status-pill locked">🔒 Chưa Trang Bị</span>';
+        }
+
+        const card = document.createElement('div');
+        card.className = `evo-recipe-card ${cardStateClass}`;
+        card.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px;">
+            <div style="font-weight: 800; color: #fbbf24; font-size: 13.5px;">
+              ${r.wDef.name}
+            </div>
+            ${statusBadge}
+          </div>
+
+          <div class="evo-recipe-flow">
+            <div class="evo-flow-box weapon" title="Vũ Khí Cơ Bản (Cần đạt Cấp 5)">
+              <span style="font-size: 18px;">${r.wDef.icon || '⚔️'}</span>
+              <div>
+                <div style="font-weight: 700; color: #38bdf8;">${r.wDef.name.split('(')[0]}</div>
+                <div style="font-size: 10px; color: #94a3b8;">Yêu cầu: Cấp 5 ${r.isEquipped ? (r.currentWepLv >= 5 ? '✅' : `(Hiện tại: ${r.currentWepLv}/5)`) : ''}</div>
+              </div>
+            </div>
+
+            <div class="evo-flow-sign">+</div>
+
+            <div class="evo-flow-box book" title="Sách Bổ Trợ Yêu Cầu (Chỉ cần sở hữu)">
+              <span style="font-size: 18px;">${r.reqBookDef ? (r.reqBookDef.icon || '📘') : '📘'}</span>
+              <div>
+                <div style="font-weight: 700; color: #c084fc;">${r.reqBookDef ? r.reqBookDef.name.split('(')[0] : 'Không cần'}</div>
+                <div style="font-size: 10px; color: #94a3b8;">Yêu cầu: Có Sách ${r.hasReqBook ? '✅' : ''}</div>
+              </div>
+            </div>
+
+            <div class="evo-flow-sign">➔</div>
+
+            <div class="evo-flow-box evo" title="Chiêu Thức Tiến Hóa Cấp 1 (Tier 2)">
+              <span style="font-size: 18px;">${r.evoDef ? (r.evoDef.icon || '⭐') : '⭐'}</span>
+              <div>
+                <div style="font-weight: 800; color: #fbbf24;">${r.evoDef ? r.evoDef.name.split('(')[0] : 'Chưa rõ'}</div>
+                <div style="font-size: 10px; color: #fbbf24;">⭐ TIẾN HÓA CẤP 1 (TIER 2)</div>
+              </div>
+            </div>
+
+            ${r.superDef ? `
+              <div class="evo-flow-sign">➔</div>
+              <div class="evo-flow-box super" title="Siêu Tiến Hóa Lần 2 (Tier 3 - Dành riêng kĩ năng khởi đầu khi đạt Cấp 10+)">
+                <span style="font-size: 18px;">${r.superDef.icon || '🌟'}</span>
+                <div>
+                  <div style="font-weight: 800; color: #f472b6;">${r.superDef.name.split('(')[0]}</div>
+                  <div style="font-size: 10px; color: #f472b6;">🌟 SIÊU CẤP 2 (CẤP 10+)</div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+
+          <div style="font-size: 11.5px; color: #94a3b8; line-height: 1.4; background: rgba(0,0,0,0.25); padding: 6px 10px; border-radius: 6px;">
+            <b style="color: #cbd5e1;">Hiệu ứng Tiến Hóa:</b> ${r.evoDef ? r.evoDef.description : ''}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Game Actions
+    function startGameNow() {
+      const g = ensureGameInstance();
+      if (g) {
+        g.startGame(selectedHeroId, selectedMapId, selectedDifficulty);
+      }
+    }
+
+    function restartGameNow() {
+      const g = ensureGameInstance();
+      if (g) {
+        g.startGame(selectedHeroId, selectedMapId, selectedDifficulty);
+      }
+    }
+
+    function togglePauseGame() {
+      const g = ensureGameInstance();
+      if (g) g.togglePause();
+    }
+
+    function triggerDash() {
+      const g = ensureGameInstance();
+      if (g) g.playerDash();
+    }
+
+    function toggleTargetLock() {
+      const g = ensureGameInstance();
+      if (g) {
+        g.autoTargetEnabled = !g.autoTargetEnabled;
+        if (!g.autoTargetEnabled) g.currentTarget = null;
+        const btn = document.getElementById('btnAutoTarget');
+        if (btn) btn.innerText = g.autoTargetEnabled ? '🎯 GHIM: BẬT' : '🎯 GHIM: TẮT';
+      }
+    }
+
+    function toggleSoundSFX() {
+      if (window.soundEngine && window.soundEngine.toggleSFX) {
+        const active = window.soundEngine.toggleSFX();
+        const btn = document.getElementById('btnSoundToggle');
+        if (btn) btn.innerText = active ? '🔊 SFX' : '🔇 SFX Tắt';
+      }
+    }
+
+    function toggleSoundBGM() {
+      if (window.soundEngine && window.soundEngine.toggleBGM) {
+        const active = window.soundEngine.toggleBGM();
+        const btn = document.getElementById('btnBgmToggle');
+        if (btn) btn.innerText = active ? '🎵 BGM' : '🔇 BGM Tắt';
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function cycleSpeedToggle() {
+      const g = ensureGameInstance();
+      if (g) {
+        const speeds = [1.0, 2.0, 3.0, 5.0, 10.0];
+        let current = g.gameSpeed || 1.0;
+        let next = speeds[0];
+        for (let i = 0; i < speeds.length; i++) {
+          if (speeds[i] > current + 0.05) {
+            next = speeds[i];
+            break;
+          }
+        }
+        setSpeedPreset(next);
+      }
+    }
+
+    function changeSpeed(val) {
+      const spd = parseFloat(val) / 100;
+      setSpeedPreset(spd);
+    }
+
+    function setSpeedPreset(spd) {
+      const g = ensureGameInstance();
+      if (g) {
+        g.gameSpeed = spd;
+        g.saveSettings();
+      }
+      updateSpeedUI(spd);
+    }
+
+    function updateSpeedUI(spd) {
+      const speedText = document.getElementById('speedValText');
+      if (speedText) {
+        let label = `${spd.toFixed(1)}x`;
+        if (Math.abs(spd - 1.0) < 0.05) label = '1.0x (Chuẩn)';
+        else if (Math.abs(spd - 2.0) < 0.05) label = '2.0x (Nhanh)';
+        else if (Math.abs(spd - 3.0) < 0.05) label = '3.0x (Cực Nhanh)';
+        else if (Math.abs(spd - 5.0) < 0.05) label = '5.0x (Siêu Tốc)';
+        else if (Math.abs(spd - 10.0) < 0.05) label = '⚡ 10.0x (Tối Thượng)';
+        speedText.innerText = label;
+      }
+
+      const hudBtn = document.getElementById('btnSpeedToggle');
+      if (hudBtn) {
+        hudBtn.innerText = '⚡ ' + (spd >= 10 ? '10x' : (spd % 1 === 0 ? spd.toFixed(0) : spd.toFixed(1)) + 'x');
+      }
+
+      const slider = document.getElementById('sliderSpeed');
+      if (slider) slider.value = Math.round(spd * 100);
+
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        const bSpd = parseFloat(btn.dataset.speed);
+        if (Math.abs(bSpd - spd) < 0.05) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    function changeSFX(val) {
+      const percent = parseInt(val, 10);
+      if (window.soundEngine && window.soundEngine.setSFXVolume) {
+        window.soundEngine.setSFXVolume(percent / 100);
+      }
+      const text = document.getElementById('sfxValText');
+      if (text) text.innerText = percent + '%';
+      if (gameInstance) gameInstance.saveSettings();
+    }
+
+    function changeBGM(val) {
+      const percent = parseInt(val, 10);
+      if (window.soundEngine && window.soundEngine.setBGMVolume) {
+        window.soundEngine.setBGMVolume(percent / 100);
+      }
+      const text = document.getElementById('bgmValText');
+      if (text) text.innerText = percent + '%';
+      if (gameInstance) gameInstance.saveSettings();
+    }
+
+    function toggleShakeSetting() {
+      const g = ensureGameInstance();
+      if (g) {
+        g.screenShakeEnabled = !g.screenShakeEnabled;
+        updateShakeUI();
+        g.saveSettings();
+      }
+    }
+
+    function updateShakeUI() {
+      const g = ensureGameInstance();
+      const on = g ? g.screenShakeEnabled : true;
+      const shakeText = document.getElementById('shakeStatusText');
+      const btnShake = document.getElementById('btnToggleShake');
+      if (shakeText) {
+        shakeText.innerText = on ? 'BẬT' : 'TẮT';
+        shakeText.className = 'setting-val-badge ' + (on ? 'on' : 'off');
+      }
+      if (btnShake) {
+        btnShake.innerText = on ? 'BẬT (Khuyên Dùng)' : 'TẮT (Đã Tắt Rung)';
+        btnShake.style.background = on ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #64748b, #475569)';
+      }
+    }
+
+    
+    // ==================== SETTINGS TABS & CONTROLS MANAGEMENT ====================
+    window.isListeningForKeybind = false;
+    let currentListeningAction = null;
+    let currentListeningBtn = null;
+    let keybindKeyDownHandler = null;
+
+    function switchSettingsTab(tabName) {
+      document.querySelectorAll('.settings-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.settings-tab-content').forEach(c => c.classList.add('hidden'));
+
+      if (tabName === 'audio') {
+        const btn = document.getElementById('tabBtnAudio');
+        const content = document.getElementById('tabContentAudio');
+        if (btn) btn.classList.add('active');
+        if (content) content.classList.remove('hidden');
+      } else if (tabName === 'keyboard') {
+        const btn = document.getElementById('tabBtnKeyboard');
+        const content = document.getElementById('tabContentKeyboard');
+        if (btn) btn.classList.add('active');
+        if (content) content.classList.remove('hidden');
+        syncKeybindsUI();
+      } else if (tabName === 'touch') {
+        const btn = document.getElementById('tabBtnTouch');
+        const content = document.getElementById('tabContentTouch');
+        if (btn) btn.classList.add('active');
+        if (content) content.classList.remove('hidden');
+        syncTouchUI();
+      }
+    }
+
+    function syncKeybindsUI() {
+      const g = (typeof gameInstance !== 'undefined' && gameInstance) ? gameInstance : (window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance()));
+      if (!g || !g.keybinds) return;
+
+      const actions = ['up', 'down', 'left', 'right', 'dash', 'stats', 'evo', 'pause'];
+      actions.forEach(act => {
+        const btn = document.getElementById('btnKey_' + act);
+        if (btn) {
+          const rawCode = g.keybinds[act] || (DEFAULT_KEYBINDS && DEFAULT_KEYBINDS[act]) || '';
+          btn.innerText = g.formatKeyLabel ? g.formatKeyLabel(rawCode) : rawCode;
+          btn.classList.remove('listening');
+        }
+      });
+    }
+
+    function startKeybindListening(action, btnElement) {
+      const g = (typeof gameInstance !== 'undefined' && gameInstance) ? gameInstance : (window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance()));
+      if (!g) return;
+
+      // Cancel any previous listener
+      if (window.isListeningForKeybind && keybindKeyDownHandler) {
+        window.removeEventListener('keydown', keybindKeyDownHandler);
+        if (currentListeningBtn) {
+          syncKeybindsUI();
+        }
+      }
+
+      window.isListeningForKeybind = true;
+      currentListeningAction = action;
+      currentListeningBtn = btnElement;
+
+      btnElement.innerText = '🔴 Ấn phím mới...';
+      btnElement.classList.add('listening');
+
+      keybindKeyDownHandler = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const code = e.code;
+        // Escape cancels listening (unless remapping pause)
+        if (code === 'Escape' && action !== 'pause') {
+          window.isListeningForKeybind = false;
+          window.removeEventListener('keydown', keybindKeyDownHandler);
+          syncKeybindsUI();
+          showToast('Đã hủy đổi phím.');
+          return;
+        }
+
+        g.keybinds[action] = code;
+        g.saveControlSettings();
+        window.isListeningForKeybind = false;
+        window.removeEventListener('keydown', keybindKeyDownHandler);
+
+        if (window.soundEngine && window.soundEngine.pickup) {
+          window.soundEngine.pickup();
+        }
+
+        syncKeybindsUI();
+        showToast('✅ Đã gán phím mới: ' + g.formatKeyLabel(code));
+      };
+
+      window.addEventListener('keydown', keybindKeyDownHandler, { once: true });
+    }
+
+    function resetKeybindsToDefault() {
+      const g = (typeof gameInstance !== 'undefined' && gameInstance) ? gameInstance : (window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance()));
+      if (!g) return;
+
+      if (typeof DEFAULT_KEYBINDS !== 'undefined') {
+        g.keybinds = { ...DEFAULT_KEYBINDS };
+        g.saveControlSettings();
+        syncKeybindsUI();
+        if (window.soundEngine && window.soundEngine.pickup) window.soundEngine.pickup();
+        showToast('🔄 Đã khôi phục toàn bộ phím bàn phím mặc định!');
+      }
+    }
+
+    function syncTouchUI() {
+      const g = (typeof gameInstance !== 'undefined' && gameInstance) ? gameInstance : (window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance()));
+      if (!g || !g.touchConfig) return;
+
+      const tc = g.touchConfig;
+
+      // Layout
+      document.getElementById('optLayoutRight')?.classList.toggle('active', tc.layout === 'right');
+      document.getElementById('optLayoutLeft')?.classList.toggle('active', tc.layout === 'left');
+
+      // Joystick size
+      document.getElementById('optJoySmall')?.classList.toggle('active', tc.joystickSize === 'small');
+      document.getElementById('optJoyMedium')?.classList.toggle('active', tc.joystickSize === 'medium');
+      document.getElementById('optJoyLarge')?.classList.toggle('active', tc.joystickSize === 'large');
+
+      // Dash button size
+      document.getElementById('optDashSmall')?.classList.toggle('active', tc.dashSize === 'small');
+      document.getElementById('optDashMedium')?.classList.toggle('active', tc.dashSize === 'medium');
+      document.getElementById('optDashLarge')?.classList.toggle('active', tc.dashSize === 'large');
+
+      // Sensitivity
+      const sens = Number(tc.sensitivity || 1.0);
+      document.getElementById('optSens08')?.classList.toggle('active', sens === 0.8);
+      document.getElementById('optSens10')?.classList.toggle('active', sens === 1.0);
+      document.getElementById('optSens12')?.classList.toggle('active', sens === 1.2);
+      document.getElementById('optSens15')?.classList.toggle('active', sens === 1.5);
+    }
+
+    function setTouchOption(category, value) {
+      const g = (typeof gameInstance !== 'undefined' && gameInstance) ? gameInstance : (window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance()));
+      if (!g) return;
+
+      if (!g.touchConfig) {
+        g.touchConfig = (typeof DEFAULT_TOUCH_CONFIG !== 'undefined') ? { ...DEFAULT_TOUCH_CONFIG } : { layout: 'right', joystickSize: 'medium', dashSize: 'medium', sensitivity: 1.0 };
+      }
+
+      g.touchConfig[category] = value;
+      g.saveControlSettings();
+      syncTouchUI();
+
+      if (window.soundEngine && window.soundEngine.pickup) window.soundEngine.pickup();
+    }
+
+    function resetTouchConfigToDefault() {
+      const g = (typeof gameInstance !== 'undefined' && gameInstance) ? gameInstance : (window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance()));
+      if (!g) return;
+
+      if (typeof DEFAULT_TOUCH_CONFIG !== 'undefined') {
+        g.touchConfig = { ...DEFAULT_TOUCH_CONFIG };
+        g.saveControlSettings();
+        syncTouchUI();
+        if (window.soundEngine && window.soundEngine.pickup) window.soundEngine.pickup();
+        showToast('🔄 Đã khôi phục cài đặt cảm ứng mặc định!');
+      }
+    }
+
+    // MANUAL CLOUD SAVE (Quick Save Button)
+    window.manualCloudSave = async function(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      const btnSave = document.getElementById('btnTopNavSave');
+      if (!window.authManager || !window.authManager.isLoggedIn()) {
+        alert('Vui lòng ĐĂNG NHẬP tài khoản để lưu tiến trình game lên đám mây!');
+        if (typeof openAuthModal === 'function') openAuthModal();
+        return;
+      }
+
+      const g = (typeof gameInstance !== 'undefined' && gameInstance) ? gameInstance : (window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance()));
+      if (!g) return;
+
+      if (btnSave) {
+        btnSave.innerHTML = '<span>⏳</span> <span>ĐANG LƯU...</span>';
+        btnSave.disabled = true;
+      }
+
+      const ok = await window.authManager.pushSaveToServer(g.exportSaveData());
+      if (ok) {
+        if (window.soundEngine && window.soundEngine.pickup) window.soundEngine.pickup();
+        if (btnSave) {
+          btnSave.innerHTML = '<span>✅</span> <span>ĐÃ LƯU!</span>';
+          btnSave.style.background = 'linear-gradient(135deg, #15803d, #22c55e)';
+        }
+        showToast('☁️ Đã lưu tiến trình game thành công vào tài khoản ' + window.authManager.currentUser.username + '!');
+        setTimeout(() => {
+          if (btnSave) {
+            btnSave.innerHTML = '<span>💾</span> <span>LƯU GAME</span>';
+            btnSave.style.background = 'linear-gradient(135deg, #059669, #10b981)';
+            btnSave.disabled = false;
+          }
+        }, 2200);
+      } else {
+        if (btnSave) {
+          btnSave.innerHTML = '<span>❌</span> <span>LỖI LƯU</span>';
+          btnSave.disabled = false;
+        }
+        showToast('⚠️ Không thể lưu lên máy chủ. Đã lưu tạm vào máy cục bộ.');
+      }
+    };
+
+    window.showToast = function(msg, duration = 2400) {
+      let toast = document.getElementById('gameToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'gameToast';
+        toast.className = 'game-toast';
+        document.body.appendChild(toast);
+      }
+      toast.innerText = msg;
+      toast.classList.add('show');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, duration);
+    };
+
+
+    function syncSettingsValues() {
+      const g = ensureGameInstance();
+      if (window.soundEngine) {
+        const sfxPct = Math.round(window.soundEngine.sfxVolume * 100);
+        const sfxSlider = document.getElementById('sliderSfx');
+        if (sfxSlider) sfxSlider.value = sfxPct;
+        const sfxText = document.getElementById('sfxValText');
+        if (sfxText) sfxText.innerText = sfxPct + '%';
+
+        const bgmPct = Math.round(window.soundEngine.bgmVolume * 100);
+        const bgmSlider = document.getElementById('sliderBgm');
+        if (bgmSlider) bgmSlider.value = bgmPct;
+        const bgmText = document.getElementById('bgmValText');
+        if (bgmText) bgmText.innerText = bgmPct + '%';
+      }
+
+      updateShakeUI();
+      const spd = (g && g.gameSpeed) || 1.0;
+      updateSpeedUI(spd);
+    }
+
+    function openSettingsModal() {
+      const g = ensureGameInstance();
+      if (g && g.state === 'PLAYING') {
+        g.state = 'PAUSED';
+        pausedBySettings = true;
+      }
+      syncSettingsValues();
+      document.getElementById('settingsOverlay').classList.remove('hidden');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settingsOverlay').classList.add('hidden');
+      const g = ensureGameInstance();
+      if (g) g.saveSettings();
+      if (pausedBySettings) {
+        const pauseModal = document.getElementById('pauseOverlay');
+        if (pauseModal && pauseModal.classList.contains('hidden')) {
+          if (g) g.state = 'PLAYING';
+        }
+        pausedBySettings = false;
+      }
+    }
+
+    function quitToLobby() {
+      const g = ensureGameInstance();
+      if (g) g.quitCurrentRun();
+      const topNav = document.getElementById('topNavBar');
+      if (topNav) topNav.classList.remove('hidden');
+      updateSelectedCharInfo(selectedHeroId);
+    }
+
+    function retryFromGameOver() {
+      document.getElementById('gameOverOverlay').classList.add('hidden');
+      document.getElementById('menuOverlay').classList.remove('hidden');
+      const topNav = document.getElementById('topNavBar');
+      if (topNav) topNav.classList.remove('hidden');
+      const g = ensureGameInstance();
+      if (g) g.state = 'MENU';
+      updateSelectedCharInfo(selectedHeroId);
+    }
+
+    function continueEndless() {
+      const g = ensureGameInstance();
+      if (g) g.continueEndlessMode();
+    }
+
+    // Initialize immediately without waiting
+    function init() {
+      const g = ensureGameInstance();
+      if (g) g.updateTopBarCurrency();
+      updateSelectedCharInfo(selectedHeroId);
+      syncSettingsValues();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  
+
+    // ==========================================
+    // AUTHENTICATION & CLOUD SAVE MODAL CONTROLLER
+    // ==========================================
+    window.currentAuthMode = 'login';
+
+    
+    window.togglePasswordVisibility = function() {
+      const input = document.getElementById('authInputPassword');
+      if (!input) return;
+      if (input.type === 'password') {
+        input.type = 'text';
+      } else {
+        input.type = 'password';
+      }
+    };
+  
+    window.openAuthModal = function(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      console.log('🔑 Mở Auth Modal');
+      const modal = document.getElementById('authModal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        window.switchAuthTab('login');
+        const alertBox = document.getElementById('authAlertBox');
+        if (alertBox) alertBox.classList.add('hidden');
+        setTimeout(() => {
+          const inputU = document.getElementById('authInputUsername');
+          if (inputU) inputU.focus();
+        }, 100);
+      }
+    };
+
+    window.closeAuthModal = function(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const modal = document.getElementById('authModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    window.switchAuthTab = function(mode) {
+      window.currentAuthMode = mode;
+      const tabLogin = document.getElementById('tabAuthLogin');
+      const tabReg = document.getElementById('tabAuthRegister');
+      const syncWrap = document.getElementById('authSyncOptionWrap');
+      const submitBtn = document.getElementById('btnAuthSubmit');
+      const alertBox = document.getElementById('authAlertBox');
+      if (alertBox) alertBox.classList.add('hidden');
+
+      if (mode === 'login') {
+        if (tabLogin) tabLogin.classList.add('active');
+        if (tabReg) tabReg.classList.remove('active');
+        if (syncWrap) syncWrap.style.display = 'none';
+        if (submitBtn) submitBtn.innerText = '🔑 ĐĂNG NHẬP NGAY';
+      } else {
+        if (tabLogin) tabLogin.classList.remove('active');
+        if (tabReg) tabReg.classList.add('active');
+        if (syncWrap) syncWrap.style.display = 'block';
+        if (submitBtn) submitBtn.innerText = '📝 ĐĂNG KÝ VÀ LƯU CLOUD';
+      }
+    };
+
+    window.handleAuthSubmit = async function(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const u = (document.getElementById('authInputUsername').value || '').trim();
+      const p = (document.getElementById('authInputPassword').value || '').trim();
+      const alertBox = document.getElementById('authAlertBox');
+      if (!alertBox) return;
+      alertBox.classList.add('hidden');
+
+      if (!u || !p) {
+        alertBox.className = 'auth-alert error';
+        alertBox.innerText = 'Vui lòng nhập đầy đủ tên tài khoản và mật khẩu!';
+        alertBox.classList.remove('hidden');
+        return;
+      }
+
+      if (window.currentAuthMode === 'login') {
+        alertBox.className = 'auth-alert';
+        alertBox.innerText = 'Đang đăng nhập và tải tiến trình...';
+        alertBox.classList.remove('hidden');
+
+        const res = await window.authManager.login(u, p);
+        if (res.success) {
+          alertBox.className = 'auth-alert success';
+          alertBox.innerText = 'Đăng nhập thành công! Đang tải dữ liệu Pháp Sư ' + res.user.username + '...';
+          alertBox.classList.remove('hidden');
+
+          const g = (typeof gameInstance !== 'undefined' && gameInstance) ? gameInstance : (window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance()));
+          if (g) {
+            g.updateTopBarCurrency();
+            if (typeof updateSelectedCharInfo === 'function') updateSelectedCharInfo(g.selectedCharId || 'asta');
+            if (typeof renderCharRosterGrid === 'function') renderCharRosterGrid();
+          }
+
+          if (window.showToast) {
+            window.showToast('👑 Chào mừng ' + res.user.username + '! Toàn bộ tướng và tiền đã được đồng bộ.');
+          }
+
+          setTimeout(() => {
+            window.closeAuthModal();
+            const gNow = (typeof gameInstance !== 'undefined' && gameInstance) ? gameInstance : (window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance()));
+            if (gNow) {
+              gNow.updateTopBarCurrency();
+              if (typeof updateSelectedCharInfo === 'function') updateSelectedCharInfo(gNow.selectedCharId || 'asta');
+              if (typeof renderCharRosterGrid === 'function') renderCharRosterGrid();
+            }
+          }, 600);
+        } else {
+          alertBox.className = 'auth-alert error';
+          alertBox.innerText = res.error;
+          alertBox.classList.remove('hidden');
+        }
+      } else {
+        alertBox.className = 'auth-alert';
+        alertBox.innerText = 'Đang đăng ký tài khoản & lưu đám mây...';
+        alertBox.classList.remove('hidden');
+
+        const checkEl = document.getElementById('authCheckSyncLocal');
+        const syncLocal = checkEl ? checkEl.checked : true;
+        const res = await window.authManager.register(u, p, syncLocal);
+        if (res.success) {
+          alertBox.className = 'auth-alert success';
+          alertBox.innerText = 'Đăng ký thành công! Tiến trình đã được bảo vệ trên đám mây!';
+          alertBox.classList.remove('hidden');
+          setTimeout(() => window.closeAuthModal(), 1000);
+        } else {
+          alertBox.className = 'auth-alert error';
+          alertBox.innerText = res.error;
+          alertBox.classList.remove('hidden');
+        }
+      }
+    };
+
+    window.openAccountModal = function(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const modal = document.getElementById('accountModal');
+      if (!modal || !window.authManager || !window.authManager.currentUser) return;
+      document.getElementById('accProfileUsername').innerText = window.authManager.currentUser.username;
+      const d = window.authManager.currentUser.createdAt ? new Date(window.authManager.currentUser.createdAt).toLocaleString('vi-VN') : 'Mới tạo';
+      document.getElementById('accProfileCreated').innerText = 'Ngày tạo: ' + d;
+      modal.classList.remove('hidden');
+    };
+
+    window.closeAccountModal = function(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const modal = document.getElementById('accountModal');
+      if (modal) modal.classList.add('hidden');
+    };
+
+    window.handleManualSync = async function() {
+      const g = (typeof gameInstance !== 'undefined' && gameInstance) ? gameInstance : (window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance()));
+      if (g && window.authManager) {
+        const data = g.exportSaveData();
+        await window.authManager.pushSaveToServer(data);
+        alert('☁️ Toàn bộ dữ liệu tướng, tiền và cổ vật đã được lưu đám mây thành công!');
+      }
+    };
+
+    window.handleLogout = function() {
+      window.closeAccountModal();
+      if (window.authManager) {
+        window.authManager.logout(true);
+      }
+    };
+
+    // Attach explicit click & touch listeners to btnTopNavAuth
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('btnTopNavAuth');
+      if (btn) {
+        btn.addEventListener('click', (e) => window.openAuthModal(e));
+        btn.addEventListener('touchend', (e) => window.openAuthModal(e));
+      }
+      const userPill = document.getElementById('topNavUserPill');
+      if (userPill) {
+        userPill.addEventListener('click', (e) => window.openAccountModal(e));
+        userPill.addEventListener('touchend', (e) => window.openAccountModal(e));
+      }
+    });
+
+</script>
+
+  <!-- AUTH / CLOUD SAVE MODAL (ĐĂNG NHẬP & ĐĂNG KÝ) -->
+  <div id="authModal" class="modal-overlay-custom hidden">
+    <div class="modal-dialog-box" style="max-width: 440px;">
+      <div class="modal-header-bar">
+        <div class="modal-header-title">👑 TÀI KHOẢN MA ĐẠO SĨ (CLOUD SAVE)</div>
+        <button class="modal-btn-close" onclick="closeAuthModal()">✕</button>
+      </div>
+
+      <div class="modal-body-scrollable" style="padding: 12px 16px;">
+        <div class="auth-tabs-row">
+          <button id="tabAuthLogin" class="auth-tab-btn active" onclick="switchAuthTab('login')">🔑 ĐĂNG NHẬP</button>
+          <button id="tabAuthRegister" class="auth-tab-btn" onclick="switchAuthTab('register')">📝 ĐĂNG KÝ MỚI</button>
+        </div>
+
+        <div id="authAlertBox" class="auth-alert hidden"></div>
+
+        <div class="auth-field-group">
+          <label class="auth-label">Tên tài khoản (Username):</label>
+          <input type="text" id="authInputUsername" class="auth-input" placeholder="Nhập tên tài khoản (3 - 20 ký tự)..." autocomplete="username" onkeydown="if(event.key==='Enter') handleAuthSubmit()" />
+        </div>
+
+        <div class="auth-field-group" style="margin-top: 10px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label class="auth-label" style="margin-bottom: 0;">Mật khẩu (Password):</label>
+            <button type="button" onclick="togglePasswordVisibility()" style="background: none; border: none; color: #38bdf8; font-size: 11.5px; cursor: pointer; padding: 2px 4px; font-weight: 600;">👁️ Hiện mật khẩu</button>
+          </div>
+          <input type="password" id="authInputPassword" class="auth-input" placeholder="Nhập mật khẩu (tối thiểu 4 ký tự)..." autocomplete="current-password" onkeydown="if(event.key==='Enter') handleAuthSubmit()" />
+        </div>
+
+        <div id="authSyncOptionWrap" style="display: none; margin-top: 12px; font-size: 11.5px; color: #cbd5e1; background: rgba(15,23,42,0.6); padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(245,158,11,0.25);">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input type="checkbox" id="authCheckSyncLocal" checked style="accent-color: #f59e0b; width: 16px; height: 16px;" />
+            <span>Đồng bộ toàn bộ tiến trình (Tiền, Tướng, Cổ Vật) hiện tại lên tài khoản mới này.</span>
+          </label>
+        </div>
+
+        <button id="btnAuthSubmit" class="btn-start" style="width: 100%; margin-top: 16px; padding: 12px; font-size: 15px;" onclick="handleAuthSubmit()">🔑 ĐĂNG NHẬP NGAY</button>
+
+        <div style="font-size: 11px; color: #94a3b8; text-align: center; margin-top: 14px; line-height: 1.45;">
+          💡 <i>Đăng ký tài khoản giúp bạn giữ nguyên mọi tướng mở khóa, tiền và cổ vật khi chơi trên điện thoại, máy tính khác hoặc khi đổi mạng!</i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACCOUNT PROFILE / CLOUD SYNC MODAL -->
+  <div id="accountModal" class="modal-overlay-custom hidden">
+    <div class="modal-dialog-box" style="max-width: 440px;">
+      <div class="modal-header-bar">
+        <div class="modal-header-title">👤 HỒ SƠ PHÁP SƯ CLOUD</div>
+        <button class="modal-btn-close" onclick="closeAccountModal()">✕</button>
+      </div>
+
+      <div class="modal-body-scrollable" style="padding: 14px 16px;">
+        <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid #f59e0b; border-radius: 10px; padding: 12px; margin-bottom: 14px;">
+          <div style="font-size: 16px; font-weight: 800; color: #fbbf24; margin-bottom: 6px;">
+            🧙‍♂️ Pháp Sư: <span id="accProfileUsername" style="color: #fff;">...</span>
+          </div>
+          <div style="font-size: 12px; color: #94a3b8; margin-bottom: 4px;">
+            ☁️ Trạng thái: <span style="color: #4ade80; font-weight: 700;">Đã kết nối máy chủ đám mây</span>
+          </div>
+          <div style="font-size: 11px; color: #64748b;" id="accProfileCreated">
+            Ngày tạo: ...
+          </div>
+        </div>
+
+        <button class="btn-start" style="width: 100%; margin-bottom: 10px; padding: 11px; font-size: 14px; background: linear-gradient(135deg, #0284c7, #0369a1); border-color: #38bdf8;" onclick="handleManualSync()">
+          ☁️ ĐỒNG BỘ TIẾN TRÌNH NGAY
+        </button>
+
+        <button class="btn-gacha-pull" style="width: 100%; padding: 10px; font-size: 13px; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fca5a5;" onclick="handleLogout()">
+          🚪 ĐĂNG XUẤT TÀI KHOẢN
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="gameToast" class="game-toast"></div>
+</body>
+</html>

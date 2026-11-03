@@ -1,0 +1,20 @@
+{
+  "name": "black-clover-magic-survivors",
+  "version": "1.0.0",
+  "description": "Black Clover themed anime roguelite survivor web game like PokeSurvivor & Vampire Survivors",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "black-clover",
+    "anime",
+    "roguelite",
+    "vampire-survivors",
+    "pokesurvivor",
+    "html5-game",
+    "canvas"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}
