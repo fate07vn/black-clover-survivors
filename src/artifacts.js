@@ -9,7 +9,7 @@ const ARTIFACT_DEFS = {
     icon: '👑',
     tagline: 'Thời Gian Thần Khí Tối Cao',
     description: 'Bảo vật tối thượng chứa Thời Gian Ma Pháp của Đệ Nhị Thập Bát Đại Ma Pháp Đế Julius Novachrono.',
-    stats: { damageBonus: 0.20, cooldownReduction: 0.15, expBonus: 0.25 },
+    stats: { damageBonus: 0.08, cooldownReduction: 0.06, expBonus: 0.10 },
     skillName: 'Ngưng Đọng Thời Không',
     skillDesc: 'Cứ mỗi 45 giây, làm đóng băng toàn bộ quái vật trên bản đồ trong 3.5 giây!',
     cooldown: 45
@@ -21,7 +21,7 @@ const ARTIFACT_DEFS = {
     icon: '🗡️✨',
     tagline: 'Thánh Kiếm Tộc Yêu Tinh',
     description: 'Mảnh vỡ thanh kiếm thần của thủ lĩnh tộc Yêu Tinh Licht, chứa linh lực kiếm thuật vô song.',
-    stats: { critChance: 0.15, critDmgBonus: 0.45, damageBonus: 0.15 },
+    stats: { critChance: 0.06, critDmgBonus: 0.15, damageBonus: 0.08 },
     skillName: 'Kiếm Khí Cổ Đại',
     skillDesc: 'Đòn đánh có 35% cơ hội phóng ra 6 luồng kiếm khí ánh sáng tự truy sát kẻ địch!',
     cooldown: 1.5
@@ -33,9 +33,9 @@ const ARTIFACT_DEFS = {
     icon: '🩸😈',
     tagline: 'Trái Tim Tối Cao Ma Vương',
     description: 'Trái tim ác quỷ tối cao của Ma Vương Minh Giới Lucifero, khao khát nuốt chửng sinh mệnh.',
-    stats: { maxHp: 220, damageBonus: 0.25, areaBonus: 0.20 },
+    stats: { maxHp: 60, damageBonus: 0.10, areaBonus: 0.10 },
     skillName: 'Hấp Huyết Ma Trận',
-    skillDesc: 'Tiêu diệt quái hồi 2 HP. Khi hạ Boss hồi ngay 40% Máu và cuồng bạo +60% Tốc Đánh trong 12s!',
+    skillDesc: 'Tiêu diệt quái hồi 1 HP. Khi hạ Boss hồi ngay 25% Máu và cuồng bạo +30% Tốc Đánh trong 10s!',
     cooldown: 0
   },
   chronos_hourglass: {
@@ -45,7 +45,7 @@ const ARTIFACT_DEFS = {
     icon: '⏳',
     tagline: 'Bảo Vật Nghịch Chuyển Tử Sinh',
     description: 'Tạo vật thời gian cổ xưa có thể đảo ngược dòng chảy sinh tử và tái sinh linh hồn.',
-    stats: { cooldownReduction: 0.18, maxHp: 120, speed: 0.12 },
+    stats: { cooldownReduction: 0.08, maxHp: 40, speed: 0.06 },
     skillName: 'Nghịch Đảo Thời Gian',
     skillDesc: 'Khi nhận sát thương chí tử, thoát chết và xóa sạch đạn xung quanh, hồi phục 50% HP (1 lần/trận).',
     cooldown: 99999
@@ -57,10 +57,10 @@ const ARTIFACT_DEFS = {
     icon: '🛡️✨',
     tagline: 'Khiên Thánh Hoàng Tộc',
     description: 'Khiên hộ thể của hoàng tộc Silvamillion, tỏa ra ánh sáng thuần khiết bảo vệ chủ nhân.',
-    stats: { maxHp: 150, armor: 0.15, hpRegen: 1.8 },
+    stats: { maxHp: 45, armor: 0.06, hpRegen: 0.5 },
     skillName: 'Bảo Hộ Quang Khiên',
-    skillDesc: 'Khi HP tụt dưới 35%, kích hoạt khiên bất tử chặn 100% sát thương trong 3.5s và hồi ngay 30% HP (Hồi chiêu 70s).',
-    cooldown: 70
+    skillDesc: 'Khi HP tụt dưới 30%, kích hoạt khiên bất tử chặn 100% sát thương trong 2.5s và hồi ngay 20% HP (Hồi chiêu 80s).',
+    cooldown: 80
   },
   sylph_tempest_stone: {
     id: 'sylph_tempest_stone',
@@ -69,10 +69,10 @@ const ARTIFACT_DEFS = {
     icon: '🌪️💎',
     tagline: 'Lõi Phong Tinh Linh Bão Tố',
     description: 'Tinh thạch phong tinh linh chứa sức gió cuồng phong vô tận nâng đỡ người mang.',
-    stats: { speed: 0.20, pickupRadius: 50, cooldownReduction: 0.10 },
+    stats: { speed: 0.08, pickupRadius: 25, cooldownReduction: 0.05 },
     skillName: 'Lốc Xoáy Bão Cuộn',
-    skillDesc: 'Mỗi khi Lướt (Space), tạo lốc xoáy bão hút toàn bộ quái vật và gom đạn trong bán kính 300px vào tâm trong 2.5s!',
-    cooldown: 3.5
+    skillDesc: 'Mỗi khi Lướt (Space), tạo lốc xoáy bão hút quái vật và gom đạn trong bán kính 260px trong 2.0s!',
+    cooldown: 4.0
   },
   zagred_cursed_rosary: {
     id: 'zagred_cursed_rosary',
@@ -81,10 +81,10 @@ const ARTIFACT_DEFS = {
     icon: '📿👁️',
     tagline: 'Tà Vật Ngôn Linh Ma Pháp',
     description: 'Tràng hạt nguyền rủa chứa Ngôn Linh Ma Pháp từng gây họa diệt vong cho tộc Elf.',
-    stats: { areaBonus: 0.25, damageBonus: 0.18, critChance: 0.08 },
+    stats: { areaBonus: 0.10, damageBonus: 0.08, critChance: 0.04 },
     skillName: 'Ma Bàn Tay Nguyền Rủa',
-    skillDesc: 'Mỗi 14s triệu hồi bàn tay ác ma đập nát khu vực đông quái nhất, gây 450 sát thương và giảm 35% giáp kẻ địch!',
-    cooldown: 14
+    skillDesc: 'Mỗi 15s triệu hồi bàn tay ác ma đập nát khu vực đông quái nhất, gây 250 sát thương và giảm 15% giáp kẻ địch!',
+    cooldown: 15
   },
   yggdrasil_life_seed: {
     id: 'yggdrasil_life_seed',
@@ -93,10 +93,10 @@ const ARTIFACT_DEFS = {
     icon: '🌿✨',
     tagline: 'Mầm Sống Thần Thoại',
     description: 'Hạt mầm thần thoại của Thế Giới Thụ Yggdrasil, truyền sinh khí bất diệt và giam cầm kẻ ác.',
-    stats: { maxHp: 140, hpRegen: 3.0, pickupRadius: 40 },
+    stats: { maxHp: 40, hpRegen: 0.6, pickupRadius: 20 },
     skillName: 'Rễ Cây Trói Buộc',
-    skillDesc: 'Cứ mỗi 9 giây mọc rễ ma pháp trói chặt mọi quái vật trong bán kính 220px trong 2.5 giây!',
-    cooldown: 9
+    skillDesc: 'Cứ mỗi 10 giây mọc rễ ma pháp trói chặt quái vật trong bán kính 200px trong 2.0 giây!',
+    cooldown: 10
   },
   salamander_flame_core: {
     id: 'salamander_flame_core',
@@ -105,10 +105,10 @@ const ARTIFACT_DEFS = {
     icon: '🔥🐉',
     tagline: 'Hỏa Diễm Tinh Linh Bất Diệt',
     description: 'Ngọn lửa thiêu đốt vạn vật của Hỏa Tinh Linh Salamander rực cháy dữ dội.',
-    stats: { damageBonus: 0.20, areaBonus: 0.20, critDmgBonus: 0.30 },
+    stats: { damageBonus: 0.08, areaBonus: 0.08, critDmgBonus: 0.12 },
     skillName: 'Hỏa Trận Thiêu Đốt',
-    skillDesc: 'Cứ mỗi 8 giây bùng nổ vòng tròn lửa quét 360 độ thiêu đốt kẻ địch xung quanh, gây 320 sát thương!',
-    cooldown: 8
+    skillDesc: 'Cứ mỗi 9 giây bùng nổ vòng tròn lửa quét 360 độ thiêu đốt kẻ địch xung quanh, gây 220 sát thương!',
+    cooldown: 9
   },
   gauche_phantom_mirror: {
     id: 'gauche_phantom_mirror',
@@ -117,10 +117,10 @@ const ARTIFACT_DEFS = {
     icon: '🪞✨',
     tagline: 'Ma Kính Phản Chiếu',
     description: 'Tấm gương phản chiếu ma thuật tinh xảo, nhân bản các đòn ma pháp bắn ra.',
-    stats: { damageBonus: 0.12, critChance: 0.12, armor: 0.08 },
+    stats: { damageBonus: 0.05, critChance: 0.04, armor: 0.03 },
     skillName: 'Phản Chiếu Ma Ảnh',
-    skillDesc: 'Các đòn tấn công dạng đạn phép có 30% tỷ lệ bắn thêm 1 tia đạn phản xạ song song!',
-    cooldown: 0.8
+    skillDesc: 'Các đòn tấn công dạng đạn phép có 25% tỷ lệ bắn thêm 1 tia đạn phản xạ song song!',
+    cooldown: 1.0
   },
   charmy_feast_box: {
     id: 'charmy_feast_box',
@@ -129,9 +129,9 @@ const ARTIFACT_DEFS = {
     icon: '🍲🍖',
     tagline: 'Tiệc Nấu Bất Tận Của Bếp Trưởng',
     description: 'Chiếc giỏ thức ăn thần kỳ chứa các món ăn tẩm bổ hồi phục mana và thể lực tức thì.',
-    stats: { maxHp: 160, coinBonus: 0.30, expBonus: 0.15 },
+    stats: { maxHp: 35, coinBonus: 0.12, expBonus: 0.06 },
     skillName: 'Đùi Cừu Ma Thuật',
-    skillDesc: 'Cứ mỗi 25 giây tự rơi ra một món ăn ma pháp giúp hồi phục 50 HP và buff +15% Tốc Độ trong 6 giây!',
+    skillDesc: 'Cứ mỗi 25 giây tự rơi ra một món ăn ma pháp giúp hồi phục 30 HP và buff +10% Tốc Độ trong 5 giây!',
     cooldown: 25
   },
   luck_thunder_gauntlets: {
@@ -141,10 +141,10 @@ const ARTIFACT_DEFS = {
     icon: '⚡🥊',
     tagline: 'Cuồng Lôi Quyền Pháp',
     description: 'Đôi găng tích tụ dòng điện cao thế kích thích cơ bắp của Lôi Ma Đạo Sĩ Luck Voltia.',
-    stats: { speed: 0.22, cooldownReduction: 0.12, damageBonus: 0.10 },
+    stats: { speed: 0.07, cooldownReduction: 0.04, damageBonus: 0.05 },
     skillName: 'Lôi Thần Trảo Kích',
-    skillDesc: 'Cứ mỗi 7 giây giáng tia sét liên hoàn giật xuyên qua 8 quái vật gần nhất, làm choáng 1.5 giây!',
-    cooldown: 7
+    skillDesc: 'Cứ mỗi 8 giây giáng tia sét liên hoàn giật xuyên qua 6 quái vật gần nhất, làm choáng 1.0 giây!',
+    cooldown: 8
   },
   nero_sealing_stone: {
     id: 'nero_sealing_stone',
@@ -153,10 +153,10 @@ const ARTIFACT_DEFS = {
     icon: '🐦⬛',
     tagline: 'Khóa Phong Ấn Cổ Đại',
     description: 'Viên đá phong ấn cổ xưa của Secre Swallowtail lưu giữ ma thuật qua 500 năm.',
-    stats: { armor: 0.18, maxHp: 110, cooldownReduction: 0.10 },
+    stats: { armor: 0.05, maxHp: 30, cooldownReduction: 0.04 },
     skillName: 'Giam Hãm Phong Ấn',
-    skillDesc: 'Giảm 20% sát thương nhận vào; khi trúng đòn có 30% cơ hội phong ấn quái vật tấn công không thể cử động trong 3s!',
-    cooldown: 5
+    skillDesc: 'Giảm sát thương nhận vào; khi trúng đòn có 25% cơ hội phong ấn quái vật tấn công trong 2.5s!',
+    cooldown: 6
   },
   yami_dark_pipe: {
     id: 'yami_dark_pipe',
@@ -165,10 +165,10 @@ const ARTIFACT_DEFS = {
     icon: '🚬🌑',
     tagline: 'Uy Áp Đột Phá Giới Hạn',
     description: 'Chiếc tẩu thuốc mang theo luồng khí công Ki thâm sâu và uy áp vô hình của Đoàn Trưởng Yami.',
-    stats: { damageBonus: 0.16, critChance: 0.10, critDmgBonus: 0.30 },
+    stats: { damageBonus: 0.06, critChance: 0.04, critDmgBonus: 0.10 },
     skillName: 'Tụ Khí Đột Phá',
-    skillDesc: 'Khi đứng yên 1 giây, tích lũy Ki tăng +50% Sát Thương và +25% Bạo Kích cho đòn đánh kế tiếp!',
-    cooldown: 4
+    skillDesc: 'Khi đứng yên 1 giây, tích lũy Ki tăng +35% Sát Thương và +15% Bạo Kích cho đòn đánh kế tiếp!',
+    cooldown: 5
   }
 };
 
@@ -261,7 +261,7 @@ class ArtifactSystem {
       if (!def || !def.stats) continue;
 
       const star = this.getStar(artId);
-      const starMult = 1.0 + (star - 1) * 0.25; // ★1: 1.0x, ★2: 1.25x, ★3: 1.50x
+      const starMult = 1.0 + (star - 1) * 0.15; // ★1: 1.0x, ★2: 1.15x, ★3: 1.30x
 
       if (def.stats.maxHp) player.maxHp += Math.round(def.stats.maxHp * starMult);
       if (def.stats.damageBonus) player.damageBonus = (player.damageBonus || 0) + def.stats.damageBonus * starMult;
@@ -387,19 +387,19 @@ class ArtifactSystem {
     if (!p) return;
 
     if (enemy.isBoss) {
-      const heal = Math.round(p.maxHp * 0.40);
+      const heal = Math.round(p.maxHp * 0.25);
       this.game.healPlayer(heal);
-      p.cooldownReduction = Math.min(0.50, p.cooldownReduction + 0.30);
-      this.game.spells.floatingTexts.push({ x: p.x, y: p.y - 35, text: '🩸 MA TÂM CUỒNG NỘ: +40% HP & SIÊU TỐC ĐÁNH!', color: '#dc2626', size: 20, life: 1.2 });
-      this.game.shakeScreen(10, 0.3);
+      p.cooldownReduction = Math.min(0.50, p.cooldownReduction + 0.15);
+      this.game.spells.floatingTexts.push({ x: p.x, y: p.y - 35, text: '🩸 MA TÂM CUỒNG NỘ: +25% HP & TỐC ĐÁNH!', color: '#dc2626', size: 18, life: 1.2 });
+      this.game.shakeScreen(8, 0.25);
       this.game.spells.spawnShockwave(p.x, p.y, '#dc2626', 400, 0.4);
       setTimeout(() => {
         if (this.game && this.game.player) {
-          this.game.player.cooldownReduction = Math.max(0, this.game.player.cooldownReduction - 0.30);
+          this.game.player.cooldownReduction = Math.max(0, this.game.player.cooldownReduction - 0.15);
         }
-      }, 12000);
+      }, 10000);
     } else {
-      p.hp = Math.min(p.maxHp, p.hp + 2);
+      p.hp = Math.min(p.maxHp, p.hp + 1);
     }
   }
 

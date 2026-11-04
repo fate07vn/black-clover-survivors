@@ -23,7 +23,7 @@ const SPELL_DEFS = {
     icon: '⚔️',
     description: 'TIẾN HÓA CẤP 1: Đại kiếm anti-magic xoay 360 độ cực đại, quét sạch mọi ma pháp và quái vật!',
     baseCooldown: 1.31,
-    baseDamage: 166,
+    baseDamage: 136,
     baseArea: 170,
     maxLevel: 1,
     evolution: 'demon_slasher_infinity',
@@ -36,7 +36,7 @@ const SPELL_DEFS = {
     icon: '😈⚔️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Nhát chém Kháng Ma Vô Cực phủ đen cả không gian, giải phóng 2 sóng xung kích diệt thần 360 độ!',
     baseCooldown: 0.88,
-    baseDamage: 479,
+    baseDamage: 393,
     baseArea: 260,
     maxLevel: 1
   },
@@ -62,7 +62,7 @@ const SPELL_DEFS = {
     icon: '🍃',
     description: 'TIẾN HÓA CẤP 1: Tạo ra 2 cơn bão lốc xoáy khổng lồ hút chặt kẻ địch vào tâm và nghiền nát liên tục!',
     baseCooldown: 1.36,
-    baseDamage: 110,
+    baseDamage: 90,
     duration: 3.8,
     maxLevel: 1,
     evolution: 'spirit_zephyr_supreme'
@@ -74,7 +74,7 @@ const SPELL_DEFS = {
     icon: '🏹🌪️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa thân Thánh Khải Saint Stage, bắn liên hoàn 8 mũi tên phong bão xuyên không và tạo bão xoáy khổng lồ toàn map!',
     baseCooldown: 0.99,
-    baseDamage: 448,
+    baseDamage: 367,
     baseArea: 280,
     maxLevel: 1
   },
@@ -100,7 +100,7 @@ const SPELL_DEFS = {
     icon: '🔱',
     description: 'TIẾN HÓA CẤP 1: Phóng ra 8 ngọn giáo nước thần thánh xoay quanh và đâm xuyên mọi hướng!',
     baseCooldown: 1.31,
-    baseDamage: 137,
+    baseDamage: 112,
     maxLevel: 1,
     evolution: 'leviathan_goddess'
   },
@@ -111,7 +111,7 @@ const SPELL_DEFS = {
     icon: '🔱🌊',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa thân Hải Thần Noelle, triệu hồi 3 Thủy Long khổng lồ và 12 thương thần bảo hộ xoay quanh nghiền nát địch!',
     baseCooldown: 0.99,
-    baseDamage: 510,
+    baseDamage: 418,
     baseArea: 300,
     maxLevel: 1
   },
@@ -136,7 +136,7 @@ const SPELL_DEFS = {
     icon: '🌌',
     description: 'TIẾN HÓA CẤP 1: Nhát chém xé toạc không gian xuyên suốt toàn màn hình theo hướng mục tiêu!',
     baseCooldown: 2.03,
-    baseDamage: 288,
+    baseDamage: 236,
     baseArea: 480,
     maxLevel: 1,
     evolution: 'death_thrust_void',
@@ -149,7 +149,7 @@ const SPELL_DEFS = {
     icon: '🌌🗡️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Đòn đâm nén tụ hắc ma pháp thổi bay và tiêu diệt mọi kẻ địch trên đường thẳng xuyên màn hình!',
     baseCooldown: 1.14,
-    baseDamage: 585,
+    baseDamage: 480,
     baseArea: 650,
     maxLevel: 1
   },
@@ -174,7 +174,7 @@ const SPELL_DEFS = {
     icon: '🌩️',
     description: 'TIẾN HÓA CẤP 1: Sấm sét từ trời liên tục giáng xuống các cụm quái vật, làm choáng diện rộng!',
     baseCooldown: 0.66,
-    baseDamage: 99,
+    baseDamage: 81,
     maxLevel: 1,
     evolution: 'thunder_emperor_rampage'
   },
@@ -185,7 +185,7 @@ const SPELL_DEFS = {
     icon: '⚡👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa Lôi Ma Thần Tối Thượng, sấm sét liên hoàn giáng 16 tia một lúc, giật lan toàn bản đồ và làm choáng vĩnh viễn!',
     baseCooldown: 0.7,
-    baseDamage: 403,
+    baseDamage: 330,
     baseArea: 320,
     maxLevel: 1
   },
@@ -210,7 +210,7 @@ const SPELL_DEFS = {
     icon: '🌋',
     description: 'TIẾN HÓA CẤP 1: Cột lửa địa ngục bùng nổ toàn diện bao trùm mặt đất, thiêu rụi mọi kẻ địch!',
     baseCooldown: 1.36,
-    baseDamage: 182,
+    baseDamage: 149,
     baseArea: 180,
     maxLevel: 1,
     evolution: 'sol_prominence_sun'
@@ -222,7 +222,7 @@ const SPELL_DEFS = {
     icon: '☀️🔥',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Quả cầu mặt trời rực lửa thiêu rụi toàn màn hình, bùng nổ sóng lửa liên tục đẩy lùi và thiêu đốt quái vật ra tro!',
     baseCooldown: 0.88,
-    baseDamage: 554,
+    baseDamage: 454,
     baseArea: 350,
     maxLevel: 1
   },
@@ -247,7 +247,7 @@ const SPELL_DEFS = {
     icon: '💧⚔️',
     description: 'TIẾN HÓA CẤP 1: Mưa thương thủy ngân rơi liên tục ghim cứng kẻ địch và nổ chùm kim loại.',
     baseCooldown: 1.14,
-    baseDamage: 144,
+    baseDamage: 118,
     baseArea: 160,
     maxLevel: 1,
     evolution: 'silver_shield_god'
@@ -259,7 +259,7 @@ const SPELL_DEFS = {
     icon: '🛡️🦅',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Thần khiên thủy ngân bao phủ đẩy lùi kẻ địch, đồng thời phóng 32 ngọn thương hủy diệt mọi mục tiêu!',
     baseCooldown: 0.88,
-    baseDamage: 479,
+    baseDamage: 393,
     baseArea: 300,
     maxLevel: 1
   },
@@ -284,7 +284,7 @@ const SPELL_DEFS = {
     icon: '🥀',
     description: 'TIẾN HÓA CẤP 1: Roi gai hoa hồng huyết sắc quét 360 độ, trói chân toàn bộ quái vật và gây chảy máu liên tục.',
     baseCooldown: 1.14,
-    baseDamage: 133,
+    baseDamage: 109,
     baseArea: 170,
     maxLevel: 1,
     evolution: 'blue_rose_cage'
@@ -296,7 +296,7 @@ const SPELL_DEFS = {
     icon: '🌹👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Vườn hoa hồng xanh nở rộ toàn bản đồ giam hãm và xé nát toàn bộ kẻ địch trong hương hoa hủy diệt!',
     baseCooldown: 0.99,
-    baseDamage: 456,
+    baseDamage: 374,
     baseArea: 320,
     maxLevel: 1
   },
@@ -322,7 +322,7 @@ const SPELL_DEFS = {
     icon: '⌛✨',
     description: 'TIẾN HÓA CẤP 1: 3 quả cầu thời gian giam giữ vĩnh viễn quái vật trong vòng lặp vô tận và bòn rút sinh mệnh.',
     baseCooldown: 1.76,
-    baseDamage: 121,
+    baseDamage: 99,
     baseArea: 180,
     maxLevel: 1,
     evolution: 'chrono_eternal_domain'
@@ -334,7 +334,7 @@ const SPELL_DEFS = {
     icon: '⏳👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Ngưng đọng tuyệt đối thời gian toàn bản đồ, nghiền nát mọi kẻ địch thành tro bụi của lịch sử!',
     baseCooldown: 1.14,
-    baseDamage: 510,
+    baseDamage: 418,
     baseArea: 380,
     maxLevel: 1
   },
@@ -358,7 +358,7 @@ const SPELL_DEFS = {
     icon: '⛓️🔥',
     description: 'TIẾN HÓA CẤP 1: Phóng xích lửa trói buộc và chia sẻ sát thương giữa các cụm quái, gây nổ dây chuyền.',
     baseCooldown: 1.31,
-    baseDamage: 140,
+    baseDamage: 115,
     baseArea: 160,
     maxLevel: 1,
     evolution: 'soul_chain_deathmatch'
@@ -370,7 +370,7 @@ const SPELL_DEFS = {
     icon: '🔥⚾',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cú vung chày bão lửa thần thánh thổi bay mọi quái vật với 100% tỉ lệ chí mạng nổ long trời lở đất!',
     baseCooldown: 0.99,
-    baseDamage: 490,
+    baseDamage: 402,
     baseArea: 280,
     maxLevel: 1
   },
@@ -394,7 +394,7 @@ const SPELL_DEFS = {
     icon: '🍖🍲',
     description: 'TIẾN HÓA CẤP 1: Cừu khổng lồ nấu nướng liên tục tạo ra đùi thịt hồi phục HP và hất tung kẻ địch.',
     baseCooldown: 1.44,
-    baseDamage: 121,
+    baseDamage: 99,
     baseArea: 170,
     maxLevel: 1,
     evolution: 'wolf_gluttony'
@@ -406,7 +406,7 @@ const SPELL_DEFS = {
     icon: '🐺🍲',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Triệu hồi Ma Sói Khổng Lồ ngoạm sạch mọi kẻ địch trên màn hình, hồi đầy thanh máu tức thì!',
     baseCooldown: 0.96,
-    baseDamage: 532,
+    baseDamage: 436,
     baseArea: 320,
     maxLevel: 1
   },
@@ -433,7 +433,7 @@ const SPELL_DEFS = {
     icon: '⚔️✨',
     description: 'TIẾN HÓA CẤP 1: Mưa kiếm ánh sáng thiên giới liên tục giáng xuống các cụm quái vật!',
     baseCooldown: 0.96,
-    baseDamage: 137,
+    baseDamage: 112,
     baseArea: 140,
     maxLevel: 1,
     evolution: 'lumiere_god_light',
@@ -446,7 +446,7 @@ const SPELL_DEFS = {
     icon: '☀️👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Quả cầu Thái Dương phát ra 4 chùm laser ánh sáng xoay 360 độ quét rực toàn màn hình và bão kiếm quang rơi như mưa sao băng!',
     baseCooldown: 0.77,
-    baseDamage: 403,
+    baseDamage: 330,
     baseArea: 280,
     maxLevel: 1
   },
@@ -472,7 +472,7 @@ const SPELL_DEFS = {
     icon: '🐺🌑',
     description: 'TIẾN HÓA HUYỀN THOẠI: Bầy Sói Bóng Tối Canis lao vút 4 hướng cắn xé kẻ địch, tạo lốc hắc ám nuốt chửng quái vật và hồi máu cực mạnh!',
     baseCooldown: 0.88,
-    baseDamage: 203,
+    baseDamage: 166,
     baseArea: 220,
     maxLevel: 1,
     evolution: 'shadow_devil_union'
@@ -484,7 +484,7 @@ const SPELL_DEFS = {
     icon: '😈🐾',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Đồng hóa 4 đại quỷ cùng lúc, mở cánh cổng địa ngục nuốt chửng quái vật và tàng hình hút máu bất tử!',
     baseCooldown: 0.84,
-    baseDamage: 574,
+    baseDamage: 471,
     baseArea: 360,
     maxLevel: 1
   },
@@ -511,7 +511,7 @@ const SPELL_DEFS = {
     icon: '⚔️🌌',
     description: 'TIẾN HÓA HUYỀN THOẠI: Cự Kiếm Khai Thiên giáng xuống tạo chấn động địa chấn ma thuật hủy diệt toàn bộ khu vực!',
     baseCooldown: 1.36,
-    baseDamage: 371,
+    baseDamage: 304,
     baseArea: 320,
     maxLevel: 1,
     evolution: 'ultimate_light_slash'
@@ -523,7 +523,7 @@ const SPELL_DEFS = {
     icon: '⚔️🌟',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Triệu hồi 100 Cổ Kiếm Khai Thiên giáng xuống như mưa sao băng quét sạch toàn bộ lục địa Clover!',
     baseCooldown: 0.99,
-    baseDamage: 616,
+    baseDamage: 505,
     baseArea: 400,
     maxLevel: 1
   },
@@ -549,7 +549,7 @@ const SPELL_DEFS = {
     icon: '🌀🕸️',
     description: 'TIẾN HÓA CẤP 1: Vòng tròn bẫy liên hoàn phản lại mọi sát thương và tạo chấn động nổ diện rộng!',
     baseCooldown: 1.28,
-    baseDamage: 166,
+    baseDamage: 136,
     baseArea: 200,
     maxLevel: 1,
     evolution: 'infernal_reflect_void'
@@ -561,7 +561,7 @@ const SPELL_DEFS = {
     icon: '💥🕸️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Ma trận bẫy hư không phản kích vô hạn x5 sát thương, biến toàn bộ đòn đánh địch thành vụ nổ diệt vong!',
     baseCooldown: 0.99,
-    baseDamage: 554,
+    baseDamage: 454,
     baseArea: 350,
     maxLevel: 1
   },
@@ -587,7 +587,7 @@ const SPELL_DEFS = {
     icon: '🌲✨',
     description: 'TIẾN HÓA CẤP 1: Cây Thần Mistilteinn nở hoa trói toàn bộ chiến trường và hút sinh mệnh!',
     baseCooldown: 1.31,
-    baseDamage: 158,
+    baseDamage: 130,
     baseArea: 220,
     maxLevel: 1,
     evolution: 'yggdrasil_rebirth'
@@ -599,7 +599,7 @@ const SPELL_DEFS = {
     icon: '🌳👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cây Sinh Mệnh Yggdrasil khổng lồ bao bọc toàn thế giới, ban quyền bất tử hồi phục và nghiền nát quân địch!',
     baseCooldown: 0.99,
-    baseDamage: 521,
+    baseDamage: 427,
     baseArea: 380,
     maxLevel: 1
   },
@@ -625,7 +625,7 @@ const SPELL_DEFS = {
     icon: '🌌💭',
     description: 'TIẾN HÓA CẤP 1: Nhấn chìm chiến trường vào chiều không gian giấc mơ, quái vật hóa thành bánh kẹo và nổ tung!',
     baseCooldown: 1.36,
-    baseDamage: 175,
+    baseDamage: 144,
     baseArea: 240,
     maxLevel: 1,
     evolution: 'dream_god_reality'
@@ -637,7 +637,7 @@ const SPELL_DEFS = {
     icon: '✨👑💭',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Biến mọi giấc mơ thành hiện thực, triệu hồi thiên thạch kẹo ngọt và sấm chớp mộng cảnh xóa sổ toàn bản đồ!',
     baseCooldown: 0.88,
-    baseDamage: 563,
+    baseDamage: 462,
     baseArea: 380,
     maxLevel: 1
   },
@@ -663,7 +663,7 @@ const SPELL_DEFS = {
     icon: '⚔️🪓',
     description: 'TIẾN HÓA CẤP 1: Lưỡi hái thích nghi với thuộc tính của địch, chém xuyên giáp 100%!',
     baseCooldown: 0.99,
-    baseDamage: 182,
+    baseDamage: 149,
     baseArea: 180,
     maxLevel: 1,
     evolution: 'infinite_cleave'
@@ -675,7 +675,7 @@ const SPELL_DEFS = {
     icon: '⚡🪓',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Chém đứt chính cả không gian và thời gian, 16 nhát chém xé rách toàn màn hình quét sạch mọi loại boss!',
     baseCooldown: 0.66,
-    baseDamage: 574,
+    baseDamage: 471,
     baseArea: 320,
     maxLevel: 1
   },
@@ -701,7 +701,7 @@ const SPELL_DEFS = {
     icon: '🐉🎨',
     description: 'TIẾN HÓA CẤP 1: Vẽ nên thần thú khổng lồ phun bão nguyên tố 4 mùa quét sạch chiến trường!',
     baseCooldown: 1.22,
-    baseDamage: 171,
+    baseDamage: 140,
     baseArea: 210,
     maxLevel: 1,
     evolution: 'twilight_valhalla'
@@ -713,7 +713,7 @@ const SPELL_DEFS = {
     icon: '🌈🎨👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Bức tranh kiệt tác thần thánh ban sức mạnh tuyệt đối, quái vật chạm vào lập tức tan thành sắc màu!',
     baseCooldown: 0.99,
-    baseDamage: 543,
+    baseDamage: 445,
     baseArea: 360,
     maxLevel: 1
   },
@@ -739,7 +739,7 @@ const SPELL_DEFS = {
     icon: '⛓️🐦',
     description: 'TIẾN HÓA CẤP 1: Xích phong ấn cổ đại trói cứng các cụm quái vật và khóa toàn bộ chiêu thức của chúng!',
     baseCooldown: 1.05,
-    baseDamage: 158,
+    baseDamage: 130,
     baseArea: 190,
     maxLevel: 1,
     evolution: 'eternal_prison_coffin'
@@ -751,7 +751,7 @@ const SPELL_DEFS = {
     icon: '⚰️🐦',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Quan tài phong ấn vĩnh cửu nuốt chửng toàn bộ quái vật và boss, khóa chặt vĩnh viễn không thể cựa quậy!',
     baseCooldown: 0.88,
-    baseDamage: 563,
+    baseDamage: 462,
     baseArea: 350,
     maxLevel: 1
   },
@@ -778,7 +778,7 @@ const SPELL_DEFS = {
     icon: '🐉🔥',
     description: 'TIẾN HÓA CẤP 1: Rồng lửa xoắn ốc càn quét toàn màn hình để lại vệt nham thạch thiêu đốt vạn vật!',
     baseCooldown: 1.14,
-    baseDamage: 178,
+    baseDamage: 146,
     baseArea: 220,
     maxLevel: 1,
     evolution: 'flame_dragon_emperor'
@@ -790,7 +790,7 @@ const SPELL_DEFS = {
     icon: '🔥👑🐉',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa thân Viêm Long Bá Đế, triệu hồi bão rồng lửa thiêu rụi toàn map với sát thương nổ long trời lở đất!',
     baseCooldown: 0.92,
-    baseDamage: 585,
+    baseDamage: 480,
     baseArea: 370,
     maxLevel: 1
   },
@@ -817,7 +817,7 @@ const SPELL_DEFS = {
     icon: '🌌🔮',
     description: 'TIẾN HÓA CẤP 1: Nhát chém không gian xóa sổ hoàn toàn quái vật và đạn ma pháp!',
     baseCooldown: 1.14,
-    baseDamage: 196,
+    baseDamage: 161,
     baseArea: 210,
     maxLevel: 1,
     evolution: 'absolute_void_annihilation'
@@ -829,7 +829,7 @@ const SPELL_DEFS = {
     icon: '🌌👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Tạo lỗ đen không gian tuyệt đối nuốt chửng toàn bộ bản đồ và xóa sạch kẻ địch khỏi thực tại!',
     baseCooldown: 0.99,
-    baseDamage: 608,
+    baseDamage: 499,
     baseArea: 380,
     maxLevel: 1
   },
@@ -856,7 +856,7 @@ const SPELL_DEFS = {
     icon: '🔱💎',
     description: 'TIẾN HÓA CẤP 1: Đại thương kim cương kết hợp lửa địa ngục phát nổ diện rộng!',
     baseCooldown: 1.14,
-    baseDamage: 166,
+    baseDamage: 136,
     baseArea: 200,
     maxLevel: 1,
     evolution: 'crystal_colossus'
@@ -868,7 +868,7 @@ const SPELL_DEFS = {
     icon: '🗿💎',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Người khổng lồ khoáng thạch bất hoại giáng chùy xuống đất tạo động đất xóa sổ toàn bộ địch!',
     baseCooldown: 0.99,
-    baseDamage: 554,
+    baseDamage: 454,
     baseArea: 350,
     maxLevel: 1
   },
@@ -895,7 +895,7 @@ const SPELL_DEFS = {
     icon: '⚡🌑',
     description: 'TIẾN HÓA CẤP 1: Chùm tia ánh sáng đen hủy diệt quét xuyên suốt bản đồ thiêu rụi mọi hàng ngũ!',
     baseCooldown: 0.96,
-    baseDamage: 189,
+    baseDamage: 155,
     baseArea: 230,
     maxLevel: 1,
     evolution: 'demon_light_judgment'
@@ -907,7 +907,7 @@ const SPELL_DEFS = {
     icon: '🌑👑✨',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hắc ma thần quang giáng 32 tia sấm sét đen từ thiên giới nghiền nát toàn bộ chiến trường!',
     baseCooldown: 0.84,
-    baseDamage: 596,
+    baseDamage: 489,
     baseArea: 390,
     maxLevel: 1
   },
@@ -934,7 +934,7 @@ const SPELL_DEFS = {
     icon: '☠️',
     description: 'TIẾN HÓA CẤP 1: Mở rộng vùng khí độc cực đại, làm suy giảm 40% phòng ngự và độc ăn sâu!',
     baseCooldown: 1.22,
-    baseDamage: 110,
+    baseDamage: 90,
     baseArea: 160,
     duration: 3.5,
     maxLevel: 1,
@@ -948,7 +948,7 @@ const SPELL_DEFS = {
     icon: '🧪☠️👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Màn sương độc thần cổ đại bao phủ cả bản đồ, quái vật dính độc phát nổ lây lan sang kẻ địch khác!',
     baseCooldown: 0.99,
-    baseDamage: 448,
+    baseDamage: 367,
     baseArea: 280,
     maxLevel: 1
   },
@@ -975,7 +975,7 @@ const SPELL_DEFS = {
     icon: '✨💎',
     description: 'TIẾN HÓA CẤP 1: Bắn chùm 5 tinh thể biến dị, biến quái vật bị tiêu diệt thành ngọc Mana và tiền xu!',
     baseCooldown: 1.14,
-    baseDamage: 117,
+    baseDamage: 96,
     baseSpeed: 480,
     pierce: 6,
     maxLevel: 1,
@@ -989,7 +989,7 @@ const SPELL_DEFS = {
     icon: '🌈💎👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Sóng ánh sáng cầu vồng chuyển hóa toàn màn hình biến đạn địch thành ngọc hồi máu và nghiền nát quân đoàn quái!',
     baseCooldown: 0.99,
-    baseDamage: 468,
+    baseDamage: 384,
     baseArea: 320,
     maxLevel: 1
   },
@@ -1016,7 +1016,7 @@ const SPELL_DEFS = {
     icon: '🏰🐂',
     description: 'TIẾN HÓA CẤP 1: Phóng ra 2 Cự Ngưu bọc sắt song hành càn quét 2 hướng và hất tung quái vật!',
     baseCooldown: 1.36,
-    baseDamage: 140,
+    baseDamage: 115,
     baseSpeed: 450,
     pierce: 99,
     maxLevel: 1,
@@ -1030,7 +1030,7 @@ const SPELL_DEFS = {
     icon: '🏰👑💥',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Triệu hồi Cự Pháo Đài Hắc Bộc Ngưu dậm nát mặt đất tạo sóng xung kích diệt thần 360 độ!',
     baseCooldown: 0.96,
-    baseDamage: 521,
+    baseDamage: 427,
     baseArea: 300,
     maxLevel: 1
   },
@@ -1057,7 +1057,7 @@ const SPELL_DEFS = {
     icon: '🌺✨',
     description: 'TIẾN HÓA CẤP 1: Nở rộ vườn hoa thánh địa xung quanh người chơi liên tục hồi máu và bắn gai nhọn diệt địch!',
     baseCooldown: 1.22,
-    baseDamage: 121,
+    baseDamage: 99,
     baseArea: 170,
     duration: 3.5,
     maxLevel: 1,
@@ -1071,7 +1071,7 @@ const SPELL_DEFS = {
     icon: '🌸👑🌿',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cây Thần Địa Đàng khai mở, liên tục phóng 16 chùm hoa pháo diệt thần và bất tử hồi máu 5% mỗi 2 giây!',
     baseCooldown: 0.99,
-    baseDamage: 456,
+    baseDamage: 374,
     baseArea: 320,
     maxLevel: 1
   },
@@ -1098,7 +1098,7 @@ const SPELL_DEFS = {
     icon: '🌀🔩',
     description: 'TIẾN HÓA CẤP 1: 5 đại khoan thép xoay bão lốc càn quét theo hình nan quạt, đẩy lùi cực mạnh!',
     baseCooldown: 1.05,
-    baseDamage: 133,
+    baseDamage: 109,
     baseSpeed: 520,
     pierce: 99,
     maxLevel: 1,
@@ -1112,7 +1112,7 @@ const SPELL_DEFS = {
     icon: '🔩👑⚡',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cột giáo khoan thép khổng lồ từ thiên giới cắm thẳng xuống đất tạo sóng chấn động sắt thép toàn màn hình!',
     baseCooldown: 0.92,
-    baseDamage: 490,
+    baseDamage: 402,
     baseArea: 290,
     maxLevel: 1
   },
@@ -1138,7 +1138,7 @@ const SPELL_DEFS = {
     icon: '🏔️💥',
     description: 'TIẾN HÓA CẤP 1: 2 bàn tay khổng lồ bằng nham thạch đập vào nhau nghiền nát tất cả kẻ địch ở giữa!',
     baseCooldown: 1.31,
-    baseDamage: 148,
+    baseDamage: 121,
     baseArea: 175,
     maxLevel: 1,
     evolution: 'terra_titan_earthquake',
@@ -1151,7 +1151,7 @@ const SPELL_DEFS = {
     icon: '🗿👑🌋',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Đại địa nứt toác toàn màn hình, dung nham và đá tảng phun trào làm choáng và quét sạch quái vật!',
     baseCooldown: 1.06,
-    baseDamage: 501,
+    baseDamage: 411,
     baseArea: 310,
     maxLevel: 1
   },
@@ -1177,7 +1177,7 @@ const SPELL_DEFS = {
     icon: '⬛⚡',
     description: 'TIẾN HÓA CẤP 1: Thiết lập khối không gian đen tối áp chế tuyệt đối mọi sinh linh, phóng mưa gai xương Ma Quỷ 360 độ!',
     baseCooldown: 1.1,
-    baseDamage: 225,
+    baseDamage: 185,
     baseArea: 230,
     maxLevel: 1
   },
@@ -1203,7 +1203,7 @@ const SPELL_DEFS = {
     icon: '🩸😈',
     description: 'TIẾN HÓA CẤP 1: Triệu hồi Cự Đại Huyết Ma Thú càn quét bản đồ, kích nổ vòng hoa huyết nguyền rủa và hút máu cực đại!',
     baseCooldown: 1.3,
-    baseDamage: 207,
+    baseDamage: 170,
     baseArea: 220,
     maxLevel: 1
   },
@@ -1229,7 +1229,7 @@ const SPELL_DEFS = {
     icon: '🕳️💥',
     description: 'TIẾN HÓA CẤP 1: Tạo ra điểm dị thường trọng lực nuốt chửng toàn bộ quái vật vào tâm rồi phát nổ hủy diệt không gian!',
     baseCooldown: 1.5,
-    baseDamage: 261,
+    baseDamage: 214,
     baseArea: 250,
     maxLevel: 1
   },
@@ -1255,7 +1255,7 @@ const SPELL_DEFS = {
     icon: '🔥🦅',
     description: 'TIẾN HÓA CẤP 1: Thần Điểu Phượng Hoàng rực lửa sải cánh bay lượn toàn chiến trường, để lại vệt lửa vĩnh cửu và hồi sinh mệnh!',
     baseCooldown: 1.0,
-    baseDamage: 198,
+    baseDamage: 162,
     baseArea: 220,
     maxLevel: 1
   },
@@ -1281,7 +1281,7 @@ const SPELL_DEFS = {
     icon: '🌈⚡',
     description: 'TIẾN HÓA CẤP 1: Khai mở kho tàng ma pháp sao chép tối thượng, giải phóng liên tục 8 loại ma đạn nguyên tố bão táp 360 độ!',
     baseCooldown: 0.95,
-    baseDamage: 189,
+    baseDamage: 155,
     baseArea: 240,
     maxLevel: 1
   },
@@ -1307,7 +1307,7 @@ const SPELL_DEFS = {
     icon: '🐺👹',
     description: 'TIẾN HÓA CẤP 1: Khai mở Con Mắt Thứ Ba, phóng ra các đợt cào xé ma khí khổng lồ đan chéo kèm sóng xung kích thú thần hủy diệt!',
     baseCooldown: 0.85,
-    baseDamage: 234,
+    baseDamage: 192,
     baseArea: 220,
     maxLevel: 1
   },
