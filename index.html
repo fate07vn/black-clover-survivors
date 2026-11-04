@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Black Clover: Magic Survivor (Ma Pháp Sinh Tồn)</title>
-  <link rel="stylesheet" href="style.css?v=bc148">
+  <link rel="stylesheet" href="style.css?v=bc167">
 <style id="inlined-styles">
 /* Black Clover: Magic Survivor - Dark Fantasy Anime UI Styling */
 
@@ -3566,16 +3566,16 @@ html, body {
   <div id="topNavBar">
     <div class="top-nav-left">
       <div class="brand-logo-text">BLACK CLOVER<br>SURVIVORS</div>
-      <div class="currency-pill gold" title="Clover Coins">🪙 <span id="currencyCoins">5,000</span></div>
-      <div class="currency-pill ticket" title="Vé Triệu Hồi (Vàng)">🎫 <span id="currencyTickets">30</span></div>
+      <div class="currency-pill gold" title="Clover Yul (Tiền Tệ Vương Quốc)">🍀 <span id="currencyCoins">5,000</span></div>
+      <div class="currency-pill ticket" title="Vé Triệu Hồi Ma Đạo Thư">📜✨ <span id="currencyTickets">30</span></div>
     </div>
 
     <div class="top-nav-center">
-      <button class="nav-tab-btn btn-phapsu" onclick="openCharSelectModal()">🧙‍♂️ PHÁP SƯ</button>
-      <button class="nav-tab-btn btn-taovat" onclick="openArtifactsModal()">🏺 TẠO VẬT</button>
-      <button class="nav-tab-btn btn-gacha" onclick="openGachaModal()">🎰 GACHA</button>
-      <button class="nav-tab-btn btn-upgrades" onclick="openUpgradesModal()">⚡ UPGRADES</button>
-      <button class="nav-tab-btn btn-bando" onclick="openMapModal()">🗺️ BẢN ĐỒ</button>
+      <button class="nav-tab-btn btn-phapsu" onclick="openCharSelectModal()">⚜️ MA ĐẠO SĨ</button>
+      <button class="nav-tab-btn btn-taovat" onclick="openArtifactsModal()">🏺 CỔ VẬT</button>
+      <button class="nav-tab-btn btn-gacha" onclick="openGachaModal()">📖 TRIỆU HỒI</button>
+      <button class="nav-tab-btn btn-upgrades" onclick="openUpgradesModal()">🌟 CƯỜNG HÓA</button>
+      <button class="nav-tab-btn btn-bando" onclick="openMapModal()">🗺️ CHIẾN TRƯỜNG</button>
     </div>
 
     <div class="top-nav-right">
@@ -3764,17 +3764,17 @@ html, body {
   <div id="gachaModal" class="modal-overlay-custom hidden">
     <div class="modal-dialog-box" style="max-width: 780px;">
       <div class="modal-header-bar">
-        <div class="modal-header-title" id="gachaModalTitle">🎰 TRIỆU HỒI MA PHÁP & TẠO VẬT CỔ ĐẠI</div>
+        <div class="modal-header-title" id="gachaModalTitle">📖 KHAI MỞ MA ĐẠO THƯ & CỔ VẬT MINH GIỚI</div>
         <button class="modal-btn-close" onclick="closeGachaModal()">✕</button>
       </div>
 
       <div class="modal-body-scrollable">
         <div class="gacha-tab-switcher">
           <button id="gachaTabHeroes" class="gacha-mode-tab active" onclick="switchGachaBannerMode('heroes')">
-            🧙‍♂️ BANNER PHÁP SƯ
+            ⚜️ CHIÊU MỘ MA ĐẠO SĨ
           </button>
           <button id="gachaTabArtifacts" class="gacha-mode-tab" onclick="switchGachaBannerMode('artifacts')">
-            🏺 BANNER TẠO VẬT CỔ ĐẠI
+            🏺 TẠO VẬT MINH GIỚI
           </button>
         </div>
 
@@ -3853,9 +3853,9 @@ html, body {
   <div id="upgradesModal" class="modal-overlay-custom hidden">
     <div class="modal-dialog-box" style="max-width: 920px;">
       <div class="modal-header-bar">
-        <div class="modal-header-title">⚡ CÂY NÂNG CẤP CHỈ SỐ VĨNH VIỄN</div>
+        <div class="modal-header-title">🌟 CƯỜNG HÓA MA LỰC VĨNH VIỄN (MANA REINFORCEMENT)</div>
         <div style="display: flex; align-items: center; gap: 16px;">
-          <div class="currency-pill gold">🪙 <span id="upgradeMenuCoins">5,000</span></div>
+          <div class="currency-pill gold">🍀 <span id="upgradeMenuCoins">5,000</span></div>
           <button class="modal-btn-close" onclick="closeUpgradesModal()">✕</button>
         </div>
       </div>
@@ -4067,10 +4067,10 @@ html, body {
         </div>
 
         <!-- 3. Tiện Ích & Tài Phú -->
-        <div style="font-size: 12px; font-weight: 800; color: #a855f7; text-transform: uppercase; margin-top: 6px;">🧲 TIỆN ÍCH & THU HOẠCH</div>
+        <div style="font-size: 12px; font-weight: 800; color: #a855f7; text-transform: uppercase; margin-top: 6px;">🌀 DẪN LỰC MA VỰC & THU HOẠCH</div>
         <div class="stat-grid-3col">
           <div class="stat-sheet-box">
-            <span class="stat-sheet-box-lbl">Bán Kính Nam Châm</span>
+            <span class="stat-sheet-box-lbl">Bán Kính Hút Mana</span>
             <span id="stValMagnet" class="stat-sheet-box-val">80 px</span>
           </div>
           <div class="stat-sheet-box">
@@ -4078,21 +4078,21 @@ html, body {
             <span id="stValExp" class="stat-sheet-box-val green">+0%</span>
           </div>
           <div class="stat-sheet-box">
-            <span class="stat-sheet-box-lbl">Thưởng Tiền Xu</span>
+            <span class="stat-sheet-box-lbl">Thưởng Tiền Xu (Yul)</span>
             <span id="stValGreed" class="stat-sheet-box-val gold">+0%</span>
           </div>
         </div>
 
         <!-- 4. Ma Pháp & Vũ Khí Đang Dùng -->
-        <div style="font-size: 12px; font-weight: 800; color: #fbbf24; text-transform: uppercase; margin-top: 6px;">🗡️ VŨ KHÍ & TIẾN HÓA ĐANG TRANG BỊ</div>
+        <div style="font-size: 12px; font-weight: 800; color: #fbbf24; text-transform: uppercase; margin-top: 6px;">⚔️ MA PHÁP & VŨ KHÍ TIẾN HÓA</div>
         <div id="stEquippedWeapons" class="stat-gear-list"></div>
 
         <!-- 5. Sách Bổ Trợ -->
-        <div style="font-size: 12px; font-weight: 800; color: #6ee7b7; text-transform: uppercase; margin-top: 6px;">📘 SÁCH MA PHÁP BỔ TRỢ ĐANG DÙNG</div>
+        <div style="font-size: 12px; font-weight: 800; color: #6ee7b7; text-transform: uppercase; margin-top: 6px;">📖 MA ĐẠO THƯ BỔ TRỢ ĐANG DÙNG</div>
         <div id="stEquippedPassives" class="stat-gear-list"></div>
 
         <!-- 6. Cổ Vật & Tạo Vật Đang Trang Bị -->
-        <div style="font-size: 12px; font-weight: 800; color: #f59e0b; text-transform: uppercase; margin-top: 6px;">🏺 TẠO VẬT & CỔ VẬT MA THUẬT ĐANG TRANG BỊ</div>
+        <div style="font-size: 12px; font-weight: 800; color: #f59e0b; text-transform: uppercase; margin-top: 6px;">🏺 CỔ VẬT VƯƠNG QUỐC ĐANG TRANG BỊ</div>
         <div id="stEquippedArtifacts" class="stat-gear-list"></div>
       </div>
 
@@ -4411,16 +4411,85 @@ html, body {
 
 
   <!-- Core Scripts with Cache-Buster Queries -->
-  <script src="src/audio.js?v=bc162"></script>
-  <script src="src/sprites.js?v=bc162"></script>
-  <script src="src/spells.js?v=bc162"></script>
-  <script src="src/enemies.js?v=bc162"></script>
-  <script src="src/artifacts.js?v=bc162"></script>
-  <script src="src/auth.js?v=bc162"></script>
-  <script src="src/game.js?v=bc162"></script>
+  <script src="src/audio.js?v=bc167"></script>
+  <script src="src/sprites.js?v=bc167"></script>
+  <script src="src/spells.js?v=bc167"></script>
+  <script src="src/enemies.js?v=bc167"></script>
+  <script src="src/artifacts.js?v=bc167"></script>
+  <script src="src/auth.js?v=bc167"></script>
+  <script src="src/game.js?v=bc167"></script>
 
   <!-- Global App Controller & Event Handlers -->
   <script>
+    window.CHAR_EMOJIS = {
+      // Thần Thoại (Legendary)
+      julius: '⏳',
+      lumiere: '☀️',
+      black_asta: '😈',
+      licht: '🗡️✨',
+      nacht: '🐾',
+      secre: '🐦',
+      patry: '✨',
+
+      // Sử Thi (Epic)
+      yami: '🌑',
+      mereoleona: '🦁',
+      fuegoleon: '🔥',
+      nozel: '💧',
+      charlotte: '🌹',
+      dorothy: '💭',
+      william: '🌳',
+      jack: '🦗',
+      langris: '🔮',
+      henry: '🏰',
+
+      // Hiếm (Rare)
+      yuno: '🌪️',
+      noelle: '🌊',
+      luck: '⚡',
+      leopold: '🌋',
+      rill: '🎨',
+      mars: '💎',
+      zora: '🕸️',
+      gordon: '🧪',
+      grey: '🪄',
+      mimosa: '🌸',
+      klaus: '🔩',
+
+      // Phổ Thông (Common)
+      asta: '🗡️',
+      magna: '⚾',
+      finral: '🚪',
+      charmy: '🍲',
+      sol: '🗿',
+
+      // Phản Diện & Ác Quỷ (Villains & Devils)
+      zenon: '🦴',
+      vanica: '🩸',
+      dante: '⚫',
+      fana: '🐉',
+      rhya: '📜',
+      vetto: '🐺'
+    };
+
+    window.getSquadBadge = function(squad) {
+      if (!squad) return '🍀 Vương Quốc Clover';
+      if (squad.includes('Black Bulls') || squad.includes('Hắc Bộc Ngưu')) return '🐂 ' + squad;
+      if (squad.includes('Golden Dawn') || squad.includes('Hoàng Kim')) return '🌅 ' + squad;
+      if (squad.includes('Crimson') || squad.includes('Hồng Liên')) return '🦁 ' + squad;
+      if (squad.includes('Silver') || squad.includes('Ngân Dực')) return '🦅 ' + squad;
+      if (squad.includes('Blue Rose') || squad.includes('Lam Linh')) return '🌹 ' + squad;
+      if (squad.includes('Peacock') || squad.includes('Khổng Tước')) return '🦚 ' + squad;
+      if (squad.includes('Mantis') || squad.includes('Lục Bọ Ngựa')) return '🦗 ' + squad;
+      if (squad.includes('Deer') || squad.includes('Hươu')) return '🦌 ' + squad;
+      if (squad.includes('Elf') || squad.includes('Yêu Tinh')) return '🧝 ' + squad;
+      if (squad.includes('Bạch Dạ') || squad.includes('Midnight Sun')) return '👁️ ' + squad;
+      if (squad.includes('Diamond')) return '💎 ' + squad;
+      if (squad.includes('Spade') || squad.includes('Dark Triad')) return '♠️ ' + squad;
+      if (squad.includes('Hoàng Tộc Cổ Đại')) return '👑 ' + squad;
+      return '🍀 ' + squad;
+    };
+
     let gameInstance = null;
     let selectedHeroId = 'asta';
     let selectedMapId = 'clover_plains';
@@ -4488,7 +4557,7 @@ html, body {
         }[c.rarity] || c.rarity.toUpperCase();
       }
       if (titleEl) titleEl.innerText = c.title || '';
-      if (squadEl) squadEl.innerText = `🛡️ ${c.squad || 'Clover'}`;
+      if (squadEl) squadEl.innerText = window.getSquadBadge ? window.getSquadBadge(c.squad) : `🛡️ ${c.squad || 'Clover'}`;
       if (magicEl) magicEl.innerText = `✨ ${c.magic || 'Ma Pháp'}`;
       if (ownedEl && g) {
         const total = Object.keys(allChars).length;
@@ -4607,7 +4676,7 @@ html, body {
         card.innerHTML = `
           <div class="roster-avatar">${emoji}</div>
           <div class="roster-name">${c.name}</div>
-          <div class="roster-squad">${c.squad.split('(')[0]}</div>
+          <div class="roster-squad">${window.getSquadBadge ? window.getSquadBadge(c.squad.split('(')[0]) : c.squad.split('(')[0]}</div>
           <div style="font-size: 10px; font-weight: 800; color: ${rColor}; margin-top: 3px; letter-spacing: 0.5px;">
             ${rName}
           </div>
@@ -4925,18 +4994,18 @@ html, body {
       if (coinEl) coinEl.innerText = g.currency.coins.toLocaleString();
 
       const TALENTS = [
-        { id: 'vitality', name: 'Sinh Lực (Max HP)', desc: '+4 HP mỗi cấp (Tối đa +40 HP)', icon: '❤️', max: 10, cost: 200 },
-        { id: 'strength', name: 'Uy Lực (Damage)', desc: '+1.5% Sát thương phép mỗi cấp (Tối đa +15%)', icon: '🥊', max: 10, cost: 200 },
-        { id: 'stride', name: 'Tốc Hành (Speed)', desc: '+1.5% Tốc độ di chuyển mỗi cấp (Tối đa +15%)', icon: '👟', max: 10, cost: 200 },
-        { id: 'reflexes', name: 'Hồi Chiêu (CDR)', desc: '-1% Thời gian hồi chiêu mỗi cấp (Tối đa -10%)', icon: '⏰', max: 10, cost: 200 },
-        { id: 'armor', name: 'Giáp Thép (Defense)', desc: '+1% Giáp phòng ngự mỗi cấp (Tối đa +10%)', icon: '🛡️', max: 10, cost: 200 },
-        { id: 'synthesis', name: 'Tự Phục Hồi (Regen)', desc: '+0.1 HP/s hồi máu mỗi cấp (Tối đa +1.0 HP/s)', icon: '🌿', max: 10, cost: 200 },
-        { id: 'magnet', name: 'Nam Châm (Magnet)', desc: '+6px Bán kính hút ngọc mỗi cấp (Tối đa +60px)', icon: '🧲', max: 10, cost: 200 },
-        { id: 'wisdom', name: 'Trí Tuệ (EXP)', desc: '+2% Điểm kinh nghiệm mỗi cấp (Tối đa +20%)', icon: '📘', max: 10, cost: 200 },
-        { id: 'fortune', name: 'Thần Tài (Greed)', desc: '+4% Tiền xu Clover rơi mỗi cấp (Tối đa +40%)', icon: '🪙', max: 10, cost: 200 },
-        { id: 'repertoire', name: 'Khởi Điểm (2 Moves)', desc: 'Khởi đầu trận đấu với thêm 1 vũ khí ngẫu nhiên', icon: '🃏', max: 1, cost: 800 },
-        { id: 'crit', name: 'Bạo Kích (Crit Rate)', desc: '+1.5% Tỉ lệ chí mạng & +2% ST Chí mạng mỗi cấp', icon: '⭐', max: 10, cost: 200 },
-        { id: 'reroll', name: 'Đổi Bài (Rerolls)', desc: '+1 Lần đổi lá bài nâng cấp khi lên cấp (Tối đa 3 lần)', icon: '🔄', max: 3, cost: 500 }
+        { id: 'vitality', name: 'Sinh Lực (Vitality)', desc: '+4 HP mỗi cấp (Tối đa +40 HP)', icon: '❤️', max: 10, cost: 200 },
+        { id: 'strength', name: 'Uy Lực (Damage)', desc: '+1.5% Sát thương ma pháp mỗi cấp (Tối đa +15%)', icon: '⚔️', max: 10, cost: 200 },
+        { id: 'stride', name: 'Thần Tốc (Speed)', desc: '+1.5% Tốc độ di chuyển mỗi cấp (Tối đa +15%)', icon: '⚡', max: 10, cost: 200 },
+        { id: 'reflexes', name: 'Hồi Chiêu (CDR)', desc: '-1% Thời gian hồi chiêu mỗi cấp (Tối đa -10%)', icon: '⏳', max: 10, cost: 200 },
+        { id: 'armor', name: 'Ma Pháp Bì (Defense)', desc: '+1% Giáp phòng ngự mỗi cấp (Tối đa +10%)', icon: '🛡️', max: 10, cost: 200 },
+        { id: 'synthesis', name: 'Sinh Mệnh Thảo (Regen)', desc: '+0.1 HP/s hồi máu mỗi cấp (Tối đa +1.0 HP/s)', icon: '🌿', max: 10, cost: 200 },
+        { id: 'magnet', name: 'Dẫn Lực Ma Vực (Magnet)', desc: '+6px Bán kính hút tinh thể mana mỗi cấp (Tối đa +60px)', icon: '🌀', max: 10, cost: 200 },
+        { id: 'wisdom', name: 'Minh Triết Đạo Thư (EXP)', desc: '+2% Kinh nghiệm ma pháp mỗi cấp (Tối đa +20%)', icon: '📖', max: 10, cost: 200 },
+        { id: 'fortune', name: 'Vận Mệnh Tam Diệp (Fortune)', desc: '+4% Tiền xu Clover Yul mỗi cấp (Tối đa +40%)', icon: '🍀', max: 10, cost: 200 },
+        { id: 'repertoire', name: 'Song Đạo Thư (2 Moves)', desc: 'Khởi đầu trận đấu với thêm 1 phép thuật khởi đầu', icon: '📚', max: 1, cost: 800 },
+        { id: 'crit', name: 'Cảm Nhận Khí (Crit Hit)', desc: '+1.5% Tỉ lệ chí mạng & +2% ST Chí mạng mỗi cấp', icon: '🗡️', max: 10, cost: 200 },
+        { id: 'reroll', name: 'Chỉ Đỏ Rouge (Fate Reroll)', desc: '+1 Lần đổi lá bài ma pháp khi lên cấp (Tối đa 3 lần)', icon: '🧶', max: 3, cost: 500 }
       ];
 
       const u = g.upgrades || {};

@@ -180,7 +180,7 @@ const Sprites = {
   drawPlayerSprite(ctx, p, tick) {
     if (!p) return;
     const cid = p.charId || 'asta';
-    const scale = p.isPreview ? 1.0 : (p.spriteScale || 0.74); // Compact hero size (~26% smaller for optimal battlefield view)
+    const scale = p.isPreview ? 1.0 : (p.spriteScale || 0.74);
 
     ctx.save();
     ctx.translate(p.x, p.y);
@@ -257,7 +257,9 @@ const Sprites = {
     ctx.restore();
   },
 
-  // 1. ASTA (Tam Diệp -> Ngũ Diệp Thảo / Black Asta)
+  // =========================================================================
+  // 1. ASTA (Tam Diệp Thảo / Ngũ Diệp Thảo / Black Asta)
+  // =========================================================================
   drawAsta(ctx, p, tick) {
     const isDevil = p.isDevilMode;
     const facing = p.facing || 1;
@@ -272,27 +274,26 @@ const Sprites = {
       this.drawAura(ctx, 0, -2, 34, 'rgba(220, 38, 38, 0.4)', 28);
       this.drawAura(ctx, 0, -2, 22, 'rgba(15, 10, 20, 0.85)', 18);
 
-      // Red lightning sparks
-      if (Math.random() < 0.3) {
+      if (Math.random() < 0.35) {
         ctx.strokeStyle = '#f43f5e';
         ctx.shadowColor = '#dc2626';
         ctx.shadowBlur = 10;
         ctx.lineWidth = 2;
         ctx.beginPath();
-        const sx = (Math.random() - 0.5) * 30;
-        const sy = (Math.random() - 0.5) * 30;
+        const sx = (Math.random() - 0.5) * 32;
+        const sy = (Math.random() - 0.5) * 32;
         ctx.moveTo(sx, sy);
-        ctx.lineTo(sx + (Math.random() - 0.5) * 14, sy + (Math.random() - 0.5) * 14);
+        ctx.lineTo(sx + (Math.random() - 0.5) * 16, sy + (Math.random() - 0.5) * 16);
         ctx.stroke();
+        ctx.shadowBlur = 0;
       }
 
-      // Large Demon Wing (Right side)
+      // Giant Demonic Bat Wing
       ctx.save();
       const wingFlap = Math.sin(tick * 0.16) * 0.25;
       ctx.translate(-10, -14);
       ctx.rotate(-0.35 + wingFlap);
 
-      // Wing feathers
       ctx.fillStyle = '#0a0305';
       ctx.shadowColor = '#dc2626';
       ctx.shadowBlur = 16;
@@ -300,11 +301,12 @@ const Sprites = {
       ctx.moveTo(0, 0);
       ctx.bezierCurveTo(-25, -45, -55, -28, -60, 5);
       ctx.bezierCurveTo(-45, 15, -30, 32, 0, 12);
+      ctx.closePath();
       ctx.fill();
 
       // Red inner wing veins
       ctx.strokeStyle = '#e11d48';
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.8;
       ctx.beginPath();
       ctx.moveTo(-5, 0);
       ctx.lineTo(-45, -15);
@@ -314,7 +316,7 @@ const Sprites = {
       ctx.restore();
     }
 
-    // Dynamic ground shadow with gradient
+    // Shadow
     const shadowGrad = ctx.createRadialGradient(0, 18, 2, 0, 18, 16);
     shadowGrad.addColorStop(0, 'rgba(0,0,0,0.5)');
     shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
@@ -323,157 +325,294 @@ const Sprites = {
     ctx.ellipse(0, 18, 16, 6, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Legs / Trousers
-    ctx.fillStyle = '#1c1917';
-    ctx.fillRect(-8, 8, 6, 12);
-    ctx.fillRect(2, 8, 6, 12);
-    // Dark Boots with gold buckles
+    // LEGS & BOOTS (Contoured anime legs with knee joints)
+    ctx.fillStyle = '#18181b';
+    // Left leg
+    ctx.beginPath();
+    ctx.moveTo(-8, 6);
+    ctx.lineTo(-3, 6);
+    ctx.lineTo(-2, 16);
+    ctx.lineTo(-9, 16);
+    ctx.closePath();
+    ctx.fill();
+    // Right leg
+    ctx.beginPath();
+    ctx.moveTo(2, 6);
+    ctx.lineTo(7, 6);
+    ctx.lineTo(8, 16);
+    ctx.lineTo(1, 16);
+    ctx.closePath();
+    ctx.fill();
+
+    // High combat boots with cuffs
     ctx.fillStyle = '#451a03';
-    ctx.fillRect(-9, 16, 8, 6);
-    ctx.fillRect(1, 16, 8, 6);
+    ctx.beginPath();
+    ctx.moveTo(-10, 15);
+    ctx.lineTo(-1, 15);
+    ctx.lineTo(-1, 22);
+    ctx.lineTo(-12, 22);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(0, 15);
+    ctx.lineTo(9, 15);
+    ctx.lineTo(10, 22);
+    ctx.lineTo(-1, 22);
+    ctx.closePath();
+    ctx.fill();
+
+    // Gold boot buckles
     ctx.fillStyle = '#fbbf24';
-    ctx.fillRect(-6, 17, 3, 2);
-    ctx.fillRect(4, 17, 3, 2);
+    ctx.beginPath();
+    ctx.rect(-7, 17, 3, 2);
+    ctx.rect(3, 17, 3, 2);
+    ctx.fill();
 
-    // Torso: Muscular white tank top
+    // TORSO & MUSCULAR CHEST
+    // Muscular skin base
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.moveTo(-7, -6);
+    ctx.lineTo(7, -6);
+    ctx.lineTo(6, 6);
+    ctx.lineTo(-6, 6);
+    ctx.closePath();
+    ctx.fill();
+
+    // White tank top inner contours
     ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(-8, -4, 16, 14);
-    // Shading on muscles
-    ctx.fillStyle = '#e2e8f0';
-    ctx.fillRect(-3, -2, 6, 10);
+    ctx.beginPath();
+    ctx.moveTo(-5, -6);
+    ctx.lineTo(5, -6);
+    ctx.lineTo(4, 6);
+    ctx.lineTo(-4, 6);
+    ctx.closePath();
+    ctx.fill();
 
-    // Black Bulls Jacket (Cropped open jacket)
+    // Muscle shadow lines (Pectorals & Abs)
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, -4);
+    ctx.lineTo(0, 4);
+    ctx.stroke();
+
+    // Cropped Black Bulls Jacket (Open front, dynamic vest)
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(-11, -5, 5, 15);
-    ctx.fillRect(6, -5, 5, 15);
-    // Gold trim on collar
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(-11, -6, 5, 2);
-    ctx.fillRect(6, -6, 5, 2);
+    // Left jacket lapel
+    ctx.beginPath();
+    ctx.moveTo(-9, -7);
+    ctx.lineTo(-4, -7);
+    ctx.lineTo(-5, 6);
+    ctx.lineTo(-10, 5);
+    ctx.closePath();
+    ctx.fill();
+    // Right jacket lapel
+    ctx.beginPath();
+    ctx.moveTo(4, -7);
+    ctx.lineTo(9, -7);
+    ctx.lineTo(10, 5);
+    ctx.lineTo(5, 6);
+    ctx.closePath();
+    ctx.fill();
 
-    // Leather Belt & Grimoire Holster
+    // Gold trim on collar
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(-9, -7);
+    ctx.lineTo(-4, -7);
+    ctx.moveTo(4, -7);
+    ctx.lineTo(9, -7);
+    ctx.stroke();
+
+    // Black Bulls shoulder mantle (Left shoulder)
+    ctx.fillStyle = '#090d16';
+    ctx.beginPath();
+    ctx.moveTo(-9, -8);
+    ctx.lineTo(-14, -4);
+    ctx.lineTo(-12, 4);
+    ctx.lineTo(-7, 1);
+    ctx.closePath();
+    ctx.fill();
+    // Gold bull skull pin
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(-10, -2, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Broad leather belt with holster
     ctx.fillStyle = '#78350f';
-    ctx.fillRect(-10, 6, 20, 4);
+    ctx.beginPath();
+    ctx.moveTo(-8, 5);
+    ctx.lineTo(8, 5);
+    ctx.lineTo(7, 9);
+    ctx.lineTo(-7, 9);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(-2, 5.5, 4, 3);
+
+    // DEMON SLAYER GREATSWORD (Slung on back / ready)
+    ctx.save();
+    ctx.translate(-7, 0);
+    ctx.rotate(0.38);
+    ctx.fillStyle = '#334155';
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-4, -26);
+    ctx.lineTo(4, -26);
+    ctx.lineTo(3, 14);
+    ctx.lineTo(-3, 14);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // Chipped runic fuller
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(-1.5, -22, 3, 30);
+    // Crossguard & Hilt
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(-7, 14, 14, 3);
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(-2, 17, 4, 9);
+    ctx.restore();
 
     // 5-LEAF CLOVER GRIMOIRE (Floating at hip with crimson aura)
     ctx.save();
     ctx.translate(9, 2 + Math.sin(tick * 0.12) * 2);
-    ctx.fillStyle = isDevil ? '#450a0a' : '#1c1917';
-    ctx.shadowColor = isDevil ? '#ef4444' : '#71717a';
-    ctx.shadowBlur = 8;
-    ctx.fillRect(-4, -6, 8, 13);
-    // Red 5-leaf Clover Emblem
-    ctx.fillStyle = isDevil ? '#ef4444' : '#dc2626';
+    ctx.fillStyle = '#1c1917';
+    ctx.strokeStyle = isDevil ? '#ef4444' : '#475569';
+    ctx.lineWidth = 1.2;
     ctx.beginPath();
-    ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+    ctx.rect(-4, -6, 9, 12);
+    ctx.fill();
+    ctx.stroke();
+    // Glowing 5-Leaf Clover
+    ctx.fillStyle = isDevil ? '#ef4444' : '#000000';
+    ctx.beginPath();
+    ctx.arc(0.5, 0, 1.8, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
-    // Muscular Tan Arms
-    ctx.fillStyle = '#fed7aa';
-    ctx.fillRect(-11, -3, 4, 11);
-    ctx.fillRect(7, -3, 4, 11);
-    // Armbands
-    ctx.fillStyle = '#18181b';
-    ctx.fillRect(-11, 2, 4, 2);
-    ctx.fillRect(7, 2, 4, 2);
-
-    // Head / Face
+    // HEAD & ANIME JAWLINE
     ctx.fillStyle = '#fed7aa';
     ctx.beginPath();
-    ctx.arc(0, -13, 9.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Eyes: Fierce expression
-    if (isDevil) {
-      // Glowing Red Devil Eye with light streak
-      ctx.fillStyle = '#ef4444';
-      ctx.shadowColor = '#f43f5e';
-      ctx.shadowBlur = 8;
-      ctx.fillRect(2, -15, 3.5, 3.5);
-      // Red light trail behind eye
-      ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(3, -13);
-      ctx.lineTo(-6, -13);
-      ctx.stroke();
-    } else {
-      ctx.fillStyle = '#15803d'; // Determined green eye
-      ctx.fillRect(2, -15, 3, 3);
-    }
-
-    // Black Bulls Headband with Bull Skull Logo
-    ctx.fillStyle = '#09090b';
-    ctx.fillRect(-10, -20, 20, 6);
-    ctx.fillStyle = '#fbbf24'; // Bull skull
-    ctx.fillRect(-1.5, -19, 4, 4);
-
-    // Ash Blonde / Gray Spiky Hair with Shading
-    ctx.fillStyle = isDevil ? '#334155' : '#e2e8f0';
-    ctx.beginPath();
-    ctx.moveTo(-11, -19);
-    ctx.lineTo(-16, -28);
-    ctx.lineTo(-8, -23);
-    ctx.lineTo(-3, -32);
-    ctx.lineTo(2, -24);
-    ctx.lineTo(9, -30);
-    ctx.lineTo(12, -20);
+    ctx.moveTo(-6, -11);
+    ctx.lineTo(6, -11);
+    ctx.lineTo(5, -6);
+    ctx.lineTo(0, -2);
+    ctx.lineTo(-5, -6);
     ctx.closePath();
     ctx.fill();
-    // Hair Highlight
-    ctx.fillStyle = isDevil ? '#64748b' : '#ffffff';
-    ctx.fillRect(-5, -26, 3, 4);
 
-    // Devil Horn (Curved obsidian horn)
+    // ANIME EYES & MOUTH
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.4;
+    // Eye contours (Sharp anime shape)
+    ctx.beginPath();
+    ctx.moveTo(-4.5, -7);
+    ctx.lineTo(-1.5, -6.5);
+    ctx.moveTo(1.5, -6.5);
+    ctx.lineTo(4.5, -7);
+    ctx.stroke();
+
+    // Iris & Pupil (Emerald Green or Crimson if Devil Mode)
+    ctx.fillStyle = isDevil ? '#ef4444' : '#10b981';
+    ctx.beginPath();
+    ctx.arc(-3, -6, 1.2, 0, Math.PI * 2);
+    ctx.arc(3, -6, 1.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // White eye reflection glint
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(-2.6, -6.3, 0.5, 0, Math.PI * 2);
+    ctx.arc(3.4, -6.3, 0.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Determined anime smirk
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-2, -4);
+    ctx.lineTo(2, -3.5);
+    ctx.stroke();
+
+    // BLACK BULLS HEADBAND
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.moveTo(-7, -13);
+    ctx.lineTo(7, -13);
+    ctx.lineTo(6.5, -9);
+    ctx.lineTo(-6.5, -9);
+    ctx.closePath();
+    ctx.fill();
+    // Headband Bull Insignia
+    ctx.fillStyle = '#e2e8f0';
+    ctx.beginPath();
+    ctx.moveTo(-2, -12);
+    ctx.lineTo(2, -12);
+    ctx.lineTo(1, -10);
+    ctx.lineTo(-1, -10);
+    ctx.closePath();
+    ctx.fill();
+
+    // SPIKY ASH-BLONDE ANIME HAIR
+    ctx.fillStyle = '#e4e4e7';
+    ctx.strokeStyle = '#71717a';
+    ctx.lineWidth = 1;
+
+    // Hair Path with multiple sharp peaks
+    ctx.beginPath();
+    ctx.moveTo(-7, -10);
+    ctx.lineTo(-12, -14);
+    ctx.lineTo(-8, -16);
+    ctx.lineTo(-11, -21);
+    ctx.lineTo(-5, -20);
+    ctx.lineTo(-3, -25); // Top center spike
+    ctx.lineTo(1, -20);
+    ctx.lineTo(4, -25);
+    ctx.lineTo(5, -19);
+    ctx.lineTo(11, -20);
+    ctx.lineTo(8, -15);
+    ctx.lineTo(12, -13);
+    ctx.lineTo(7, -10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Hair lighter highlights
+    ctx.fillStyle = '#fafafa';
+    ctx.beginPath();
+    ctx.moveTo(-2, -22);
+    ctx.lineTo(0, -17);
+    ctx.lineTo(3, -22);
+    ctx.lineTo(2, -16);
+    ctx.closePath();
+    ctx.fill();
+
+    // DEMON HORN (Black Asta Mode)
     if (isDevil) {
-      ctx.fillStyle = '#020617';
+      ctx.fillStyle = '#09090b';
+      ctx.strokeStyle = '#dc2626';
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.moveTo(4, -22);
-      ctx.quadraticCurveTo(10, -38, 17, -36);
-      ctx.quadraticCurveTo(11, -28, 7, -20);
+      ctx.moveTo(3, -16);
+      ctx.bezierCurveTo(8, -22, 12, -28, 16, -32);
+      ctx.bezierCurveTo(12, -25, 6, -18, 5, -13);
+      ctx.closePath();
       ctx.fill();
+      ctx.stroke();
     }
-
-    // DEMON-SLAYER SWORD (Cự Kiếm Kháng Ma)
-    ctx.save();
-    const swordAngle = p.isAttacking ? (tick * 0.5) % Math.PI : -0.65;
-    ctx.translate(6, 0);
-    ctx.rotate(swordAngle);
-
-    // Giant Broad Blade (Matte dark iron with battle scars)
-    const bladeGrad = ctx.createLinearGradient(0, -35, 10, 0);
-    bladeGrad.addColorStop(0, isDevil ? '#09090b' : '#18181b');
-    bladeGrad.addColorStop(1, isDevil ? '#450a0a' : '#27272a');
-    ctx.fillStyle = bladeGrad;
-    ctx.fillRect(0, -32, 10, 36);
-
-    // Pointed Tip
-    ctx.beginPath();
-    ctx.moveTo(0, -32);
-    ctx.lineTo(5, -42);
-    ctx.lineTo(10, -32);
-    ctx.closePath();
-    ctx.fill();
-
-    // Sharp Cutting Edges
-    ctx.fillStyle = isDevil ? '#e11d48' : '#a1a1aa';
-    ctx.fillRect(0, -32, 1.5, 36);
-    ctx.fillRect(8.5, -32, 1.5, 36);
-
-    // Crossguard & Hilt
-    ctx.fillStyle = '#52525b';
-    ctx.fillRect(-5, 4, 20, 4);
-    ctx.fillStyle = '#78350f'; // Leather wrap hilt
-    ctx.fillRect(3, 8, 4, 10);
-    ctx.fillStyle = '#18181b'; // Pommel
-    ctx.fillRect(2, 18, 6, 3);
-    ctx.restore();
 
     ctx.restore();
   },
 
-  // 2. YUNO (Phong Ma Pháp & Tinh Linh Sylph)
+  // =========================================================================
+  // 2. YUNO GRINBERRYALL (Tinh Linh Ngự Phong / Spirit Zephyr)
+  // =========================================================================
   drawYuno(ctx, p, tick) {
     const facing = p.facing || 1;
     const walkBob = Math.sin(tick * 0.22) * 2;
@@ -495,431 +634,208 @@ const Sprites = {
     ctx.ellipse(0, 18, 15, 5, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Golden Dawn Flowing Cape
+    // Flowing Golden Dawn Capelet (Emerald with Gold Filigree Border)
     const capeFlutter = Math.sin(tick * 0.2) * 4;
     ctx.fillStyle = '#064e3b';
     ctx.beginPath();
-    ctx.moveTo(-8, -5);
-    ctx.lineTo(-16 + capeFlutter, 18);
-    ctx.lineTo(4, 16);
-    ctx.lineTo(6, -5);
+    ctx.moveTo(-8, -6);
+    ctx.bezierCurveTo(-14, 2, -18 + capeFlutter, 14, -14 + capeFlutter, 20);
+    ctx.lineTo(2, 17);
+    ctx.lineTo(6, -6);
     ctx.closePath();
     ctx.fill();
-    // Gold trim
+
+    // Gold filigree edge
     ctx.strokeStyle = '#fbbf24';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(-8, -6);
+    ctx.bezierCurveTo(-14, 2, -18 + capeFlutter, 14, -14 + capeFlutter, 20);
+    ctx.lineTo(2, 17);
     ctx.stroke();
 
-    // Pants & Boots
-    ctx.fillStyle = '#f1f5f9';
-    ctx.fillRect(-7, 8, 5, 12);
-    ctx.fillRect(1, 8, 5, 12);
-    ctx.fillStyle = '#382215';
-    ctx.fillRect(-8, 16, 6, 6);
-    ctx.fillRect(0, 16, 6, 6);
-
-    // Tunic (Navy blue with gold belt)
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(-7, -4, 14, 14);
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(-7, 5, 14, 3);
-
-    // Head / Face
-    ctx.fillStyle = '#ffedd5';
+    // LEGS & TUNIC
+    ctx.fillStyle = '#f8fafc';
     ctx.beginPath();
-    ctx.arc(0, -13, 9, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Amber Eyes
-    ctx.fillStyle = '#d97706';
-    ctx.fillRect(2, -15, 3, 3);
-
-    // Messy Jet-Black Hair with Cyan Highlights
-    ctx.fillStyle = '#020617';
-    ctx.beginPath();
-    ctx.moveTo(-10, -15);
-    ctx.lineTo(-14, -25);
-    ctx.lineTo(-7, -20);
-    ctx.lineTo(0, -29);
-    ctx.lineTo(6, -22);
-    ctx.lineTo(11, -27);
-    ctx.lineTo(9, -14);
+    ctx.moveTo(-7, 6);
+    ctx.lineTo(-2, 6);
+    ctx.lineTo(-1, 16);
+    ctx.lineTo(-8, 16);
     ctx.closePath();
     ctx.fill();
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(-2, -24, 2, 3);
 
-    // 4-LEAF GOLDEN GRIMOIRE (Floating with open pages & green runes)
-    const grimBob = Math.sin(tick * 0.14) * 4;
-    ctx.save();
-    ctx.translate(-18, -8 + grimBob);
+    ctx.beginPath();
+    ctx.moveTo(1, 6);
+    ctx.lineTo(6, 6);
+    ctx.lineTo(7, 16);
+    ctx.lineTo(0, 16);
+    ctx.closePath();
+    ctx.fill();
+
+    // High Riding Boots
+    ctx.fillStyle = '#382215';
+    ctx.beginPath();
+    ctx.rect(-9, 15, 8, 7);
+    ctx.rect(0, 15, 8, 7);
+    ctx.fill();
     ctx.fillStyle = '#fbbf24';
-    ctx.shadowColor = '#34d399';
-    ctx.shadowBlur = 10;
-    ctx.fillRect(-5, -7, 10, 14);
-    // Green 4-leaf clover
-    ctx.fillStyle = '#059669';
+    ctx.fillRect(-8, 15, 6, 1.5);
+    ctx.fillRect(1, 15, 6, 1.5);
+
+    // Tunic Body (High-collared royal uniform)
+    ctx.fillStyle = '#064e3b';
+    ctx.beginPath();
+    ctx.moveTo(-6, -7);
+    ctx.lineTo(6, -7);
+    ctx.lineTo(5, 7);
+    ctx.lineTo(-5, 7);
+    ctx.closePath();
+    ctx.fill();
+
+    // White shirt center with gold buttons
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(-2, -6, 4, 12);
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(0, -3, 1, 0, Math.PI * 2);
+    ctx.arc(0, 0, 1, 0, Math.PI * 2);
+    ctx.arc(0, 3, 1, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Royal Blue Sapphire Pendant
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.arc(0, -6, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ZEPHYR SWORD OF WIND (Glowing Emerald Energy Blade)
+    ctx.save();
+    ctx.translate(9, 2);
+    ctx.rotate(-0.4);
+    ctx.strokeStyle = '#34d399';
+    ctx.shadowColor = '#10b981';
+    ctx.shadowBlur = 12;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, -26);
+    ctx.stroke();
+    // Inner white light core
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, -2);
+    ctx.lineTo(0, -24);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.restore();
+
+    // FAIRY SYLPH (BELL) Hovering Companion
+    ctx.save();
+    const bellBob = Math.sin(tick * 0.25) * 3;
+    ctx.translate(-14, -16 + bellBob);
+    // Translucent Fairy Wings
+    ctx.fillStyle = 'rgba(167, 243, 208, 0.75)';
+    ctx.beginPath();
+    ctx.ellipse(-4, -3, 6, 2.5, -0.6, 0, Math.PI * 2);
+    ctx.ellipse(4, -3, 6, 2.5, 0.6, 0, Math.PI * 2);
+    ctx.fill();
+    // Fairy Body
+    ctx.fillStyle = '#4ade80';
     ctx.beginPath();
     ctx.arc(0, 0, 3, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
-    // SYLPH (BELL - Wind Fairy)
-    const bellBob = Math.cos(tick * 0.18) * 5;
-    ctx.save();
-    ctx.translate(18, -20 + bellBob);
-    ctx.fillStyle = '#a7f3d0';
-    ctx.shadowColor = '#34d399';
-    ctx.shadowBlur = 14;
+    // HEAD & SLENDER JAWLINE
+    ctx.fillStyle = '#fed7aa';
     ctx.beginPath();
-    ctx.arc(0, 0, 4.5, 0, Math.PI * 2);
+    ctx.moveTo(-5, -11);
+    ctx.lineTo(5, -11);
+    ctx.lineTo(4, -6);
+    ctx.lineTo(0, -2);
+    ctx.lineTo(-4, -6);
+    ctx.closePath();
     ctx.fill();
-    // Translucent Fairy Wings
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-    ctx.beginPath();
-    ctx.ellipse(-5, -3, 6, 2.5, -0.4, 0, Math.PI * 2);
-    ctx.ellipse(-5, 4, 5, 2, 0.4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
 
-    // SPIRIT OF ZEPHYR SWORD
+    // CALM AMBER ANIME EYES
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.moveTo(-4, -7);
+    ctx.lineTo(-1, -7);
+    ctx.moveTo(1, -7);
+    ctx.lineTo(4, -7);
+    ctx.stroke();
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.arc(-2.5, -6.2, 1.2, 0, Math.PI * 2);
+    ctx.arc(2.5, -6.2, 1.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // WINDSWEPT JET-BLACK ANIME HAIR
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#064e3b';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-6, -10);
+    ctx.lineTo(-10, -15);
+    ctx.lineTo(-7, -17);
+    ctx.lineTo(-10, -22);
+    ctx.lineTo(-4, -22);
+    ctx.lineTo(-2, -26);
+    ctx.lineTo(2, -24);
+    ctx.lineTo(5, -26);
+    ctx.lineTo(6, -21);
+    ctx.lineTo(10, -20);
+    ctx.lineTo(8, -14);
+    ctx.lineTo(11, -11);
+    ctx.lineTo(6, -10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Emerald hair sheen
+    ctx.fillStyle = '#047857';
+    ctx.beginPath();
+    ctx.moveTo(-1, -22);
+    ctx.lineTo(1, -17);
+    ctx.lineTo(4, -22);
+    ctx.closePath();
+    ctx.fill();
+
+    // SPIRIT DIVE CROWN (If in Spirit mode)
     if (isZephyr) {
-      ctx.save();
-      ctx.translate(12, 2);
-      ctx.rotate(0.5);
-      ctx.strokeStyle = '#4ade80';
-      ctx.shadowColor = '#22c55e';
-      ctx.shadowBlur = 20;
-      ctx.lineWidth = 3.5;
+      ctx.fillStyle = '#34d399';
+      ctx.shadowColor = '#10b981';
+      ctx.shadowBlur = 10;
       ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(0, -38);
-      ctx.stroke();
-      ctx.restore();
+      ctx.moveTo(-6, -20);
+      ctx.lineTo(-8, -28);
+      ctx.lineTo(-4, -24);
+      ctx.lineTo(-2, -30);
+      ctx.lineTo(0, -25);
+      ctx.closePath();
+      ctx.fill();
+      ctx.shadowBlur = 0;
     }
 
     ctx.restore();
   },
 
-  // 3. NOELLE SILVA (Thủy Long & Valkyrie Dress)
+  // =========================================================================
+  // 3. NOELLE SILVA (Hải Thần Nữ Vương / Valkyrie Dress)
+  // =========================================================================
   drawNoelle(ctx, p, tick) {
     const facing = p.facing || 1;
     const walkBob = Math.sin(tick * 0.22) * 2;
-    const isValkyrie = p.isValkyrie;
 
     ctx.save();
     ctx.translate(p.x, p.y + walkBob);
     ctx.scale(facing, 1);
 
-    // Swirling water aura
-    this.drawAura(ctx, 0, -2, isValkyrie ? 38 : 26, isValkyrie ? 'rgba(56, 189, 248, 0.5)' : 'rgba(14, 165, 233, 0.3)', 25);
-
-    // Orbiting Water Droplets
-    for (let i = 0; i < 3; i++) {
-      const a = tick * 0.08 + (i * Math.PI * 2) / 3;
-      const wx = Math.cos(a) * 22;
-      const wy = Math.sin(a) * 12;
-      ctx.fillStyle = '#38bdf8';
-      ctx.shadowColor = '#0284c7';
-      ctx.shadowBlur = 8;
-      ctx.beginPath();
-      ctx.arc(wx, wy - 4, 3, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Shadow
-    const shadowGrad = ctx.createRadialGradient(0, 18, 2, 0, 18, 14);
-    shadowGrad.addColorStop(0, 'rgba(0,0,0,0.4)');
-    shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = shadowGrad;
-    ctx.beginPath();
-    ctx.ellipse(0, 18, 14, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Royal Dress / Valkyrie Armor
-    if (isValkyrie) {
-      // Translucent Valkyrie Wings
-      ctx.save();
-      ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 3;
-      ctx.shadowColor = '#0284c7';
-      ctx.shadowBlur = 18;
-      ctx.beginPath();
-      ctx.moveTo(-10, -10);
-      ctx.lineTo(-30, -25);
-      ctx.lineTo(-18, 5);
-      ctx.stroke();
-      // Water Lance
-      ctx.beginPath();
-      ctx.moveTo(12, 0);
-      ctx.lineTo(44, -12);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    // Silver / Royal Purple Dress
-    ctx.fillStyle = isValkyrie ? '#e0f2fe' : '#ffffff';
-    ctx.beginPath();
-    ctx.moveTo(-7, 2);
-    ctx.lineTo(-13, 17);
-    ctx.lineTo(13, 17);
-    ctx.lineTo(7, 2);
-    ctx.closePath();
-    ctx.fill();
-
-    // Purple Silk Ribbon
-    ctx.fillStyle = '#9333ea';
-    ctx.fillRect(-8, 1, 16, 3.5);
-
-    // Head / Face
-    ctx.fillStyle = '#fff1f2';
-    ctx.beginPath();
-    ctx.arc(0, -13, 8.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Pink Eyes
-    ctx.fillStyle = '#db2777';
-    ctx.fillRect(2, -15, 3, 3);
-
-    // Silver Twin-tails Hair with Ribbons
-    ctx.fillStyle = '#e2e8f0';
-    // Bangs
-    ctx.beginPath();
-    ctx.arc(0, -15, 9, Math.PI, 0);
-    ctx.fill();
-
-    // Twin Pigtails with physics bob
-    const pBob = Math.sin(tick * 0.18) * 3;
-    ctx.fillRect(-14, -16 + pBob, 5, 24);
-    ctx.fillRect(9, -16 + pBob, 5, 24);
-    ctx.fillStyle = '#9333ea'; // Purple ribbons
-    ctx.fillRect(-13, -16 + pBob, 4, 3);
-    ctx.fillRect(9, -16 + pBob, 4, 3);
-
-    // Magic Wand
-    ctx.save();
-    ctx.translate(9, 2);
-    ctx.rotate(0.35);
-    ctx.fillStyle = '#c084fc';
-    ctx.fillRect(0, -16, 3, 18);
-    // Glowing water orb at tip
-    ctx.fillStyle = '#38bdf8';
-    ctx.shadowColor = '#0284c7';
-    ctx.shadowBlur = 12;
-    ctx.beginPath();
-    ctx.arc(1.5, -17, 4.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-
-    ctx.restore();
-  },
-
-  // 4. YAMI SUKEHIRO (Hắc Ma Pháp & Đao Katana)
-  drawYami(ctx, p, tick) {
-    const facing = p.facing || 1;
-    const walkBob = Math.sin(tick * 0.2) * 2;
-
-    ctx.save();
-    ctx.translate(p.x, p.y + walkBob);
-    ctx.scale(facing, 1);
-
-    // Dark Gravity Miasma Aura
-    this.drawAura(ctx, 0, -2, 30, 'rgba(88, 28, 135, 0.45)', 25);
-
-    // Shadow
-    const shadowGrad = ctx.createRadialGradient(0, 20, 2, 0, 20, 18);
-    shadowGrad.addColorStop(0, 'rgba(0,0,0,0.5)');
-    shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = shadowGrad;
-    ctx.beginPath();
-    ctx.ellipse(0, 20, 18, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Brown Pants & Boots
-    ctx.fillStyle = '#451a03';
-    ctx.fillRect(-9, 10, 8, 13);
-    ctx.fillRect(2, 10, 8, 13);
-    ctx.fillStyle = '#1c1917';
-    ctx.fillRect(-10, 18, 9, 6);
-    ctx.fillRect(1, 18, 9, 6);
-
-    // Muscular White Tank Top with Pec Shading
-    ctx.fillStyle = '#f1f5f9';
-    ctx.fillRect(-10, -6, 20, 18);
-    ctx.fillStyle = '#cbd5e1';
-    ctx.fillRect(-4, -2, 8, 12);
-
-    // Black Bulls Half-Cape slung over shoulder
-    ctx.fillStyle = '#09090b';
-    ctx.beginPath();
-    ctx.moveTo(-11, -7);
-    ctx.lineTo(-20, 18);
-    ctx.lineTo(-6, 15);
-    ctx.lineTo(-4, -7);
-    ctx.closePath();
-    ctx.fill();
-    // Bull Emblem in gold
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(-14, 2, 5, 5);
-
-    // Muscular Arms
-    ctx.fillStyle = '#d97706';
-    ctx.fillRect(-13, -5, 5, 14);
-    ctx.fillRect(9, -5, 5, 14);
-
-    // Head, Stubble, Cigarette
-    ctx.fillStyle = '#fed7aa';
-    ctx.beginPath();
-    ctx.arc(0, -15, 9.5, 0, Math.PI * 2);
-    ctx.fill();
-    // Stubble
-    ctx.fillStyle = '#78716c';
-    ctx.fillRect(-4, -8, 8, 3.5);
-    // Fierce Eyes
-    ctx.fillStyle = '#0c0a09';
-    ctx.fillRect(1, -17, 3.5, 2);
-
-    // Slicked Back Jet-Black Hair
-    ctx.fillStyle = '#171717';
-    ctx.beginPath();
-    ctx.moveTo(-10, -16);
-    ctx.lineTo(-13, -27);
-    ctx.lineTo(2, -29);
-    ctx.lineTo(11, -24);
-    ctx.lineTo(9, -15);
-    ctx.closePath();
-    ctx.fill();
-
-    // Cigarette & Smoke Puffs!
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(3, -10, 7, 2);
-    ctx.fillStyle = '#ef4444'; // Glowing red tip
-    ctx.fillRect(9, -10, 2, 2);
-    // Smoke
-    const smokeY = Math.sin(tick * 0.12) * 3;
-    ctx.fillStyle = 'rgba(220, 220, 220, 0.45)';
-    ctx.beginPath();
-    ctx.arc(14, -14 + smokeY, 3, 0, Math.PI * 2);
-    ctx.arc(18, -18 + smokeY, 4, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Dark Cloaked Katana
-    ctx.save();
-    ctx.translate(9, 2);
-    ctx.rotate(0.4);
-    ctx.fillStyle = '#7f1d1d'; // Crimson scabbard
-    ctx.fillRect(0, -11, 3.5, 24);
-    ctx.fillStyle = '#f59e0b'; // Gold tsuba
-    ctx.fillRect(-2, -12, 8, 2.5);
-    ctx.fillStyle = '#18181b'; // Hilt
-    ctx.fillRect(0, -20, 3.5, 8);
-    // Dark void aura around katana
-    ctx.strokeStyle = '#581c87';
-    ctx.shadowColor = '#9333ea';
-    ctx.shadowBlur = 14;
-    ctx.lineWidth = 4;
-    ctx.strokeRect(-1, -18, 6, 32);
-    ctx.restore();
-
-    ctx.restore();
-  },
-
-  // 5. LUCK VOLTIA (Lôi Ma Pháp - Cuồng Ma Tốc Độ)
-  drawLuck(ctx, p, tick) {
-    const facing = p.facing || 1;
-    const walkBob = Math.sin(tick * 0.32) * 2.5;
-
-    ctx.save();
-    ctx.translate(p.x, p.y + walkBob);
-    ctx.scale(facing, 1);
-
-    // Electric Aura
-    this.drawAura(ctx, 0, -2, 28, 'rgba(234, 179, 8, 0.4)', 22);
-
-    // Lightning forks around feet
-    if (Math.random() < 0.4) {
-      ctx.strokeStyle = '#60a5fa';
-      ctx.shadowColor = '#facc15';
-      ctx.shadowBlur = 12;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      const lx = (Math.random() - 0.5) * 24;
-      ctx.moveTo(lx, 10);
-      ctx.lineTo(lx + (Math.random() - 0.5) * 10, 18);
-      ctx.stroke();
-    }
-
-    // Shadow
-    const shadowGrad = ctx.createRadialGradient(0, 18, 2, 0, 18, 14);
-    shadowGrad.addColorStop(0, 'rgba(0,0,0,0.4)');
-    shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = shadowGrad;
-    ctx.beginPath();
-    ctx.ellipse(0, 18, 14, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Robe
-    ctx.fillStyle = '#0284c7';
-    ctx.fillRect(-7, -4, 14, 15);
-
-    // Electric Boots
-    ctx.fillStyle = '#eab308';
-    ctx.shadowColor = '#60a5fa';
-    ctx.shadowBlur = 12;
-    ctx.fillRect(-7, 10, 5, 11);
-    ctx.fillRect(2, 10, 5, 11);
-
-    // Head / Face (Cheerful crazy battle grin!)
-    ctx.fillStyle = '#fed7aa';
-    ctx.beginPath();
-    ctx.arc(0, -13, 8.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Blue eyes & smile
-    ctx.fillStyle = '#0284c7';
-    ctx.fillRect(2, -15, 3, 3);
-    ctx.strokeStyle = '#b91c1c';
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
-    ctx.arc(2, -10, 3.5, 0.2, Math.PI - 0.2); // grin!
-    ctx.stroke();
-
-    // Spiky Messy Blond Hair
-    ctx.fillStyle = '#fde047';
-    ctx.beginPath();
-    ctx.moveTo(-10, -15);
-    ctx.lineTo(-14, -25);
-    ctx.lineTo(-6, -21);
-    ctx.lineTo(0, -30);
-    ctx.lineTo(7, -22);
-    ctx.lineTo(12, -26);
-    ctx.lineTo(9, -14);
-    ctx.closePath();
-    ctx.fill();
-
-    // Sparking Electric Gauntlets on hands
-    ctx.fillStyle = '#38bdf8';
-    ctx.shadowColor = '#facc15';
-    ctx.shadowBlur = 14;
-    ctx.beginPath();
-    ctx.arc(-8, 3, 4.5, 0, Math.PI * 2);
-    ctx.arc(8, 3, 4.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  },
-
-  // 6. JULIUS NOVACHRONO (Ma Pháp Đế - Thời Gian)
-  drawJulius(ctx, p, tick) {
-    const facing = p.facing || 1;
-    const walkBob = Math.sin(tick * 0.16) * 2;
-
-    ctx.save();
-    ctx.translate(p.x, p.y + walkBob);
-    ctx.scale(facing, 1);
-
-    // Temporal Golden Halo Aura
-    this.drawAura(ctx, 0, -2, 32, 'rgba(245, 158, 11, 0.45)', 28);
+    // Sea Water Mana Aura
+    this.drawAura(ctx, 0, -2, 28, 'rgba(56, 189, 248, 0.45)', 24);
 
     // Shadow
     const shadowGrad = ctx.createRadialGradient(0, 18, 2, 0, 18, 15);
@@ -930,75 +846,1081 @@ const Sprites = {
     ctx.ellipse(0, 18, 15, 5, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Wizard King Grand Crimson & Gold Robes
-    ctx.fillStyle = '#991b1b';
+    // VALKYRIE TRANSLUCENT WATER DRESS (Tiered Flowing Skirt)
+    const skirtRipple = Math.sin(tick * 0.2) * 3;
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.55)';
+    ctx.strokeStyle = '#e0f2fe';
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(-8, -4);
-    ctx.lineTo(-15, 19);
-    ctx.lineTo(15, 19);
+    ctx.moveTo(-6, 3);
+    ctx.bezierCurveTo(-14, 10, -16 + skirtRipple, 18, -12 + skirtRipple, 22);
+    ctx.bezierCurveTo(-4, 20, 4, 20, 12 + skirtRipple, 22);
+    ctx.bezierCurveTo(16 + skirtRipple, 18, 14, 10, 6, 3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // High Silver Leg Armor
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.rect(-6, 8, 4, 12);
+    ctx.rect(2, 8, 4, 12);
+    ctx.fill();
+
+    // VALKYRIE BREASTPLATE (Sculpted Aquamarine Armor)
+    ctx.fillStyle = '#0284c7';
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-6, -7);
+    ctx.lineTo(6, -7);
+    ctx.lineTo(5, 4);
+    ctx.lineTo(-5, 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Silver wing pauldrons on shoulders
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.moveTo(-6, -7);
+    ctx.lineTo(-12, -10);
+    ctx.lineTo(-8, -4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(6, -7);
+    ctx.lineTo(12, -10);
     ctx.lineTo(8, -4);
     ctx.closePath();
     ctx.fill();
-    // Gold embroidery & Fur collar
-    ctx.fillStyle = '#fbbf24';
-    ctx.fillRect(-2, -4, 4, 23);
-    ctx.fillStyle = '#f8fafc'; // White fur collar
-    ctx.fillRect(-8, -6, 16, 4);
 
-    // Head / Face
+    // SEA DRAGON SPIRAL WATER LANCE
+    ctx.save();
+    ctx.translate(10, 2);
+    ctx.rotate(-0.25);
+    ctx.fillStyle = '#38bdf8';
+    ctx.shadowColor = '#0ea5e9';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.moveTo(0, -28); // Lance tip
+    ctx.lineTo(5, 6);
+    ctx.lineTo(-5, 6);
+    ctx.closePath();
+    ctx.fill();
+
+    // Spiral white water currents around lance
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.arc(0, -12, 6, 0, Math.PI);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, -4, 7, Math.PI, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.restore();
+
+    // NOELLE FACE & AMETHYST EYES
     ctx.fillStyle = '#fed7aa';
     ctx.beginPath();
-    ctx.arc(0, -13, 9, 0, Math.PI * 2);
+    ctx.moveTo(-5, -11);
+    ctx.lineTo(5, -11);
+    ctx.lineTo(4, -6);
+    ctx.lineTo(0, -2);
+    ctx.lineTo(-4, -6);
+    ctx.closePath();
     ctx.fill();
 
-    // Blue eyes & Forehead Star Mark
-    ctx.fillStyle = '#2563eb';
-    ctx.fillRect(2, -15, 3, 3);
-    ctx.fillStyle = '#3b82f6';
-    ctx.fillRect(-1.5, -20, 3.5, 3.5);
-
-    // Neat Blond Hair
-    ctx.fillStyle = '#fde68a';
+    // Amethyst Eyes
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.2;
     ctx.beginPath();
-    ctx.arc(0, -15, 9.5, Math.PI, 0);
+    ctx.moveTo(-4, -7);
+    ctx.lineTo(-1, -7);
+    ctx.moveTo(1, -7);
+    ctx.lineTo(4, -7);
+    ctx.stroke();
+    ctx.fillStyle = '#a855f7';
+    ctx.beginPath();
+    ctx.arc(-2.5, -6.2, 1.2, 0, Math.PI * 2);
+    ctx.arc(2.5, -6.2, 1.2, 0, Math.PI * 2);
     ctx.fill();
 
-    // COVERLESS ROTATING TIME GRIMOIRE (Iconic Julius feature!)
-    const grimSpin = tick * 0.04;
-    ctx.save();
-    ctx.translate(0, -30);
-    ctx.rotate(grimSpin);
-    ctx.strokeStyle = '#fbbf24';
-    ctx.shadowColor = '#f59e0b';
-    ctx.shadowBlur = 14;
-    ctx.lineWidth = 2;
+    // SILVER TWIN PIGTAILS & HAIR
+    ctx.fillStyle = '#f1f5f9';
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1;
+
+    // Center bangs & head
     ctx.beginPath();
-    ctx.arc(0, 0, 10, 0, Math.PI * 2);
+    ctx.moveTo(-6, -10);
+    ctx.bezierCurveTo(-8, -20, 8, -20, 6, -10);
+    ctx.lineTo(3, -11);
+    ctx.lineTo(0, -8);
+    ctx.lineTo(-3, -11);
+    ctx.closePath();
+    ctx.fill();
     ctx.stroke();
 
-    // Clock hour markings
-    for (let i = 0; i < 8; i++) {
-      const a = (i * Math.PI) / 4;
-      ctx.fillStyle = '#fbbf24';
-      ctx.fillRect(Math.cos(a) * 8 - 1, Math.sin(a) * 8 - 1, 2, 2);
-    }
-    // Clock hands
-    ctx.strokeStyle = '#b45309';
+    // Flowing Silver Pigtails (Left & Right)
+    const pigtailSway = Math.sin(tick * 0.2) * 2;
+    // Left pigtail
+    ctx.beginPath();
+    ctx.moveTo(-6, -11);
+    ctx.bezierCurveTo(-14, -13, -18 + pigtailSway, -2, -14 + pigtailSway, 8);
+    ctx.bezierCurveTo(-12, 4, -10, -6, -6, -10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // Right pigtail
+    ctx.beginPath();
+    ctx.moveTo(6, -11);
+    ctx.bezierCurveTo(14, -13, 18 + pigtailSway, -2, 14 + pigtailSway, 8);
+    ctx.bezierCurveTo(12, 4, 10, -6, 6, -10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Winged Valkyrie Tiara Crest
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.moveTo(-4, -15);
+    ctx.lineTo(0, -18);
+    ctx.lineTo(4, -15);
+    ctx.lineTo(0, -13);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // 4. YAMI SUKEHIRO (Ám Ma Pháp Đoàn Trưởng / Dark Magic Katana)
+  // =========================================================================
+  drawYami(ctx, p, tick) {
+    const facing = p.facing || 1;
+    const walkBob = Math.sin(tick * 0.22) * 2;
+
+    ctx.save();
+    ctx.translate(p.x, p.y + walkBob);
+    ctx.scale(facing, 1);
+
+    // Dark Dimension Mana Aura
+    this.drawAura(ctx, 0, -2, 30, 'rgba(147, 51, 234, 0.4)', 24);
+    this.drawAura(ctx, 0, -2, 18, 'rgba(15, 23, 42, 0.8)', 16);
+
+    // Shadow
+    const shadowGrad = ctx.createRadialGradient(0, 18, 2, 0, 18, 16);
+    shadowGrad.addColorStop(0, 'rgba(0,0,0,0.5)');
+    shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = shadowGrad;
+    ctx.beginPath();
+    ctx.ellipse(0, 18, 16, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // HEAVY COMBAT BOOTS & TROUSERS
+    ctx.fillStyle = '#1c1917';
+    ctx.beginPath();
+    ctx.rect(-9, 7, 7, 10);
+    ctx.rect(2, 7, 7, 10);
+    ctx.fill();
+
+    ctx.fillStyle = '#451a03';
+    ctx.beginPath();
+    ctx.rect(-10, 15, 9, 7);
+    ctx.rect(1, 15, 9, 7);
+    ctx.fill();
+
+    // BROAD MUSCULAR TORSO & WHITE TANK TOP
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.moveTo(-9, -8);
+    ctx.lineTo(9, -8);
+    ctx.lineTo(8, 7);
+    ctx.lineTo(-8, 7);
+    ctx.closePath();
+    ctx.fill();
+
+    // Muscle Contours & Tank Top
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.moveTo(-6, -8);
+    ctx.lineTo(6, -8);
+    ctx.lineTo(5, 7);
+    ctx.lineTo(-5, 7);
+    ctx.closePath();
+    ctx.fill();
+
+    // Pectoral cleft & abs
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(0, -6);
+    ctx.lineTo(0, 5);
+    ctx.stroke();
+
+    // BLACK BULLS CAPTAIN MANTLE (Draped over left shoulder with Gold Bull Crest)
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.moveTo(-10, -9);
+    ctx.lineTo(-17, -4);
+    ctx.lineTo(-14, 12);
+    ctx.lineTo(-7, 6);
+    ctx.closePath();
+    ctx.fill();
+    // Gold embroidery border & Bull insignia
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(-11, 0, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Leather belt with Katana Scabbard
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(-9, 6, 18, 3.5);
+
+    // DARK MAGIC KATANA (Drawn or at hip crackling with Void Purple Aura)
+    ctx.save();
+    ctx.translate(10, 4);
+    ctx.rotate(0.3);
+    // Sheath / Drawn blade
+    ctx.strokeStyle = '#09090b';
+    ctx.shadowColor = '#9333ea';
+    ctx.shadowBlur = 12;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(-4, 8);
+    ctx.lineTo(14, -20);
+    ctx.stroke();
+    // Katana Tsuba (Handguard)
+    ctx.fillStyle = '#fbbf24';
+    ctx.fillRect(0, -2, 5, 3);
+    ctx.shadowBlur = 0;
+    ctx.restore();
+
+    // HEAD & RUGGED JAWLINE
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.moveTo(-6, -11);
+    ctx.lineTo(6, -11);
+    ctx.lineTo(6, -5);
+    ctx.lineTo(0, -1);
+    ctx.lineTo(-6, -5);
+    ctx.closePath();
+    ctx.fill();
+
+    // Stubble on chin & Smirk
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-3, -3);
+    ctx.lineTo(3, -3);
+    ctx.stroke();
+
+    // Smoking Cigarette
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(1, -2);
+    ctx.lineTo(6, -2);
+    ctx.stroke();
+    // Red glowing tip & smoke
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(5.5, -2.5, 1.5, 1.5);
+
+    // Fierce Narrowed Anime Eyes
+    ctx.strokeStyle = '#0f172a';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, -7);
-    ctx.moveTo(0, 0);
-    ctx.lineTo(5, 2);
+    ctx.moveTo(-4.5, -7);
+    ctx.lineTo(-1, -6.5);
+    ctx.moveTo(1, -6.5);
+    ctx.lineTo(4.5, -7);
     ctx.stroke();
+
+    // UNRULY SPIKY BLACK HAIR
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.moveTo(-7, -10);
+    ctx.lineTo(-11, -14);
+    ctx.lineTo(-8, -17);
+    ctx.lineTo(-10, -23);
+    ctx.lineTo(-4, -22);
+    ctx.lineTo(0, -25);
+    ctx.lineTo(4, -23);
+    ctx.lineTo(9, -21);
+    ctx.lineTo(7, -15);
+    ctx.lineTo(11, -12);
+    ctx.lineTo(7, -10);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // 5. LUCK VOLTIA (Lôi Ma Pháp Cuồng Chiến / Thunder Fiend)
+  // =========================================================================
+  drawLuck(ctx, p, tick) {
+    const facing = p.facing || 1;
+    const walkBob = Math.sin(tick * 0.24) * 2.5;
+
+    ctx.save();
+    ctx.translate(p.x, p.y + walkBob);
+    ctx.scale(facing, 1);
+
+    // Crackling Electric Aura
+    this.drawAura(ctx, 0, -2, 28, 'rgba(56, 189, 248, 0.45)', 20);
+
+    // Ground Shadow
+    const shadowGrad = ctx.createRadialGradient(0, 18, 2, 0, 18, 14);
+    shadowGrad.addColorStop(0, 'rgba(0,0,0,0.4)');
+    shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = shadowGrad;
+    ctx.beginPath();
+    ctx.ellipse(0, 18, 14, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // JAGGED LIGHTNING BOOTS (Thunder Fiend Boots)
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.rect(-8, 8, 5, 12);
+    ctx.rect(3, 8, 5, 12);
+    ctx.fill();
+
+    // Electric sparks on boots
+    ctx.strokeStyle = '#facc15';
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 8;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(-8, 14);
+    ctx.lineTo(-12, 18);
+    ctx.lineTo(-6, 20);
+    ctx.moveTo(3, 14);
+    ctx.lineTo(8, 17);
+    ctx.lineTo(5, 21);
+    ctx.stroke();
+
+    // TUNIC & BLACK BULLS CAPELET
+    ctx.fillStyle = '#065f46';
+    ctx.beginPath();
+    ctx.moveTo(-6, -7);
+    ctx.lineTo(6, -7);
+    ctx.lineTo(5, 7);
+    ctx.lineTo(-5, 7);
+    ctx.closePath();
+    ctx.fill();
+
+    // Black Bulls mantle on shoulder
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.moveTo(-7, -8);
+    ctx.lineTo(-13, -3);
+    ctx.lineTo(-10, 8);
+    ctx.lineTo(-5, 4);
+    ctx.closePath();
+    ctx.fill();
+
+    // THUNDER CLAW GAUNTLETS (Lightning crackles on hands)
+    ctx.strokeStyle = '#facc15';
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 10;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(7, 0);
+    ctx.lineTo(14, -4);
+    ctx.lineTo(11, 2);
+    ctx.lineTo(16, 4);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // HEAD & WIDE BATTLE-CRAZED GRIN
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.moveTo(-5, -11);
+    ctx.lineTo(5, -11);
+    ctx.lineTo(4, -6);
+    ctx.lineTo(0, -2);
+    ctx.lineTo(-4, -6);
+    ctx.closePath();
+    ctx.fill();
+
+    // Big Manic Grin with sharp teeth
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#991b1b';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.arc(0, -4, 3, 0, Math.PI);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Bright Electric Blue Anime Eyes
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(-2.5, -6.5, 1.4, 0, Math.PI * 2);
+    ctx.arc(2.5, -6.5, 1.4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // WILD SPIKY GOLDEN-BLONDE HAIR (Lightning-bolt spikes)
+    ctx.fillStyle = '#facc15';
+    ctx.strokeStyle = '#ca8a04';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-6, -10);
+    ctx.lineTo(-12, -13);
+    ctx.lineTo(-7, -16);
+    ctx.lineTo(-11, -22);
+    ctx.lineTo(-4, -20);
+    ctx.lineTo(-2, -26);
+    ctx.lineTo(1, -21);
+    ctx.lineTo(4, -26);
+    ctx.lineTo(5, -19);
+    ctx.lineTo(11, -19);
+    ctx.lineTo(7, -14);
+    ctx.lineTo(11, -11);
+    ctx.lineTo(6, -10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // 6. JULIUS NOVACHRONO (Ma Pháp Vương / Wizard King & Royal Captains)
+  // =========================================================================
+  drawJulius(ctx, p, tick) {
+    const facing = p.facing || 1;
+    const walkBob = Math.sin(tick * 0.2) * 1.8;
+
+    ctx.save();
+    ctx.translate(p.x, p.y + walkBob);
+    ctx.scale(facing, 1);
+
+    // Royal Celestial Time Aura
+    this.drawAura(ctx, 0, -2, 32, 'rgba(234, 179, 8, 0.4)', 26);
+    this.drawAura(ctx, 0, -2, 20, 'rgba(59, 130, 246, 0.35)', 18);
+
+    // Shadow
+    const shadowGrad = ctx.createRadialGradient(0, 18, 2, 0, 18, 16);
+    shadowGrad.addColorStop(0, 'rgba(0,0,0,0.4)');
+    shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = shadowGrad;
+    ctx.beginPath();
+    ctx.ellipse(0, 18, 16, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ROTATING CHRONO STASIS TIME GLYPH RING
+    ctx.save();
+    ctx.rotate(tick * -0.04);
+    ctx.strokeStyle = 'rgba(250, 204, 21, 0.6)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(0, -2, 24, 0, Math.PI * 2);
+    ctx.stroke();
+    // 4 Roman numeral ticks
+    for (let i = 0; i < 4; i++) {
+      const a = (i * Math.PI) / 2;
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(Math.cos(a) * 24 - 1.5, Math.sin(a) * 24 - 1.5, 3, 3);
+    }
+    ctx.restore();
+
+    // REGAL CRIMSON & GOLD WIZARD KING MANTLE (Deep flowing velvet)
+    ctx.fillStyle = '#991b1b';
+    ctx.beginPath();
+    ctx.moveTo(-10, -8);
+    ctx.bezierCurveTo(-18, 4, -18, 16, -14, 22);
+    ctx.lineTo(14, 22);
+    ctx.bezierCurveTo(18, 16, 18, 4, 10, -8);
+    ctx.closePath();
+    ctx.fill();
+
+    // Gold filigree hem
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Pure White Fur Ruff Collar
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.ellipse(0, -7, 12, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Royal Blue Robe Inner
+    ctx.fillStyle = '#1e3a8a';
+    ctx.fillRect(-5, -6, 10, 18);
+
+    // Gold Medal Clover Chain
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(0, -4, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // DIGNIFIED ANIME FACE WITH BLUE STAR MARK
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.moveTo(-5, -11);
+    ctx.lineTo(5, -11);
+    ctx.lineTo(4, -6);
+    ctx.lineTo(0, -2);
+    ctx.lineTo(-4, -6);
+    ctx.closePath();
+    ctx.fill();
+
+    // Blue Star Mark on Forehead (Julius's Mark)
+    ctx.fillStyle = '#3b82f6';
+    ctx.beginPath();
+    ctx.arc(0, -9.5, 1.3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Gentle Wise Blue Eyes
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.arc(-2.5, -6.5, 1.2, 0, Math.PI * 2);
+    ctx.arc(2.5, -6.5, 1.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // NEATLY SWEPT GOLDEN ANIME HAIR
+    ctx.fillStyle = '#fde047';
+    ctx.strokeStyle = '#ca8a04';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-6, -10);
+    ctx.bezierCurveTo(-9, -15, -4, -22, 0, -22);
+    ctx.bezierCurveTo(4, -22, 9, -15, 6, -10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // 7. ZENON ZOGRATIS (Spade Dark Triad - Spatial & Bone Magic)
+  // =========================================================================
+  drawZenon(ctx, p, tick) {
+    const facing = p.facing || 1;
+    const walkBob = Math.sin(tick * 0.2) * 2;
+    ctx.save();
+    ctx.translate(p.x, p.y + walkBob);
+    ctx.scale(facing, 1);
+
+    // Spatial Black Void Aura
+    this.drawAura(ctx, 0, -4, 32, 'rgba(147, 51, 234, 0.45)', 22);
+
+    // Ground Shadow
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.beginPath();
+    ctx.ellipse(0, 18, 15, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // DEMONIC BONE WINGS FANNING OUT FROM BACK
+    ctx.fillStyle = '#f8fafc';
+    ctx.strokeStyle = '#c084fc';
+    ctx.shadowColor = '#9333ea';
+    ctx.shadowBlur = 8;
+    ctx.lineWidth = 1.4;
+
+    for (let side = -1; side <= 1; side += 2) {
+      if (side === 0) continue;
+      // 3 Jagged bone spines per side
+      for (let s = 0; s < 3; s++) {
+        const angle = -0.5 + s * 0.35;
+        const len = 22 + s * 6;
+        ctx.save();
+        ctx.translate(side * 6, -4);
+        ctx.rotate(side * angle);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-len, -len * 0.4);
+        ctx.lineTo(0, -3);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+    ctx.shadowBlur = 0;
+
+    // SPADE MILITARY TRENCH COAT
+    ctx.fillStyle = '#09090b';
+    ctx.beginPath();
+    ctx.moveTo(-8, -8);
+    ctx.lineTo(8, -8);
+    ctx.lineTo(10, 20);
+    ctx.lineTo(-10, 20);
+    ctx.closePath();
+    ctx.fill();
+
+    // White Fluffy Fur Collar
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.ellipse(0, -8, 12, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // HEAD & COLD CRUEL ANIME FACE
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.moveTo(-5, -11);
+    ctx.lineTo(5, -11);
+    ctx.lineTo(4, -6);
+    ctx.lineTo(0, -2);
+    ctx.lineTo(-4, -6);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cross-shaped scar over left eye
+    ctx.strokeStyle = '#991b1b';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(-3, -9);
+    ctx.lineTo(-3, -4);
+    ctx.moveTo(-5, -6.5);
+    ctx.lineTo(-1, -6.5);
+    ctx.stroke();
+
+    // Cold Crimson Slit Eyes
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(1.5, -7, 2.5, 1.5);
+
+    // SLEEK JET-BLACK PARTED ANIME HAIR
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.moveTo(-6, -10);
+    ctx.lineTo(-9, -15);
+    ctx.lineTo(-5, -20);
+    ctx.lineTo(0, -21);
+    ctx.lineTo(5, -20);
+    ctx.lineTo(9, -15);
+    ctx.lineTo(6, -10);
+    ctx.closePath();
+    ctx.fill();
+
+    // FLOATING BLACK SPATIAL CUBE
+    ctx.save();
+    const cubeBob = Math.sin(tick * 0.2) * 4;
+    ctx.translate(14, -12 + cubeBob);
+    ctx.rotate(tick * 0.05);
+    ctx.fillStyle = '#09090b';
+    ctx.strokeStyle = '#c084fc';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(-5, -5, 10, 10);
+    ctx.fillRect(-5, -5, 10, 10);
     ctx.restore();
 
     ctx.restore();
   },
 
-  // ENEMY RENDERERS (With dynamic shading & hit feedback)
+  // =========================================================================
+  // 8. VANICA ZOGRATIS (Huyết Ma Pháp Nữ Vương & Megicula)
+  // =========================================================================
+  drawVanica(ctx, p, tick) {
+    const facing = p.facing || 1;
+    const walkBob = Math.sin(tick * 0.22) * 2;
+    ctx.save();
+    ctx.translate(p.x, p.y + walkBob);
+    ctx.scale(facing, 1);
+
+    // Crimson Blood Mist Aura
+    this.drawAura(ctx, 0, -4, 32, 'rgba(239, 68, 68, 0.45)', 24);
+
+    // Ground Shadow
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.beginPath();
+    ctx.ellipse(0, 18, 14, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // SWIRLING LIQUID BLOOD WINGS (Megicula Cursed Blood)
+    const bloodWave = Math.sin(tick * 0.2) * 4;
+    ctx.fillStyle = '#991b1b';
+    ctx.shadowColor = '#ef4444';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.moveTo(0, -6);
+    ctx.bezierCurveTo(-18, -20, -28 + bloodWave, -10, -24 + bloodWave, 8);
+    ctx.bezierCurveTo(-14, 4, -8, 2, 0, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // GOTHIC CORSET DRESS (Black & Crimson)
+    ctx.fillStyle = '#18181b';
+    ctx.beginPath();
+    ctx.moveTo(-6, -7);
+    ctx.lineTo(6, -7);
+    ctx.lineTo(8, 18);
+    ctx.lineTo(-8, 18);
+    ctx.closePath();
+    ctx.fill();
+
+    // Crimson corset laces
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(-3, -4);
+    ctx.lineTo(3, 0);
+    ctx.moveTo(-3, 2);
+    ctx.lineTo(3, 6);
+    ctx.stroke();
+
+    // CURSED BEAST TALONS
+    ctx.strokeStyle = '#dc2626';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(7, 2);
+    ctx.lineTo(14, 6);
+    ctx.lineTo(12, 10);
+    ctx.stroke();
+
+    // HEAD & MANIC ANIME FACE
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.moveTo(-5, -11);
+    ctx.lineTo(5, -11);
+    ctx.lineTo(4, -6);
+    ctx.lineTo(0, -2);
+    ctx.lineTo(-4, -6);
+    ctx.closePath();
+    ctx.fill();
+
+    // Spade Eyepatch over right eye
+    ctx.fillStyle = '#09090b';
+    ctx.fillRect(1, -8, 4, 3.5);
+    // Unhinged Crimson Left Eye
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(-2.5, -6.5, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Manic Fanged Smile
+    ctx.strokeStyle = '#991b1b';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(0, -3.5, 2.5, 0, Math.PI);
+    ctx.stroke();
+
+    // WILD JET-BLACK TWIN TAILS & RED DEVIL CROWN
+    ctx.fillStyle = '#09090b';
+    ctx.beginPath();
+    ctx.moveTo(-6, -10);
+    ctx.bezierCurveTo(-16, -14, -20, 2, -14, 10);
+    ctx.bezierCurveTo(-11, 4, -9, -4, -6, -10);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(6, -10);
+    ctx.bezierCurveTo(16, -14, 20, 2, 14, 10);
+    ctx.bezierCurveTo(11, 4, 9, -4, 6, -10);
+    ctx.closePath();
+    ctx.fill();
+
+    // Red Devil Crown
+    ctx.fillStyle = '#dc2626';
+    ctx.beginPath();
+    ctx.moveTo(-4, -14);
+    ctx.lineTo(-6, -19);
+    ctx.lineTo(-2, -16);
+    ctx.lineTo(0, -20);
+    ctx.lineTo(2, -16);
+    ctx.lineTo(6, -19);
+    ctx.lineTo(4, -14);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // 9. DANTE ZOGRATIS (Trọng Lực Ma Vương / Gravity Singularity)
+  // =========================================================================
+  drawDante(ctx, p, tick) {
+    const facing = p.facing || 1;
+    const walkBob = Math.sin(tick * 0.18) * 1.8;
+    ctx.save();
+    ctx.translate(p.x, p.y + walkBob);
+    ctx.scale(facing, 1);
+
+    // Gravity Singularity Aura
+    this.drawAura(ctx, 0, -4, 36, 'rgba(15, 23, 42, 0.75)', 24);
+
+    // Ground Shadow
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+    ctx.beginPath();
+    ctx.ellipse(0, 18, 16, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ROTATING BLACK HOLE GRAVITY SPHERE ABOVE HEAD
+    ctx.save();
+    ctx.translate(0, -28);
+    ctx.rotate(tick * 0.1);
+    ctx.fillStyle = '#000000';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 14;
+    ctx.beginPath();
+    ctx.arc(0, 0, 8, 0, Math.PI * 2);
+    ctx.fill();
+    // Swirling red accretion disk
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 14, 4, 0.4, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.restore();
+
+    // 80% DEMON MUSCLE BODY & MANTLE
+    ctx.fillStyle = '#18181b';
+    ctx.beginPath();
+    ctx.moveTo(-10, -7);
+    ctx.lineTo(10, -7);
+    ctx.lineTo(9, 18);
+    ctx.lineTo(-9, 18);
+    ctx.closePath();
+    ctx.fill();
+
+    // Demonic red eye pulsing on chest
+    ctx.fillStyle = '#ef4444';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(0, 3, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // White fur trim
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.ellipse(0, -7, 13, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // HEAD WITH GOAT HORN CROWN
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.moveTo(-5, -11);
+    ctx.lineTo(5, -11);
+    ctx.lineTo(4, -6);
+    ctx.lineTo(0, -2);
+    ctx.lineTo(-4, -6);
+    ctx.closePath();
+    ctx.fill();
+
+    // Goatee
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.moveTo(-2, -3);
+    ctx.lineTo(2, -3);
+    ctx.lineTo(0, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    // Devil Horn Crown (Spade King Crown)
+    ctx.fillStyle = '#09090b';
+    ctx.beginPath();
+    ctx.moveTo(-5, -13);
+    ctx.lineTo(-8, -20);
+    ctx.lineTo(-3, -16);
+    ctx.lineTo(0, -22);
+    ctx.lineTo(3, -16);
+    ctx.lineTo(8, -20);
+    ctx.lineTo(5, -13);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // 10. FANA (Viêm Tinh Linh Salamander / Fire Spirit)
+  // =========================================================================
+  drawFana(ctx, p, tick) {
+    const facing = p.facing || 1;
+    const walkBob = Math.sin(tick * 0.22) * 2;
+    ctx.save();
+    ctx.translate(p.x, p.y + walkBob);
+    ctx.scale(facing, 1);
+
+    this.drawAura(ctx, 0, -4, 30, 'rgba(239, 68, 68, 0.45)', 22);
+
+    // Salamander Fire Wings
+    const wingWave = Math.sin(tick * 0.2) * 3;
+    ctx.fillStyle = '#f97316';
+    ctx.shadowColor = '#ef4444';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.moveTo(0, -6);
+    ctx.bezierCurveTo(-18, -22, -26 + wingWave, -12, -20 + wingWave, 6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Salmon Pink Flowing Hair & White Robes
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.moveTo(-6, -7);
+    ctx.lineTo(6, -7);
+    ctx.lineTo(7, 18);
+    ctx.lineTo(-7, 18);
+    ctx.closePath();
+    ctx.fill();
+
+    // Face & Glowing Third Eye on Forehead
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.moveTo(-5, -11);
+    ctx.lineTo(5, -11);
+    ctx.lineTo(0, -2);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#ef4444';
+    ctx.shadowColor = '#f97316';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(0, -9.5, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Pink anime hair
+    ctx.fillStyle = '#f472b6';
+    ctx.beginPath();
+    ctx.arc(0, -14, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // 11. RHYA (Bản Sao Ma Pháp / Copy Magic Grimoire)
+  // =========================================================================
+  drawRhya(ctx, p, tick) {
+    const facing = p.facing || 1;
+    const walkBob = Math.sin(tick * 0.18) * 1.6;
+    ctx.save();
+    ctx.translate(p.x, p.y + walkBob);
+    ctx.scale(facing, 1);
+
+    this.drawAura(ctx, 0, -4, 28, 'rgba(168, 85, 247, 0.4)', 20);
+
+    // Loose White Kimono Robe
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.moveTo(-7, -8);
+    ctx.lineTo(7, -8);
+    ctx.lineTo(8, 20);
+    ctx.lineTo(-8, 20);
+    ctx.closePath();
+    ctx.fill();
+
+    // Slanted Sleepy Eyes & Wavy White Hair
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.moveTo(-5, -11);
+    ctx.lineTo(5, -11);
+    ctx.lineTo(0, -2);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#f1f5f9';
+    ctx.beginPath();
+    ctx.arc(0, -14, 7.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Floating Copy Grimoire with 4 Elemental Orbs
+    ctx.save();
+    const gBob = Math.sin(tick * 0.2) * 3;
+    ctx.translate(14, -8 + gBob);
+    ctx.fillStyle = '#a855f7';
+    ctx.fillRect(-4, -6, 8, 12);
+    // 4 elemental colored dots
+    const elemColors = ['#ef4444', '#38bdf8', '#34d399', '#facc15'];
+    for (let i = 0; i < 4; i++) {
+      ctx.fillStyle = elemColors[i];
+      ctx.beginPath();
+      ctx.arc((i % 2) * 4 - 2, Math.floor(i / 2) * 4 - 2, 1.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // 12. VETTO (Thần Thú Tuyệt Vọng / Mythical Beast Armor)
+  // =========================================================================
+  drawVetto(ctx, p, tick) {
+    const facing = p.facing || 1;
+    const walkBob = Math.sin(tick * 0.22) * 2.2;
+    ctx.save();
+    ctx.translate(p.x, p.y + walkBob);
+    ctx.scale(facing, 1);
+
+    // Savage Despair Aura
+    this.drawAura(ctx, 0, -2, 34, 'rgba(234, 88, 12, 0.45)', 26);
+
+    // Muscular Broad Beast Physique & Fur Pelt
+    ctx.fillStyle = '#78350f';
+    ctx.beginPath();
+    ctx.moveTo(-11, -8);
+    ctx.lineTo(11, -8);
+    ctx.lineTo(10, 20);
+    ctx.lineTo(-10, 20);
+    ctx.closePath();
+    ctx.fill();
+
+    // Glowing Mythical Beast Claws on Hands
+    ctx.strokeStyle = '#f97316';
+    ctx.shadowColor = '#ea580c';
+    ctx.shadowBlur = 10;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(-11, 4);
+    ctx.lineTo(-17, 8);
+    ctx.moveTo(11, 4);
+    ctx.lineTo(17, 8);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Wild Golden Lion Mane Hair
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.arc(0, -17, 12, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Face, Fangs & Red 3rd Eye of Despair
+    ctx.fillStyle = '#ffedd5';
+    ctx.beginPath();
+    ctx.moveTo(-6, -12);
+    ctx.lineTo(6, -12);
+    ctx.lineTo(0, -3);
+    ctx.closePath();
+    ctx.fill();
+
+    // 3rd Eye
+    ctx.fillStyle = '#dc2626';
+    ctx.shadowColor = '#ef4444';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(0, -10.5, 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // ENEMY & BOSS SPRITE ROUTER (Chuyển đổi hình vẽ sang Anime Path)
+  // =========================================================================
   drawEnemy(ctx, e, tick) {
+    if (!e || e.hp <= 0) return;
     const isHit = e.hitFlashTimer > 0;
+
     ctx.save();
     ctx.translate(e.x, e.y);
 
@@ -1008,7 +1930,7 @@ const Sprites = {
 
     // Ground Shadow
     const shadowGrad = ctx.createRadialGradient(0, e.radius, 2, 0, e.radius, e.radius * 0.9);
-    shadowGrad.addColorStop(0, 'rgba(0,0,0,0.35)');
+    shadowGrad.addColorStop(0, 'rgba(0,0,0,0.4)');
     shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = shadowGrad;
     ctx.beginPath();
@@ -1027,196 +1949,1242 @@ const Sprites = {
 
     switch (e.type) {
       case 'bandit':
-        ctx.fillStyle = '#3f3f46';
-        ctx.beginPath();
-        ctx.arc(0, -2, 10, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#ef4444'; // Red eyes
-        ctx.fillRect(2, -4, 2.5, 2.5);
-        ctx.fillStyle = '#a1a1aa'; // Dagger
-        ctx.fillRect(8, 0, 7, 2.5);
+        this.drawBandit(ctx, e, tick);
         break;
-
       case 'cultist':
-        ctx.fillStyle = '#f8fafc';
-        ctx.beginPath();
-        ctx.moveTo(0, -17);
-        ctx.lineTo(-13, 11);
-        ctx.lineTo(13, 11);
-        ctx.closePath();
-        ctx.fill();
-        // Golden Eye symbol
-        ctx.fillStyle = '#eab308';
-        ctx.shadowColor = '#eab308';
-        ctx.shadowBlur = 8;
-        ctx.beginPath();
-        ctx.arc(0, -2, 4.5, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#991b1b';
-        ctx.fillRect(-1.5, -3.5, 3, 3);
+        this.drawCultist(ctx, e, tick);
         break;
-
       case 'zombie':
-        ctx.fillStyle = '#365314';
-        ctx.beginPath();
-        ctx.arc(0, 0, 13, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#84cc16';
-        ctx.fillRect(-4, -4, 3, 3);
-        ctx.fillRect(3, -4, 3, 3);
-        ctx.strokeStyle = '#1a2e05';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(-6, 4);
-        ctx.lineTo(6, 4);
-        ctx.stroke();
+        this.drawZombie(ctx, e, tick);
         break;
-
       case 'spade_soldier':
-        ctx.fillStyle = '#1e1b4b';
-        ctx.beginPath();
-        ctx.arc(0, -2, 13, 0, Math.PI * 2);
-        ctx.fill();
-        // Demon Horns
-        ctx.fillStyle = '#4338ca';
-        ctx.beginPath();
-        ctx.moveTo(-6, -10);
-        ctx.lineTo(-11, -19);
-        ctx.lineTo(-3, -11);
-        ctx.moveTo(6, -10);
-        ctx.lineTo(11, -19);
-        ctx.lineTo(3, -11);
-        ctx.fill();
-        ctx.fillStyle = '#c084fc';
-        ctx.fillRect(2, -4, 3, 3);
+        this.drawSpadeSoldier(ctx, e, tick);
         break;
-
+      case 'hellhound':
+        this.drawHellhound(ctx, e, tick);
+        break;
+      case 'shadow_mage':
+        this.drawShadowMage(ctx, e, tick);
+        break;
+      case 'bone_golem':
+        this.drawBoneGolem(ctx, e, tick);
+        break;
       case 'lesser_devil':
-        this.drawAura(ctx, 0, 0, 20, 'rgba(185, 28, 28, 0.45)', 16);
-        ctx.fillStyle = '#7f1d1d';
-        ctx.beginPath();
-        ctx.arc(0, 0, 15, 0, Math.PI * 2);
-        ctx.fill();
-        // Devil Wings
-        ctx.fillStyle = '#450a0a';
-        ctx.beginPath();
-        ctx.moveTo(-6, -6);
-        ctx.lineTo(-26, -20);
-        ctx.lineTo(-15, 9);
-        ctx.closePath();
-        ctx.fill();
-        ctx.fillStyle = '#f87171';
-        ctx.fillRect(3, -3, 3.5, 2.5);
+        this.drawLesserDevil(ctx, e, tick);
+        break;
+      case 'high_devil':
+        this.drawHighDevil(ctx, e, tick);
         break;
 
-      // BOSS 1: MARS
+      // BOSSES
       case 'boss_mars':
-        this.drawAura(ctx, 0, 0, 40, 'rgba(56, 189, 248, 0.6)', 30);
-        ctx.fillStyle = '#38bdf8';
-        ctx.beginPath();
-        ctx.moveTo(0, -30);
-        ctx.lineTo(26, 0);
-        ctx.lineTo(18, 28);
-        ctx.lineTo(-18, 28);
-        ctx.lineTo(-26, 0);
-        ctx.closePath();
-        ctx.fill();
-        // Fire Magic Sword
-        ctx.strokeStyle = '#ef4444';
-        ctx.shadowColor = '#f97316';
-        ctx.shadowBlur = 12;
-        ctx.lineWidth = 4.5;
-        ctx.beginPath();
-        ctx.moveTo(18, -10);
-        ctx.lineTo(38, -32);
-        ctx.stroke();
+        this.drawBossMars(ctx, e, tick);
         break;
-
-      // BOSS 2: VETTO
       case 'boss_vetto':
-        this.drawAura(ctx, 0, 0, 48, 'rgba(239, 68, 68, 0.65)', 35);
-        ctx.fillStyle = '#78350f';
-        ctx.beginPath();
-        ctx.arc(0, 0, 28, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#b45309';
-        ctx.beginPath();
-        ctx.arc(0, -6, 34, 0, Math.PI * 2);
-        ctx.fill();
-        // Third Eye of Despair
-        ctx.fillStyle = '#dc2626';
-        ctx.shadowColor = '#f87171';
-        ctx.shadowBlur = 18;
-        ctx.beginPath();
-        ctx.arc(0, -17, 6, 0, Math.PI * 2);
-        ctx.fill();
+        this.drawBossVetto(ctx, e, tick);
         break;
-
-      // BOSS 3: PATRI
       case 'boss_patri':
-        this.drawAura(ctx, 0, 0, 52, 'rgba(250, 204, 21, 0.75)', 40);
-        ctx.fillStyle = '#fef08a';
-        ctx.beginPath();
-        ctx.arc(0, 0, 26, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#facc15';
-        ctx.lineWidth = 4.5;
-        ctx.beginPath();
-        ctx.arc(0, -9, 32, 0, Math.PI * 2);
-        ctx.stroke();
-        // Orbiting Light Swords
-        for (let i = 0; i < 4; i++) {
-          const ang = tick * 0.08 + (i * Math.PI) / 2;
-          const sx = Math.cos(ang) * 40;
-          const sy = Math.sin(ang) * 40;
-          ctx.fillStyle = '#ffffff';
-          ctx.shadowColor = '#facc15';
-          ctx.shadowBlur = 12;
-          ctx.fillRect(sx - 2.5, sy - 9, 5, 18);
-        }
+        this.drawBossPatri(ctx, e, tick);
+        break;
+      case 'boss_zenon':
+        this.drawBossZenon(ctx, e, tick);
+        break;
+      case 'boss_vanica':
+        this.drawBossVanica(ctx, e, tick);
+        break;
+      case 'boss_dante':
+        this.drawBossDante(ctx, e, tick);
+        break;
+      case 'boss_zagred':
+        this.drawBossZagred(ctx, e, tick);
+        break;
+      case 'boss_lucifero':
+        this.drawBossLucifero(ctx, e, tick);
         break;
 
-      // FINAL BOSS: ZAGRED (Word Soul Devil)
-      case 'boss_zagred':
-        this.drawAura(ctx, 0, 0, 68, 'rgba(126, 34, 206, 0.75)', 50);
-        ctx.fillStyle = '#1e1b4b';
-        ctx.beginPath();
-        ctx.arc(0, 0, 38, 0, Math.PI * 2);
-        ctx.fill();
-        // Giant Devil Horns
-        ctx.fillStyle = '#0f172a';
-        ctx.beginPath();
-        ctx.moveTo(-18, -26);
-        ctx.quadraticCurveTo(-50, -60, -28, -70);
-        ctx.quadraticCurveTo(-16, -48, -9, -32);
-        ctx.moveTo(18, -26);
-        ctx.quadraticCurveTo(50, -60, 28, -70);
-        ctx.quadraticCurveTo(16, -48, 9, -32);
-        ctx.fill();
-        // Red Demon Eyes
-        ctx.fillStyle = '#ef4444';
-        ctx.shadowColor = '#f43f5e';
-        ctx.shadowBlur = 12;
-        ctx.fillRect(-13, -11, 6, 5);
-        ctx.fillRect(8, -11, 6, 5);
-        ctx.fillRect(-4, -20, 9, 5);
-        // Chest Mouth
-        ctx.fillStyle = '#831843';
-        ctx.beginPath();
-        ctx.ellipse(0, 13, 18, 7, 0, 0, Math.PI * 2);
-        ctx.fill();
-        // Sharp White Fangs
-        ctx.fillStyle = '#ffffff';
-        for (let fx = -14; fx <= 14; fx += 7) {
-          ctx.fillRect(fx, 10, 2.5, 7);
-        }
+      default:
+        // Generic horned demon if unknown
+        this.drawLesserDevil(ctx, e, tick);
         break;
     }
 
     ctx.restore();
   },
 
-  // DROP ITEMS (Mana Crystals, Grimoire Pages, Charmy Food, Chests)
+  // -------------------------------------------------------------------------
+  // BESTIARY 1: BANDIT (Thích Khách Áo Choàng / Dual Daggers)
+  // -------------------------------------------------------------------------
+  drawBandit(ctx, e, tick) {
+    const bob = Math.sin(tick * 0.25) * 1.5;
+
+    // Ragged Cloak
+    ctx.fillStyle = '#27272a';
+    ctx.beginPath();
+    ctx.moveTo(0, -14 + bob);
+    ctx.bezierCurveTo(-12, -4, -14, 8, -10, 14);
+    ctx.lineTo(8, 14);
+    ctx.bezierCurveTo(12, 8, 10, -4, 0, -14 + bob);
+    ctx.closePath();
+    ctx.fill();
+
+    // Hood & Mask
+    ctx.fillStyle = '#3f3f46';
+    ctx.beginPath();
+    ctx.moveTo(-6, -12 + bob);
+    ctx.bezierCurveTo(-9, -20 + bob, 9, -20 + bob, 6, -12 + bob);
+    ctx.lineTo(0, -6 + bob);
+    ctx.closePath();
+    ctx.fill();
+
+    // Glowing Red Assassin Eyes
+    ctx.fillStyle = '#ef4444';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(-2.5, -11 + bob, 1.2, 0, Math.PI * 2);
+    ctx.arc(2.5, -11 + bob, 1.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Dual Curved Daggers
+    ctx.fillStyle = '#e2e8f0';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1;
+    // Left Dagger
+    ctx.beginPath();
+    ctx.moveTo(-8, 2);
+    ctx.lineTo(-15, -4);
+    ctx.lineTo(-13, 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // Right Dagger
+    ctx.beginPath();
+    ctx.moveTo(8, 2);
+    ctx.lineTo(15, -4);
+    ctx.lineTo(13, 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  },
+
+  // -------------------------------------------------------------------------
+  // BESTIARY 2: CULTIST (Bạch Y Giáo Đồ Ma Nhãn / Golden Eye Mage)
+  // -------------------------------------------------------------------------
+  drawCultist(ctx, e, tick) {
+    const bob = Math.sin(tick * 0.2) * 1.5;
+
+    // Flowing White Occult Robe
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.moveTo(0, -16 + bob);
+    ctx.bezierCurveTo(-14, -6, -16, 10, -12, 16);
+    ctx.lineTo(12, 16);
+    ctx.bezierCurveTo(16, 10, 14, -6, 0, -16 + bob);
+    ctx.closePath();
+    ctx.fill();
+
+    // Golden Eye Insignia on chest
+    ctx.fillStyle = '#eab308';
+    ctx.shadowColor = '#fbbf24';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(0, -1 + bob, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#991b1b';
+    ctx.beginPath();
+    ctx.arc(0, -1 + bob, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Pointed Hood
+    ctx.fillStyle = '#e2e8f0';
+    ctx.beginPath();
+    ctx.moveTo(-6, -12 + bob);
+    ctx.lineTo(0, -22 + bob);
+    ctx.lineTo(6, -12 + bob);
+    ctx.closePath();
+    ctx.fill();
+
+    // Occult Wand in Hand
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(8, 6);
+    ctx.lineTo(16, -10);
+    ctx.stroke();
+    // Amethyst orb on top
+    ctx.fillStyle = '#c084fc';
+    ctx.shadowColor = '#9333ea';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(16, -10, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  },
+
+  // -------------------------------------------------------------------------
+  // BESTIARY 3: ZOMBIE (Tử Thi Ma Thuật Rades / Wraith Corpse)
+  // -------------------------------------------------------------------------
+  drawZombie(ctx, e, tick) {
+    const bob = Math.sin(tick * 0.18) * 1.5;
+
+    // Hunched Decaying Body
+    ctx.fillStyle = '#365314';
+    ctx.beginPath();
+    ctx.moveTo(-8, -12 + bob);
+    ctx.lineTo(8, -10 + bob);
+    ctx.lineTo(10, 14);
+    ctx.lineTo(-10, 14);
+    ctx.closePath();
+    ctx.fill();
+
+    // Exposed Glowing Green Ribcage
+    ctx.strokeStyle = '#84cc16';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-5, -2 + bob);
+    ctx.lineTo(5, -2 + bob);
+    ctx.moveTo(-4, 2 + bob);
+    ctx.lineTo(4, 2 + bob);
+    ctx.moveTo(-3, 6 + bob);
+    ctx.lineTo(3, 6 + bob);
+    ctx.stroke();
+
+    // Skull & Bandages
+    ctx.fillStyle = '#4d7c0f';
+    ctx.beginPath();
+    ctx.arc(0, -14 + bob, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Glowing Toxic Eye Sockets
+    ctx.fillStyle = '#a3e635';
+    ctx.shadowColor = '#4ade80';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(-2.5, -14 + bob, 1.5, 0, Math.PI * 2);
+    ctx.arc(2.5, -14 + bob, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  },
+
+  // -------------------------------------------------------------------------
+  // BESTIARY 4: SPADE SOLDIER (Chiến Binh Spade Thiết Giáp / Horned Halberd)
+  // -------------------------------------------------------------------------
+  drawSpadeSoldier(ctx, e, tick) {
+    const bob = Math.sin(tick * 0.22) * 1.5;
+
+    // Heavy Dark Iron Armor
+    ctx.fillStyle = '#1e1b4b';
+    ctx.beginPath();
+    ctx.moveTo(-8, -10 + bob);
+    ctx.lineTo(8, -10 + bob);
+    ctx.lineTo(10, 15);
+    ctx.lineTo(-10, 15);
+    ctx.closePath();
+    ctx.fill();
+
+    // Steel Spade Insignia on Chest
+    ctx.fillStyle = '#6366f1';
+    ctx.beginPath();
+    ctx.arc(0, 0 + bob, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Horned Iron Helmet
+    ctx.fillStyle = '#312e81';
+    ctx.beginPath();
+    ctx.arc(0, -13 + bob, 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Curved Devil Horns on Helmet
+    ctx.fillStyle = '#4338ca';
+    ctx.beginPath();
+    ctx.moveTo(-6, -17 + bob);
+    ctx.lineTo(-12, -26 + bob);
+    ctx.lineTo(-2, -18 + bob);
+    ctx.moveTo(6, -17 + bob);
+    ctx.lineTo(12, -26 + bob);
+    ctx.lineTo(2, -18 + bob);
+    ctx.closePath();
+    ctx.fill();
+
+    // Glowing Crimson Visor Slit
+    ctx.fillStyle = '#ef4444';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 6;
+    ctx.fillRect(-4, -14 + bob, 8, 2);
+    ctx.shadowBlur = 0;
+
+    // Spiked Halberd
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(10, 12);
+    ctx.lineTo(14, -22);
+    ctx.stroke();
+    ctx.fillStyle = '#e2e8f0';
+    ctx.beginPath();
+    ctx.moveTo(14, -22);
+    ctx.lineTo(22, -18);
+    ctx.lineTo(14, -14);
+    ctx.closePath();
+    ctx.fill();
+  },
+
+  // -------------------------------------------------------------------------
+  // BESTIARY 5: HELLHOUND (Song Đầu Địa Ngục Khuyển / Twin-Headed Beast)
+  // -------------------------------------------------------------------------
+  drawHellhound(ctx, e, tick) {
+    const runCycle = Math.sin(tick * 0.3) * 3;
+
+    // Muscular Hound Body
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 14, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Flaming Spines on Back
+    ctx.fillStyle = '#ea580c';
+    ctx.shadowColor = '#f97316';
+    ctx.shadowBlur = 8;
+    for (let i = -8; i <= 8; i += 4) {
+      ctx.beginPath();
+      ctx.moveTo(i - 2, -7);
+      ctx.lineTo(i, -14);
+      ctx.lineTo(i + 2, -7);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+
+    // Twin Heads (Left & Right)
+    for (let h = -1; h <= 1; h += 2) {
+      ctx.save();
+      ctx.translate(h * 6, -6);
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.arc(0, 0, 6, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Sharp fangs
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(-2, 3);
+      ctx.lineTo(0, 6);
+      ctx.lineTo(2, 3);
+      ctx.closePath();
+      ctx.fill();
+
+      // Glowing lava eye
+      ctx.fillStyle = '#ef4444';
+      ctx.shadowColor = '#f97316';
+      ctx.shadowBlur = 6;
+      ctx.beginPath();
+      ctx.arc(0, -1, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Flaming Tail
+    ctx.strokeStyle = '#ea580c';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(-12, -2);
+    ctx.bezierCurveTo(-18, -6, -22, 2, -24 + runCycle, -8);
+    ctx.stroke();
+  },
+
+  // -------------------------------------------------------------------------
+  // BESTIARY 6: SHADOW MAGE (Hắc Ma Đạo Sĩ Vô Gian / Void Specter)
+  // -------------------------------------------------------------------------
+  drawShadowMage(ctx, e, tick) {
+    const floatBob = Math.sin(tick * 0.18) * 3;
+
+    // Tattered Floating Astral Robe (Ghostly tapered swirl)
+    ctx.fillStyle = '#2e1065';
+    ctx.beginPath();
+    ctx.moveTo(0, -16 + floatBob);
+    ctx.bezierCurveTo(-14, -6, -16, 8, -6, 18 + floatBob);
+    ctx.bezierCurveTo(0, 14, 6, 18, 12, 10);
+    ctx.bezierCurveTo(16, 2, 14, -8, 0, -16 + floatBob);
+    ctx.closePath();
+    ctx.fill();
+
+    // Hood with Deep Shadow & Skull
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(0, -13 + floatBob, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Burning Violet Eye Flames
+    ctx.fillStyle = '#c084fc';
+    ctx.shadowColor = '#a855f7';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.arc(-2.5, -13 + floatBob, 1.5, 0, Math.PI * 2);
+    ctx.arc(2.5, -13 + floatBob, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Orbiting Black Void Orb
+    ctx.save();
+    const orbA = tick * 0.08;
+    const ox = Math.cos(orbA) * 16;
+    const oy = Math.sin(orbA) * 10 - 2;
+    ctx.fillStyle = '#09090b';
+    ctx.strokeStyle = '#c084fc';
+    ctx.shadowColor = '#9333ea';
+    ctx.shadowBlur = 8;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(ox, oy, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  },
+
+  // -------------------------------------------------------------------------
+  // BESTIARY 7: BONE GOLEM (Bạch Cốt Cự Nhân / Zenon's Bone Construct)
+  // -------------------------------------------------------------------------
+  drawBoneGolem(ctx, e, tick) {
+    const stompBob = Math.sin(tick * 0.2) * 2;
+
+    // Massive Ribcage Torso
+    ctx.fillStyle = '#e2e8f0';
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-12, -14 + stompBob);
+    ctx.lineTo(12, -14 + stompBob);
+    ctx.lineTo(10, 16);
+    ctx.lineTo(-10, 16);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Horned Bone Skull Head
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.arc(0, -18 + stompBob, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Dark Eye Sockets with Violet Light
+    ctx.fillStyle = '#9333ea';
+    ctx.shadowColor = '#c084fc';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(-3, -18 + stompBob, 1.5, 0, Math.PI * 2);
+    ctx.arc(3, -18 + stompBob, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Colossal Curved Bone Scythe Blades
+    ctx.fillStyle = '#f1f5f9';
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1.5;
+    // Left Scythe Arm
+    ctx.beginPath();
+    ctx.moveTo(-10, -8);
+    ctx.bezierCurveTo(-24, -4, -28, 14, -22, 24);
+    ctx.lineTo(-16, 12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    // Right Scythe Arm
+    ctx.beginPath();
+    ctx.moveTo(10, -8);
+    ctx.bezierCurveTo(24, -4, 28, 14, 22, 24);
+    ctx.lineTo(16, 12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  },
+
+  // -------------------------------------------------------------------------
+  // BESTIARY 8: LESSER DEVIL (Hạ Vị Ác Quỷ Minh Giới / Winged Imp)
+  // -------------------------------------------------------------------------
+  drawLesserDevil(ctx, e, tick) {
+    const flap = Math.sin(tick * 0.25) * 4;
+
+    // Leathery Bat Wings
+    ctx.fillStyle = '#450a0a';
+    ctx.strokeStyle = '#b91c1c';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(0, -6);
+    ctx.bezierCurveTo(-16, -20 + flap, -24, -4, -18, 10);
+    ctx.lineTo(-4, 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, -6);
+    ctx.bezierCurveTo(16, -20 + flap, 24, -4, 18, 10);
+    ctx.lineTo(4, 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Imp Body
+    ctx.fillStyle = '#7f1d1d';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 8, 11, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Devil Head & Curved Horns
+    ctx.fillStyle = '#991b1b';
+    ctx.beginPath();
+    ctx.arc(0, -10, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hooked Horns
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.moveTo(-4, -14);
+    ctx.lineTo(-8, -22);
+    ctx.lineTo(-2, -16);
+    ctx.moveTo(4, -14);
+    ctx.lineTo(8, -22);
+    ctx.lineTo(2, -16);
+    ctx.fill();
+
+    // Glowing Yellow Eyes
+    ctx.fillStyle = '#fde047';
+    ctx.shadowColor = '#eab308';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(-2, -10, 1.3, 0, Math.PI * 2);
+    ctx.arc(2, -10, 1.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Barbed Spade Tail
+    ctx.strokeStyle = '#991b1b';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, 8);
+    ctx.bezierCurveTo(8, 14, 14, 8, 18, 16);
+    ctx.stroke();
+  },
+
+  // -------------------------------------------------------------------------
+  // BESTIARY 9: HIGH DEVIL (Thượng Vị Ác Quỷ / Four-Winged Demon)
+  // -------------------------------------------------------------------------
+  drawHighDevil(ctx, e, tick) {
+    const flap = Math.sin(tick * 0.2) * 5;
+
+    // FOUR SLEEK DEMON WINGS
+    ctx.fillStyle = '#09090b';
+    ctx.strokeStyle = '#dc2626';
+    ctx.shadowColor = '#991b1b';
+    ctx.shadowBlur = 10;
+    ctx.lineWidth = 1.5;
+
+    // Upper Wings
+    ctx.beginPath();
+    ctx.moveTo(0, -8);
+    ctx.bezierCurveTo(-22, -30 + flap, -38, -12, -28, 8);
+    ctx.lineTo(0, 0);
+    ctx.bezierCurveTo(22, -30 + flap, 38, -12, 28, 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Lower Wings
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(-26, 4, -32, 20, -18, 26);
+    ctx.lineTo(0, 8);
+    ctx.bezierCurveTo(26, 4, 32, 20, 18, 26);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Obsidian Chitin Body
+    ctx.fillStyle = '#18181b';
+    ctx.beginPath();
+    ctx.moveTo(-8, -10);
+    ctx.lineTo(8, -10);
+    ctx.lineTo(6, 18);
+    ctx.lineTo(-6, 18);
+    ctx.closePath();
+    ctx.fill();
+
+    // Crown of 4 Curved Horns
+    ctx.fillStyle = '#09090b';
+    ctx.beginPath();
+    ctx.moveTo(-5, -16);
+    ctx.lineTo(-12, -28);
+    ctx.lineTo(-2, -18);
+    ctx.moveTo(5, -16);
+    ctx.lineTo(12, -28);
+    ctx.lineTo(2, -18);
+    ctx.fill();
+
+    // Crimson Slit Eyes & Head
+    ctx.fillStyle = '#27272a';
+    ctx.beginPath();
+    ctx.arc(0, -12, 7, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#ef4444';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(-2.5, -12, 1.5, 0, Math.PI * 2);
+    ctx.arc(2.5, -12, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  },
+
+  // =========================================================================
+  // BOSS 1: MARS (Khoáng Thạch Ma Pháp Cự Thần / Diamond Colossus)
+  // =========================================================================
+  drawBossMars(ctx, e, tick) {
+    const pulse = Math.sin(tick * 0.15) * 4;
+
+    // Diamond Harun Crystal Aura
+    this.drawAura(ctx, 0, 0, e.radius + 14, 'rgba(56, 189, 248, 0.45)', 26);
+
+    // Colossal Faceted Diamond Armor Torso
+    ctx.fillStyle = '#0284c7';
+    ctx.strokeStyle = '#e0f2fe';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -28);
+    ctx.lineTo(22, -14);
+    ctx.lineTo(16, 24);
+    ctx.lineTo(-16, 24);
+    ctx.lineTo(-22, -14);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Giant Crystal Shoulder Clusters
+    ctx.fillStyle = '#38bdf8';
+    for (let side = -1; side <= 1; side += 2) {
+      if (side === 0) continue;
+      ctx.beginPath();
+      ctx.moveTo(side * 18, -16);
+      ctx.lineTo(side * 34, -28);
+      ctx.lineTo(side * 28, -6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // Glowing Crimson Seal on Brow
+    ctx.fillStyle = '#ef4444';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.arc(0, -16, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Colossal Translucent Harun Greatsword
+    ctx.save();
+    ctx.translate(22, 6);
+    ctx.rotate(0.3);
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.75)';
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, -42);
+    ctx.lineTo(10, 10);
+    ctx.lineTo(-10, 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // BOSS 2: VETTO (Tuyệt Vọng Ma Thú Thần / Beast of Despair)
+  // =========================================================================
+  drawBossVetto(ctx, e, tick) {
+    const pulse = Math.sin(tick * 0.2) * 5;
+
+    // Giant Despair Blood-Orange Aura
+    this.drawAura(ctx, 0, 0, e.radius + 18, 'rgba(234, 88, 12, 0.5)', 30);
+
+    // 4 GIANT MYTHICAL BEAST ARMS ERUPTING FROM BACK
+    ctx.fillStyle = '#ea580c';
+    ctx.strokeStyle = '#fde047';
+    ctx.lineWidth = 2.5;
+    ctx.shadowColor = '#ea580c';
+    ctx.shadowBlur = 14;
+
+    for (let i = 0; i < 4; i++) {
+      const angle = -1.2 + i * 0.8;
+      ctx.save();
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(-15, -30, -28, -45, -18, -55 + pulse);
+      ctx.lineTo(-8, -42);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.shadowBlur = 0;
+
+    // Colossal Muscled Beast Torso
+    ctx.fillStyle = '#78350f';
+    ctx.beginPath();
+    ctx.ellipse(0, 4, 22, 26, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Wild Flaming Lion Mane
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.arc(0, -18, 20, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Giant Blazing 3rd Eye of Despair
+    ctx.fillStyle = '#dc2626';
+    ctx.shadowColor = '#ef4444';
+    ctx.shadowBlur = 16;
+    ctx.beginPath();
+    ctx.arc(0, -18, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  },
+
+  // =========================================================================
+  // BOSS 3: PATRI (Quang Ma Pháp Bạch Y Dạ Ma Nhãn / Light & Dark Elf Patri)
+  // =========================================================================
+  drawBossPatri(ctx, e, tick) {
+    const flap = Math.sin(tick * 0.22) * 6;
+
+    // Blinding Divine Light Aura
+    this.drawAura(ctx, 0, 0, e.radius + 16, 'rgba(250, 204, 21, 0.55)', 30);
+
+    // FOUR RADIANT WINGS OF PURE GOLDEN LIGHT
+    ctx.fillStyle = 'rgba(254, 240, 138, 0.85)';
+    ctx.strokeStyle = '#ffffff';
+    ctx.shadowColor = '#fbbf24';
+    ctx.shadowBlur = 18;
+    ctx.lineWidth = 2;
+
+    for (let side = -1; side <= 1; side += 2) {
+      if (side === 0) continue;
+      // Upper Wing
+      ctx.beginPath();
+      ctx.moveTo(0, -6);
+      ctx.bezierCurveTo(side * 30, -42 + flap, side * 55, -24, side * 44, 4);
+      ctx.lineTo(side * 8, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Lower Wing
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(side * 36, 12, side * 46, 34, side * 28, 42);
+      ctx.lineTo(side * 6, 10);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+
+    // Pure White Flowing Elf Robe with Gold Trim
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.moveTo(0, -24);
+    ctx.lineTo(16, 26);
+    ctx.lineTo(-16, 26);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Elegant Elf Face & Ears
+    ctx.fillStyle = '#fed7aa';
+    ctx.beginPath();
+    ctx.arc(0, -16, 9, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Red Third Eye Seal on Brow
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(0, -18, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Ray of Divine Punishment Light Rapier
+    ctx.save();
+    ctx.translate(18, 4);
+    ctx.rotate(-0.35);
+    ctx.strokeStyle = '#ffffff';
+    ctx.shadowColor = '#fde047';
+    ctx.shadowBlur = 14;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, -40);
+    ctx.lineTo(0, 12);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // BOSS 4: ZENON 100% DEVIL (Cốt Ma Pháp Minh Vương / Bone Devil Wings)
+  // =========================================================================
+  drawBossZenon(ctx, e, tick) {
+    const pulse = Math.sin(tick * 0.16) * 4;
+
+    // Spatial Void Aura
+    this.drawAura(ctx, 0, 0, e.radius + 20, 'rgba(147, 51, 234, 0.55)', 32);
+
+    // MASSIVE SKELETAL BONE WINGS (Full Halo)
+    ctx.fillStyle = '#f8fafc';
+    ctx.strokeStyle = '#9333ea';
+    ctx.shadowColor = '#c084fc';
+    ctx.shadowBlur = 12;
+    ctx.lineWidth = 2;
+
+    for (let side = -1; side <= 1; side += 2) {
+      if (side === 0) continue;
+      for (let s = 0; s < 4; s++) {
+        const a = -0.7 + s * 0.45;
+        const len = 34 + s * 8;
+        ctx.save();
+        ctx.rotate(side * a);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(side * len, -len * 0.5);
+        ctx.lineTo(side * (len - 6), -3);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+    ctx.shadowBlur = 0;
+
+    // Spade Royal Mantle
+    ctx.fillStyle = '#09090b';
+    ctx.beginPath();
+    ctx.moveTo(-16, -18);
+    ctx.lineTo(16, -18);
+    ctx.lineTo(18, 30);
+    ctx.lineTo(-18, 30);
+    ctx.closePath();
+    ctx.fill();
+
+    // Pure White Spinal Bone Crown
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.moveTo(-10, -22);
+    ctx.lineTo(-14, -36);
+    ctx.lineTo(-6, -26);
+    ctx.lineTo(0, -38);
+    ctx.lineTo(6, -26);
+    ctx.lineTo(14, -36);
+    ctx.lineTo(10, -22);
+    ctx.closePath();
+    ctx.fill();
+
+    // Cold Glowing Red Devil Eyes
+    ctx.fillStyle = '#ef4444';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 10;
+    ctx.fillRect(-5, -14, 3, 2);
+    ctx.fillRect(2, -14, 3, 2);
+    ctx.shadowBlur = 0;
+
+    // Orbiting Spatial Void Cubes
+    for (let i = 0; i < 3; i++) {
+      const ca = tick * 0.05 + (i * Math.PI * 2) / 3;
+      const cx = Math.cos(ca) * 34;
+      const cy = Math.sin(ca) * 22;
+      ctx.fillStyle = '#09090b';
+      ctx.strokeStyle = '#c084fc';
+      ctx.lineWidth = 1.5;
+      ctx.fillRect(cx - 5, cy - 5, 10, 10);
+      ctx.strokeRect(cx - 5, cy - 5, 10, 10);
+    }
+  },
+
+  // =========================================================================
+  // BOSS 5: VANICA & MEGICULA (Nguyền Huyết Chi Ma Vương / Blood Queen)
+  // =========================================================================
+  drawBossVanica(ctx, e, tick) {
+    const wave = Math.sin(tick * 0.22) * 6;
+
+    // Swirling Blood Mist Aura
+    this.drawAura(ctx, 0, 0, e.radius + 20, 'rgba(220, 38, 38, 0.55)', 32);
+
+    // COLOSSAL LIQUID BLOOD WINGS
+    ctx.fillStyle = '#991b1b';
+    ctx.strokeStyle = '#ef4444';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 16;
+    ctx.lineWidth = 2.5;
+
+    for (let side = -1; side <= 1; side += 2) {
+      if (side === 0) continue;
+      ctx.beginPath();
+      ctx.moveTo(0, -6);
+      ctx.bezierCurveTo(side * 28, -42 + wave, side * 60, -22, side * 48, 14);
+      ctx.bezierCurveTo(side * 34, 18, side * 18, 12, 0, 4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+
+    // Gothic Corset Dress & Blood Thorns
+    ctx.fillStyle = '#18181b';
+    ctx.beginPath();
+    ctx.moveTo(-14, -14);
+    ctx.lineTo(14, -14);
+    ctx.lineTo(16, 28);
+    ctx.lineTo(-16, 28);
+    ctx.closePath();
+    ctx.fill();
+
+    // Blood Beast Claws
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(14, 4);
+    ctx.lineTo(28, 12);
+    ctx.lineTo(24, 20);
+    ctx.stroke();
+
+    // Crown of Blood Thorns & Spade Horns
+    ctx.fillStyle = '#b91c1c';
+    ctx.beginPath();
+    ctx.moveTo(-10, -22);
+    ctx.lineTo(-14, -36);
+    ctx.lineTo(-4, -26);
+    ctx.lineTo(0, -38);
+    ctx.lineTo(4, -26);
+    ctx.lineTo(14, -36);
+    ctx.lineTo(10, -22);
+    ctx.closePath();
+    ctx.fill();
+
+    // Manic Devil Smile & Crimson Eye
+    ctx.fillStyle = '#ef4444';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.arc(-4, -14, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  },
+
+  // =========================================================================
+  // BOSS 6: DANTE & LUCIFERO 80% (Trọng Lực Tuyệt Đối / Black Hole Singularity)
+  // =========================================================================
+  drawBossDante(ctx, e, tick) {
+    const pulse = Math.sin(tick * 0.18) * 5;
+
+    // Massive Gravity Vortex Aura
+    this.drawAura(ctx, 0, 0, e.radius + 24, 'rgba(15, 23, 42, 0.85)', 36);
+
+    // SWIRLING BLACK HOLE SINGULARITY OVERHEAD
+    ctx.save();
+    ctx.translate(0, -42);
+    ctx.rotate(tick * 0.12);
+    ctx.fillStyle = '#000000';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 20;
+    ctx.beginPath();
+    ctx.arc(0, 0, 14, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Double Red Accretion Disks
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 26, 7, 0.4, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.restore();
+
+    // FOUR LEATHERY GARGOYLE WINGS
+    ctx.fillStyle = '#09090b';
+    ctx.strokeStyle = '#7f1d1d';
+    ctx.lineWidth = 2;
+    for (let side = -1; side <= 1; side += 2) {
+      if (side === 0) continue;
+      ctx.beginPath();
+      ctx.moveTo(0, -10);
+      ctx.bezierCurveTo(side * 34, -36 + pulse, side * 62, -14, side * 44, 22);
+      ctx.lineTo(side * 10, 8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // Warped 80% Devil Torso
+    ctx.fillStyle = '#1c1917';
+    ctx.beginPath();
+    ctx.ellipse(0, 4, 22, 28, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Giant Pulsating Red Eye on Chest
+    ctx.fillStyle = '#ef4444';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 16;
+    ctx.beginPath();
+    ctx.arc(0, 6, 6 + pulse * 0.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#000000';
+    ctx.beginPath();
+    ctx.arc(0, 6, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Goat Devil Crown
+    ctx.fillStyle = '#09090b';
+    ctx.beginPath();
+    ctx.moveTo(-10, -22);
+    ctx.lineTo(-18, -36);
+    ctx.lineTo(-4, -26);
+    ctx.lineTo(0, -38);
+    ctx.lineTo(4, -26);
+    ctx.lineTo(18, -36);
+    ctx.lineTo(10, -22);
+    ctx.closePath();
+    ctx.fill();
+  },
+
+  // =========================================================================
+  // BOSS 7: ZAGRED (Ngôn Linh Ma Ma Vương / Kotodama Word Soul Devil)
+  // =========================================================================
+  drawBossZagred(ctx, e, tick) {
+    const flap = Math.sin(tick * 0.18) * 6;
+
+    // Eldritch Word Soul Purple Abyss Aura
+    this.drawAura(ctx, 0, 0, e.radius + 26, 'rgba(107, 33, 168, 0.65)', 38);
+
+    // FOUR IMMENSE BAT WINGS WITH EMBEDDED OCCULT EYES
+    ctx.fillStyle = '#1e1b4b';
+    ctx.strokeStyle = '#c084fc';
+    ctx.shadowColor = '#9333ea';
+    ctx.shadowBlur = 20;
+    ctx.lineWidth = 2.5;
+
+    for (let side = -1; side <= 1; side += 2) {
+      if (side === 0) continue;
+      // Main wing
+      ctx.beginPath();
+      ctx.moveTo(0, -12);
+      ctx.bezierCurveTo(side * 42, -55 + flap, side * 76, -24, side * 58, 22);
+      ctx.bezierCurveTo(side * 38, 26, side * 18, 14, 0, 6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Embedded glowing purple eye on wing
+      ctx.fillStyle = '#c084fc';
+      ctx.beginPath();
+      ctx.arc(side * 36, -20 + flap * 0.5, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#09090b';
+      ctx.beginPath();
+      ctx.arc(side * 36, -20 + flap * 0.5, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+
+    // Slender Towering Shadow Devil Body
+    ctx.fillStyle = '#09090b';
+    ctx.beginPath();
+    ctx.moveTo(-16, -24);
+    ctx.bezierCurveTo(-22, 6, -18, 28, -12, 38);
+    ctx.lineTo(12, 38);
+    ctx.bezierCurveTo(18, 28, 22, 6, 16, -24);
+    ctx.closePath();
+    ctx.fill();
+
+    // Sinister Shadow Visage with Razor-Sharp Needle Teeth
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(0, -26, 15, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Menacing Needle-Tooth Grin
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.moveTo(-10, -22);
+    ctx.bezierCurveTo(-6, -16, 6, -16, 10, -22);
+    ctx.bezierCurveTo(6, -19, -6, -19, -10, -22);
+    ctx.closePath();
+    ctx.fill();
+
+    // Glowing Purple Slit Eyes
+    ctx.fillStyle = '#c084fc';
+    ctx.shadowColor = '#a855f7';
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(-5, -28, 2.5, 0, Math.PI * 2);
+    ctx.arc(5, -28, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Three Sweeping Demonic Horns
+    ctx.fillStyle = '#09090b';
+    ctx.beginPath();
+    ctx.moveTo(-8, -34);
+    ctx.lineTo(-18, -52);
+    ctx.lineTo(-4, -38);
+    ctx.moveTo(8, -34);
+    ctx.lineTo(18, -52);
+    ctx.lineTo(4, -38);
+    ctx.moveTo(-2, -36);
+    ctx.lineTo(0, -56);
+    ctx.lineTo(2, -36);
+    ctx.fill();
+
+    // FLOATING 5-LEAF GRIMOIRE OF DESPAIR & WORD SPEARS
+    ctx.save();
+    const gBob = Math.sin(tick * 0.16) * 4;
+    ctx.translate(28, 0 + gBob);
+    ctx.fillStyle = '#09090b';
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2;
+    ctx.fillRect(-6, -10, 12, 20);
+    ctx.strokeRect(-6, -10, 12, 20);
+    // Glowing red 5-leaf clover
+    ctx.fillStyle = '#dc2626';
+    ctx.beginPath();
+    ctx.arc(0, 0, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  },
+
+  // =========================================================================
+  // BOSS 8: LUCIFERO (Minh Giới Tối Cao Ma Vương / Supreme Devil King)
+  // =========================================================================
+  drawBossLucifero(ctx, e, tick) {
+    const flap = Math.sin(tick * 0.15) * 7;
+
+    // Apocalyptic Crimson & Void Darkness Aura
+    this.drawAura(ctx, 0, 0, e.radius + 32, 'rgba(153, 27, 27, 0.7)', 42);
+    this.drawAura(ctx, 0, 0, e.radius + 18, 'rgba(0, 0, 0, 0.9)', 28);
+
+    // SIX GARGANTUAN OBSIDIAN DEVIL WINGS (Spanning the Screen!)
+    ctx.fillStyle = '#0a0305';
+    ctx.strokeStyle = '#dc2626';
+    ctx.shadowColor = '#ef4444';
+    ctx.shadowBlur = 24;
+    ctx.lineWidth = 3;
+
+    for (let side = -1; side <= 1; side += 2) {
+      if (side === 0) continue;
+      // Tier 1 Top Massive Wing
+      ctx.beginPath();
+      ctx.moveTo(0, -14);
+      ctx.bezierCurveTo(side * 50, -65 + flap, side * 95, -34, side * 75, 18);
+      ctx.bezierCurveTo(side * 48, 22, side * 24, 12, 0, 4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Tier 2 Middle Wing
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(side * 45, -20 + flap * 0.7, side * 85, 8, side * 65, 42);
+      ctx.lineTo(side * 14, 16);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Tier 3 Bottom Wing
+      ctx.beginPath();
+      ctx.moveTo(0, 14);
+      ctx.bezierCurveTo(side * 36, 28, side * 68, 48, side * 48, 65);
+      ctx.lineTo(side * 10, 24);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
+
+    // Crushing Gravitational Stone Fragments under feet
+    ctx.fillStyle = '#451a03';
+    for (let i = 0; i < 5; i++) {
+      const fa = tick * 0.04 + (i * Math.PI * 2) / 5;
+      const fx = Math.cos(fa) * 38;
+      const fy = 30 + Math.sin(fa) * 8;
+      ctx.beginPath();
+      ctx.rect(fx - 4, fy - 3, 8, 6);
+      ctx.fill();
+    }
+
+    // Sovereign Imperial Obsidian Mantle
+    ctx.fillStyle = '#09090b';
+    ctx.beginPath();
+    ctx.moveTo(-22, -26);
+    ctx.lineTo(22, -26);
+    ctx.lineTo(26, 42);
+    ctx.lineTo(-26, 42);
+    ctx.closePath();
+    ctx.fill();
+
+    // Crimson Imperial Fur Collar
+    ctx.fillStyle = '#991b1b';
+    ctx.beginPath();
+    ctx.ellipse(0, -24, 24, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Quadruple Demonic Horns (Dark Imperial Crown)
+    ctx.fillStyle = '#000000';
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 1.8;
+    // Outer Horns
+    ctx.beginPath();
+    ctx.moveTo(-12, -34);
+    ctx.bezierCurveTo(-26, -55, -34, -68, -26, -78);
+    ctx.lineTo(-16, -42);
+    ctx.moveTo(12, -34);
+    ctx.bezierCurveTo(26, -55, 34, -68, 26, -78);
+    ctx.lineTo(16, -42);
+    ctx.fill();
+    ctx.stroke();
+
+    // Inner Horns
+    ctx.beginPath();
+    ctx.moveTo(-6, -36);
+    ctx.lineTo(-10, -62);
+    ctx.lineTo(-2, -42);
+    ctx.moveTo(6, -36);
+    ctx.lineTo(10, -62);
+    ctx.lineTo(2, -42);
+    ctx.fill();
+    ctx.stroke();
+
+    // Absolute Sovereign Face & Blazing Red Eyes
+    ctx.fillStyle = '#18181b';
+    ctx.beginPath();
+    ctx.arc(0, -28, 16, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Piercing Demonic Slit Eyes
+    ctx.fillStyle = '#ef4444';
+    ctx.shadowColor = '#dc2626';
+    ctx.shadowBlur = 18;
+    ctx.beginPath();
+    ctx.arc(-6, -28, 3.5, 0, Math.PI * 2);
+    ctx.arc(6, -28, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  },
+
+  // =========================================================================
+  // DROPS & REWARDS
+  // =========================================================================
   drawDrop(ctx, drop, tick) {
     ctx.save();
     ctx.translate(drop.x, drop.y);
@@ -1233,7 +3201,7 @@ const Sprites = {
       const tier = colors[drop.val] || (drop.val >= 50 ? colors[50] : (drop.val >= 20 ? colors[20] : (drop.val >= 5 ? colors[5] : colors[1])));
       this.drawAura(ctx, 0, bob, tier.r + 2, tier.glow, 8);
       ctx.fillStyle = tier.fill;
-      // Diamond crystal shape (tinh thể mana nhỏ gọn, sắc sảo)
+      // Diamond crystal shape
       ctx.beginPath();
       ctx.moveTo(0, bob - tier.r * 1.25);
       ctx.lineTo(tier.r * 0.75, bob);
@@ -1242,7 +3210,7 @@ const Sprites = {
       ctx.closePath();
       ctx.fill();
 
-      // Highlight điểm sáng trắng ở tâm
+      // White crystal facet highlight
       ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
       ctx.beginPath();
       ctx.moveTo(0, bob - tier.r * 0.6);
@@ -1253,22 +3221,44 @@ const Sprites = {
       ctx.fill();
     } else if (drop.type === 'food') {
       this.drawAura(ctx, 0, bob, 14, 'rgba(249, 115, 22, 0.55)', 12);
+      // Anime Roast Meat with Bone
       ctx.fillStyle = '#b45309';
       ctx.beginPath();
-      ctx.ellipse(0, bob, 9, 6, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, bob, 10, 7, 0, 0, Math.PI * 2);
       ctx.fill();
+      // Bone ends
       ctx.fillStyle = '#fde68a';
-      ctx.fillRect(-12, bob - 2, 5, 4);
-      ctx.fillRect(8, bob - 2, 5, 4);
+      ctx.beginPath();
+      ctx.rect(-14, bob - 2, 5, 4);
+      ctx.rect(9, bob - 2, 5, 4);
+      ctx.fill();
     } else if (drop.type === 'chest') {
-      this.drawAura(ctx, 0, bob, 20, 'rgba(234, 179, 8, 0.85)', 22);
+      this.drawAura(ctx, 0, bob, 22, 'rgba(234, 179, 8, 0.85)', 24);
+      // Treasure Chest with Domed Lid
       ctx.fillStyle = '#78350f';
-      ctx.fillRect(-11, bob - 8, 22, 16);
       ctx.strokeStyle = '#fbbf24';
       ctx.lineWidth = 2;
-      ctx.strokeRect(-11, bob - 8, 22, 16);
+      ctx.beginPath();
+      ctx.rect(-12, bob - 4, 24, 14);
+      ctx.fill();
+      ctx.stroke();
+
+      // Domed curved lid
+      ctx.beginPath();
+      ctx.moveTo(-12, bob - 4);
+      ctx.bezierCurveTo(-12, bob - 14, 12, bob - 14, 12, bob - 4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Gold Lock
       ctx.fillStyle = '#ef4444';
-      ctx.fillRect(-3.5, bob - 3.5, 7, 7);
+      ctx.shadowColor = '#fbbf24';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(0, bob - 1, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
     } else if (drop.type === 'artifact_relic') {
       const hue = (tick * 4) % 360;
       this.drawAura(ctx, 0, bob, 24, `hsla(${hue}, 95%, 65%, 0.85)`, 28);
@@ -1283,385 +3273,6 @@ const Sprites = {
       ctx.arc(0, bob, 16 + Math.sin(tick * 0.2) * 3, 0, Math.PI * 2);
       ctx.stroke();
     }
-
-    ctx.restore();
-  },
-
-  // 7. ZENON ZOGRATIS (Spade Dark Triad - Spatial & Bone Magic)
-  drawZenon(ctx, p, tick) {
-    const facing = p.facing || 1;
-    const walkBob = Math.sin(tick * 0.2) * 2;
-    ctx.save();
-    ctx.translate(p.x, p.y + walkBob);
-    ctx.scale(facing, 1);
-
-    // Spatial Black Void Aura
-    this.drawAura(ctx, 0, -4, 30, 'rgba(147, 51, 234, 0.4)', 20);
-    this.drawAura(ctx, 0, -4, 20, 'rgba(15, 23, 42, 0.85)', 15);
-
-    // Ground Shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-    ctx.beginPath();
-    ctx.ellipse(0, 16, 14, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Bone Spikes hovering on back
-    ctx.strokeStyle = '#f1f5f9';
-    ctx.shadowColor = '#c084fc';
-    ctx.shadowBlur = 8;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(-10, -6);
-    ctx.lineTo(-24, -22);
-    ctx.moveTo(-6, -2);
-    ctx.lineTo(-20, -10);
-    ctx.moveTo(-8, 6);
-    ctx.lineTo(-22, 16);
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-
-    // Dark Spade Overcoat
-    ctx.fillStyle = '#09090b';
-    ctx.fillRect(-10, -6, 20, 22);
-    // Dark trousers & boots
-    ctx.fillStyle = '#18181b';
-    ctx.fillRect(-8, 12, 6, 8);
-    ctx.fillRect(2, 12, 6, 8);
-
-    // White Fluffy Fur Collar
-    ctx.fillStyle = '#f8fafc';
-    ctx.beginPath();
-    ctx.ellipse(0, -7, 13, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Head
-    ctx.fillStyle = '#fef08a';
-    ctx.beginPath();
-    ctx.arc(0, -16, 8.5, 0, Math.PI * 2);
-    ctx.fill();
-    // Dark messy hair
-    ctx.fillStyle = '#09090b';
-    ctx.beginPath();
-    ctx.arc(0, -18, 9, Math.PI, Math.PI * 2);
-    ctx.fill();
-    // Cold glowing purple eye
-    ctx.fillStyle = '#c084fc';
-    ctx.shadowColor = '#a855f7';
-    ctx.shadowBlur = 6;
-    ctx.fillRect(2, -17, 3, 2.5);
-    ctx.shadowBlur = 0;
-
-    ctx.restore();
-  },
-
-  // 8. VANICA ZOGRATIS (Spade Dark Triad - Blood & Megicula Curse)
-  drawVanica(ctx, p, tick) {
-    const facing = p.facing || 1;
-    const walkBob = Math.sin(tick * 0.24) * 2.5;
-    ctx.save();
-    ctx.translate(p.x, p.y + walkBob);
-    ctx.scale(facing, 1);
-
-    // Megicula Blood & Curse Aura
-    this.drawAura(ctx, 0, -2, 28, 'rgba(220, 38, 38, 0.45)', 22);
-    this.drawAura(ctx, 0, -2, 18, 'rgba(69, 10, 10, 0.75)', 15);
-
-    // Ground Shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
-    ctx.beginPath();
-    ctx.ellipse(0, 16, 14, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Demonic Blood Wing (Flapping)
-    ctx.save();
-    const wingFlap = Math.sin(tick * 0.2) * 0.28;
-    ctx.translate(-8, -10);
-    ctx.rotate(-0.3 + wingFlap);
-    ctx.fillStyle = '#7f1d1d';
-    ctx.shadowColor = '#dc2626';
-    ctx.shadowBlur = 12;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.bezierCurveTo(-20, -32, -42, -18, -46, 8);
-    ctx.bezierCurveTo(-34, 16, -18, 22, 0, 8);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.restore();
-
-    // Gothic Spade Outfit
-    ctx.fillStyle = '#09090b';
-    ctx.fillRect(-8, -4, 16, 20);
-    // Crimson Corset & details
-    ctx.fillStyle = '#dc2626';
-    ctx.fillRect(-6, -2, 12, 10);
-    // Dark boots
-    ctx.fillStyle = '#18181b';
-    ctx.fillRect(-7, 14, 5, 6);
-    ctx.fillRect(2, 14, 5, 6);
-
-    // Head & Face
-    ctx.fillStyle = '#fde047';
-    ctx.beginPath();
-    ctx.arc(0, -15, 8.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Black Bob Hair
-    ctx.fillStyle = '#09090b';
-    ctx.beginPath();
-    ctx.arc(0, -17, 9.5, Math.PI, Math.PI * 2);
-    ctx.fill();
-    ctx.fillRect(-9, -17, 3, 10);
-    ctx.fillRect(6, -17, 3, 10);
-
-    // Eyepatch on right eye
-    ctx.fillStyle = '#09090b';
-    ctx.fillRect(-4, -17, 4, 4);
-    // Sadistic glowing red left eye
-    ctx.fillStyle = '#ef4444';
-    ctx.shadowColor = '#f43f5e';
-    ctx.shadowBlur = 8;
-    ctx.fillRect(2, -16, 3, 3);
-    ctx.shadowBlur = 0;
-
-    ctx.restore();
-  },
-
-  // 9. DANTE ZOGRATIS (Spade Dark Triad - Gravity & Lucifero)
-  drawDante(ctx, p, tick) {
-    const facing = p.facing || 1;
-    const walkBob = Math.sin(tick * 0.18) * 1.8;
-    ctx.save();
-    ctx.translate(p.x, p.y + walkBob);
-    ctx.scale(facing, 1);
-
-    // Heavy Gravity Crushing Pulse
-    this.drawAura(ctx, 0, 0, 32, 'rgba(69, 10, 10, 0.5)', 25);
-    this.drawAura(ctx, 0, 0, 20, 'rgba(0, 0, 0, 0.8)', 15);
-
-    // Ground Shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.beginPath();
-    ctx.ellipse(0, 18, 16, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Lucifero Devil Horns
-    ctx.fillStyle = '#09090b';
-    ctx.beginPath();
-    ctx.moveTo(-5, -23);
-    ctx.lineTo(-12, -35);
-    ctx.lineTo(-2, -25);
-    ctx.moveTo(5, -23);
-    ctx.lineTo(12, -35);
-    ctx.lineTo(2, -25);
-    ctx.fill();
-
-    // Regal Spade Coat with Green Jewel
-    ctx.fillStyle = '#18181b';
-    ctx.fillRect(-11, -6, 22, 24);
-    ctx.fillStyle = '#10b981';
-    ctx.shadowColor = '#34d399';
-    ctx.shadowBlur = 6;
-    ctx.beginPath();
-    ctx.arc(0, 0, 3.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-
-    // Dark boots
-    ctx.fillStyle = '#09090b';
-    ctx.fillRect(-9, 14, 7, 8);
-    ctx.fillRect(2, 14, 7, 8);
-
-    // Head & Slicked Back Dark Hair
-    ctx.fillStyle = '#fde047';
-    ctx.beginPath();
-    ctx.arc(0, -16, 9.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#27272a';
-    ctx.beginPath();
-    ctx.arc(0, -18, 10, Math.PI, Math.PI * 2);
-    ctx.fill();
-
-    // Small King Crown
-    ctx.fillStyle = '#fbbf24';
-    ctx.fillRect(-5, -26, 10, 4);
-
-    // Red Smug Eye
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(2, -17, 3, 2.5);
-
-    ctx.restore();
-  },
-
-  // 10. FANA (Elf Apostle - Fire Phoenix)
-  drawFana(ctx, p, tick) {
-    const facing = p.facing || 1;
-    const walkBob = Math.sin(tick * 0.22) * 2;
-    ctx.save();
-    ctx.translate(p.x, p.y + walkBob);
-    ctx.scale(facing, 1);
-
-    // Blazing Phoenix Halo
-    this.drawAura(ctx, 0, -4, 30, 'rgba(249, 115, 22, 0.45)', 24);
-    this.drawAura(ctx, 0, -4, 18, 'rgba(251, 191, 36, 0.65)', 15);
-
-    // Ground Shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-    ctx.beginPath();
-    ctx.ellipse(0, 16, 13, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Flaming Phoenix Wings (Dual wings)
-    const flap = Math.sin(tick * 0.25) * 4;
-    ctx.fillStyle = '#f97316';
-    ctx.shadowColor = '#fbbf24';
-    ctx.shadowBlur = 10;
-    ctx.beginPath();
-    ctx.moveTo(-8, -8);
-    ctx.lineTo(-26, -22 + flap);
-    ctx.lineTo(-16, 0);
-    ctx.moveTo(8, -8);
-    ctx.lineTo(26, -22 + flap);
-    ctx.lineTo(16, 0);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-
-    // White & Gold Elf Tunic
-    ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(-8, -4, 16, 20);
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillRect(-8, 10, 16, 4);
-
-    // Pinkish-Red Elf Hair
-    ctx.fillStyle = '#f43f5e';
-    ctx.beginPath();
-    ctx.arc(0, -16, 10, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Face
-    ctx.fillStyle = '#fef08a';
-    ctx.beginPath();
-    ctx.arc(0, -14, 7.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Glowing Elf 3rd Eye on Forehead
-    ctx.fillStyle = '#ef4444';
-    ctx.shadowColor = '#f43f5e';
-    ctx.shadowBlur = 6;
-    ctx.beginPath();
-    ctx.arc(0, -19, 2.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-
-    ctx.restore();
-  },
-
-  // 11. RHYA (Elf Apostle - Copy Magic)
-  drawRhya(ctx, p, tick) {
-    const facing = p.facing || 1;
-    const walkBob = Math.sin(tick * 0.16) * 1.5;
-    ctx.save();
-    ctx.translate(p.x, p.y + walkBob);
-    ctx.scale(facing, 1);
-
-    // Multi-elemental aura
-    this.drawAura(ctx, 0, -2, 26, 'rgba(56, 189, 248, 0.35)', 18);
-
-    // Ground Shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-    ctx.beginPath();
-    ctx.ellipse(0, 16, 14, 5, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // 4 Orbiting elemental orbs
-    const colors = ['#f97316', '#06b6d4', '#22c55e', '#eab308'];
-    for (let i = 0; i < 4; i++) {
-      const orbAngle = tick * 0.12 + (Math.PI * 2 / 4) * i;
-      const ox = Math.cos(orbAngle) * 22;
-      const oy = Math.sin(orbAngle) * 10 - 6;
-      ctx.fillStyle = colors[i];
-      ctx.shadowColor = colors[i];
-      ctx.shadowBlur = 8;
-      ctx.beginPath();
-      ctx.arc(ox, oy, 3.5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.shadowBlur = 0;
-    }
-
-    // Loose White Elf Robe
-    ctx.fillStyle = '#f1f5f9';
-    ctx.fillRect(-9, -4, 18, 22);
-
-    // Dark messy hair
-    ctx.fillStyle = '#1e293b';
-    ctx.beginPath();
-    ctx.arc(0, -16, 9.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Face
-    ctx.fillStyle = '#fde047';
-    ctx.beginPath();
-    ctx.arc(0, -14, 7.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Glowing Elf 3rd Eye on Forehead
-    ctx.fillStyle = '#38bdf8';
-    ctx.beginPath();
-    ctx.arc(0, -19, 2.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  },
-
-  // 12. VETTO (Elf Apostle - Mythic Despair Beast)
-  drawVetto(ctx, p, tick) {
-    const facing = p.facing || 1;
-    const walkBob = Math.sin(tick * 0.22) * 2.2;
-    ctx.save();
-    ctx.translate(p.x, p.y + walkBob);
-    ctx.scale(facing, 1);
-
-    // Savage Beast Aura
-    this.drawAura(ctx, 0, -2, 34, 'rgba(234, 88, 12, 0.45)', 26);
-
-    // Ground Shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.beginPath();
-    ctx.ellipse(0, 18, 16, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Muscular Broad Body
-    ctx.fillStyle = '#78350f'; // Fur pelt
-    ctx.fillRect(-12, -6, 24, 24);
-    ctx.fillStyle = '#ea580c';
-    ctx.fillRect(-8, -2, 16, 12);
-
-    // Wild Beast Mane Hair
-    ctx.fillStyle = '#fed7aa';
-    ctx.beginPath();
-    ctx.arc(0, -17, 11, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#451a03';
-    ctx.beginPath();
-    ctx.arc(0, -19, 12, Math.PI, Math.PI * 2);
-    ctx.fill();
-
-    // Face & Sharp Fangs
-    ctx.fillStyle = '#ffedd5';
-    ctx.beginPath();
-    ctx.arc(0, -14, 8, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(-3, -11, 2, 3);
-    ctx.fillRect(1, -11, 2, 3);
-
-    // Glowing Red 3rd Eye
-    ctx.fillStyle = '#dc2626';
-    ctx.shadowColor = '#ef4444';
-    ctx.shadowBlur = 8;
-    ctx.beginPath();
-    ctx.arc(0, -19, 3, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
 
     ctx.restore();
   }

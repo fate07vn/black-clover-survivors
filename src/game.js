@@ -565,6 +565,7 @@ const MAPS = {
   clover_plains: {
     id: 'clover_plains',
     name: 'Vương Quốc Clover (Clover Plains)',
+    icon: '🍀',
     desc: 'Đồng cỏ thần bí và tàn tích cổ đại nơi các đạo tặc và giáo phái Bạch Dạ lộng hành.',
     badge: 'MAP 1 - DỄ TIẾP CẬN',
     boss: 'Zagred (Word Soul Devil)'
@@ -572,6 +573,7 @@ const MAPS = {
   underworld_palace: {
     id: 'underworld_palace',
     name: 'Đại Ma Cung Minh Giới (Underworld Magma)',
+    icon: '🌋',
     desc: 'Lãnh địa nham thạch hắc ám ngập tràn hỏa khuyển và ma vương tối cao Lucifero!',
     badge: 'MAP 2 - THỬ THÁCH MA GIỚI',
     boss: 'Lucifero (Chúa Tể Ác Quỷ)'
@@ -582,7 +584,7 @@ const MAP_DIFFICULTIES = {
   normal: {
     id: 'normal',
     name: 'Bình Thường',
-    icon: '🟢',
+    icon: '🍀',
     badge: 'CHUẨN (1.0x MÁU)',
     color: '#4ade80',
     hpMult: 1.0,
@@ -595,7 +597,7 @@ const MAP_DIFFICULTIES = {
   nightmare: {
     id: 'nightmare',
     name: 'Ác Mộng',
-    icon: '🟡',
+    icon: '⚜️',
     badge: 'KHÓ (1.8x MÁU · +50% THƯỞNG)',
     color: '#fbbf24',
     hpMult: 1.8,
@@ -608,7 +610,7 @@ const MAP_DIFFICULTIES = {
   hell: {
     id: 'hell',
     name: 'Địa Ngục',
-    icon: '🔴',
+    icon: '🔥',
     badge: 'ĐỊA NGỤC (3.0x MÁU · +120% THƯỞNG)',
     color: '#f87171',
     hpMult: 3.0,
@@ -621,7 +623,7 @@ const MAP_DIFFICULTIES = {
   chaos: {
     id: 'chaos',
     name: 'Hỗn Mang',
-    icon: '🟣',
+    icon: '🌌',
     badge: 'HỖN MANG (5.0x MÁU · +250% THƯỞNG)',
     color: '#c084fc',
     hpMult: 5.0,
@@ -4648,20 +4650,20 @@ class Game {
     const container = document.getElementById('upgradeNodesContainer');
     if (!container) return;
 
-    // 12 Exact Attributes
+    // 12 Exact Attributes (Black Clover Lore Accurate)
     const TALENTS = [
-      { id: 'vitality', name: 'Vitality', desc: '+4 HP', icon: '❤️', max: 10, cost: 200 },
-      { id: 'strength', name: 'Strength', desc: '+1.5% damage', icon: '🥊', max: 10, cost: 200 },
-      { id: 'stride', name: 'Stride', desc: '+1.5% speed', icon: '👟', max: 10, cost: 200 },
-      { id: 'reflexes', name: 'Reflexes', desc: '-1% cooldown', icon: '⏰', max: 10, cost: 200 },
-      { id: 'armor', name: 'Armor', desc: '+1% defense', icon: '🛡️', max: 10, cost: 200 },
-      { id: 'synthesis', name: 'Synthesis', desc: '+0.1 HP/s', icon: '🌿', max: 10, cost: 200 },
-      { id: 'magnet', name: 'Magnet', desc: '+6px pickup', icon: '🧲', max: 10, cost: 200 },
-      { id: 'wisdom', name: 'Wisdom', desc: '+2% experience', icon: '📘', max: 10, cost: 200 },
-      { id: 'fortune', name: 'Fortune', desc: '+4% Clover Coins', icon: '🪙', max: 10, cost: 200 },
-      { id: 'repertoire', name: 'Repertoire', desc: 'Start with 2 moves', icon: '🃏', max: 1, cost: 800 },
-      { id: 'crit', name: 'Critical Hit', desc: '+1.5% crit (+2% crit dmg)', icon: '⭐', max: 10, cost: 200 },
-      { id: 'reroll', name: 'Card reroll', desc: '+1 level-up reroll', icon: '⬆️', max: 3, cost: 500 }
+      { id: 'vitality', name: 'Sinh Lực (Vitality)', desc: '+4 HP mỗi cấp (Tối đa +40 HP)', icon: '❤️', max: 10, cost: 200 },
+      { id: 'strength', name: 'Uy Lực (Damage)', desc: '+1.5% Sát thương ma pháp mỗi cấp (Tối đa +15%)', icon: '⚔️', max: 10, cost: 200 },
+      { id: 'stride', name: 'Thần Tốc (Speed)', desc: '+1.5% Tốc độ di chuyển mỗi cấp (Tối đa +15%)', icon: '⚡', max: 10, cost: 200 },
+      { id: 'reflexes', name: 'Hồi Chiêu (CDR)', desc: '-1% Thời gian hồi chiêu mỗi cấp (Tối đa -10%)', icon: '⏳', max: 10, cost: 200 },
+      { id: 'armor', name: 'Ma Pháp Bì (Defense)', desc: '+1% Giáp phòng ngự mỗi cấp (Tối đa +10%)', icon: '🛡️', max: 10, cost: 200 },
+      { id: 'synthesis', name: 'Sinh Mệnh Thảo (Regen)', desc: '+0.1 HP/s hồi máu mỗi cấp (Tối đa +1.0 HP/s)', icon: '🌿', max: 10, cost: 200 },
+      { id: 'magnet', name: 'Dẫn Lực Ma Vực (Magnet)', desc: '+6px Bán kính hút tinh thể mana mỗi cấp (Tối đa +60px)', icon: '🌀', max: 10, cost: 200 },
+      { id: 'wisdom', name: 'Minh Triết Đạo Thư (EXP)', desc: '+2% Kinh nghiệm ma pháp mỗi cấp (Tối đa +20%)', icon: '📖', max: 10, cost: 200 },
+      { id: 'fortune', name: 'Vận Mệnh Tam Diệp (Fortune)', desc: '+4% Tiền xu Clover Yul mỗi cấp (Tối đa +40%)', icon: '🍀', max: 10, cost: 200 },
+      { id: 'repertoire', name: 'Song Đạo Thư (2 Moves)', desc: 'Khởi đầu trận đấu với thêm 1 phép thuật khởi đầu', icon: '📚', max: 1, cost: 800 },
+      { id: 'crit', name: 'Cảm Nhận Khí (Crit Hit)', desc: '+1.5% Tỉ lệ chí mạng & +2% ST Chí mạng mỗi cấp', icon: '🗡️', max: 10, cost: 200 },
+      { id: 'reroll', name: 'Chỉ Đỏ Rouge (Fate Reroll)', desc: '+1 Lần đổi lá bài ma pháp khi lên cấp (Tối đa 3 lần)', icon: '🧶', max: 3, cost: 500 }
     ];
 
     container.innerHTML = '';
