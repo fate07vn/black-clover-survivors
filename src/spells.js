@@ -1657,10 +1657,8 @@ class SpellManager {
     const levelScale = 1 + (p.level - 1) * 0.025;
     const dmgMult = (1 + p.damageBonus) * (1 + (level - 1) * 0.18) * levelScale;
     const areaMult = (1 + p.areaBonus) * (1 + (level - 1) * 0.12);
-    const pCrit = Math.min(1.0, Math.max(0, p.critChance || 0));
-    const isCrit = pCrit > 0 && Math.random() < pCrit;
-    const critMult = isCrit ? Math.min(2.0, Math.max(1.0, 1.0 + (p.critDmgBonus || 0) * 0.5)) : 1.0;
-    const damage = Math.round(def.baseDamage * dmgMult * critMult);
+    const damage = Math.round(def.baseDamage * dmgMult);
+    const isCrit = false;
     const targetAngle = this.getTargetAngle();
 
     if (Math.abs(Math.cos(targetAngle)) > 0.2) {
@@ -3533,10 +3531,24 @@ class SpellManager {
   }
 
   applyDamage(enemy, amount, isCrit, color) {
-    const playerCrit = this.game.player ? (this.game.player.critChance || 0) : 0;
-    if (playerCrit <= 0) {
-      isCrit = false;
+    const p = this.game.player;
+    const playerCrit = p ? Math.min(1.0, Math.max(0, p.critChance || 0)) : 0;
+
+    // Independent Per-Hit Critical Strike Roll (Ensures 23% means ~23% of hits, not 100% of entire 4.5s spells/pierces)
+    let actualCrit = false;
+    if (playerCrit > 0) {
+      if (isCrit === true) {
+        actualCrit = true; // Guaranteed crit from special proc
+      } else {
+        actualCrit = Math.random() < playerCrit;
+      }
     }
+
+    if (actualCrit) {
+      const critMult = Math.min(2.0, Math.max(1.0, 1.0 + ((p && p.critDmgBonus) || 0) * 0.5));
+      amount = Math.round(amount * critMult);
+    }
+
     if (enemy.isShielding) {
       amount = Math.max(1, Math.round(amount * 0.25));
     }
@@ -3569,9 +3581,9 @@ class SpellManager {
     this.floatingTexts.push({
       x: enemy.x + (Math.random() - 0.5) * 18,
       y: enemy.y - 12,
-      text: isCrit ? `${amount} CRIT!` : `${amount}`,
-      color: isCrit ? '#facc15' : (color || '#ffffff'),
-      size: isCrit ? 18 : 13,
+      text: actualCrit ? `${amount} CRIT!` : `${amount}`,
+      color: actualCrit ? '#facc15' : (color || '#ffffff'),
+      size: actualCrit ? 18 : 13,
       life: 0.65
     });
 
