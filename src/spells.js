@@ -23,7 +23,7 @@ const SPELL_DEFS = {
     icon: '⚔️🔴',
     description: 'TIẾN HÓA CẤP 1: Đại kiếm anti-magic xoay 360 độ cực đại, quét sạch mọi ma pháp và quái vật!',
     baseCooldown: 1.7,
-    baseDamage: 136,
+    baseDamage: 95,
     baseArea: 170,
     maxLevel: 1,
     evolution: 'demon_slasher_infinity',
@@ -36,7 +36,7 @@ const SPELL_DEFS = {
     icon: '😈🗡️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Nhát chém Kháng Ma Vô Cực phủ đen cả không gian, giải phóng 2 sóng xung kích diệt thần 360 độ!',
     baseCooldown: 1.23,
-    baseDamage: 393,
+    baseDamage: 210,
     baseArea: 260,
     maxLevel: 1
   },
@@ -48,7 +48,7 @@ const SPELL_DEFS = {
     icon: '🍃🌪️',
     description: 'Tự động ghim mục tiêu và phóng ra các lưỡi liềm gió sắc bén xuyên thấu hàng ngũ địch.',
     baseCooldown: 1.22,
-    baseDamage: 18,
+    baseDamage: 24,
     baseSpeed: 480,
     pierce: 3,
     maxLevel: 5,
@@ -74,8 +74,58 @@ const SPELL_DEFS = {
     icon: '🏹🌪️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa thân Thánh Khải Saint Stage, bắn liên hoàn 8 mũi tên phong bão xuyên không và tạo bão xoáy khổng lồ toàn map!',
     baseCooldown: 1.39,
-    baseDamage: 367,
+    baseDamage: 195,
     baseArea: 280,
+    maxLevel: 1
+  },
+
+  sylph_spirits: {
+    id: 'sylph_spirits',
+    name: 'Tinh Linh (Spirit)',
+    type: 'weapon',
+    icon: '🧚✨',
+    description: 'Chiêu Tinh Linh (Spirit - Magic Survival): Triệu hồi các Tinh Linh bay lơ lửng quanh người, liên tục phóng các mũi Tiễn Ma Pháp / Phi Kiếm tốc độ cao truy sát kẻ địch gần nhất!',
+    levelDescriptions: {
+      2: 'CẤP 2: +1 Tinh Linh Hộ Vệ (Tổng 3), +25% Sát thương và tăng tầm truy kích.',
+      3: 'CẤP 3: +1 Tinh Linh Hộ Vệ (Tổng 4), -15% Hồi chiêu và tăng +20% tốc độ bay.',
+      4: 'CẤP 4 [Familiar - Hộ Vệ Thần]: +1 Tinh Linh (Tổng 5), Tinh linh to hơn và đạn nhận thêm khả năng Xuyên Thấu (+1 Pierce).',
+      5: 'CẤP 5 [Spirit Blade - Kiếm Khí]: +1 Tinh Linh (Tổng 6, Sylph 7), chuyển hóa toàn bộ đạn thành Phi Kiếm Tinh Linh xé gió tốc độ cao, xuyên thấu 2 mục tiêu!'
+    },
+    baseCooldown: 0.82,
+    baseDamage: 28,
+    baseSpeed: 640,
+    baseArea: 22,
+    pierce: 1,
+    maxLevel: 5,
+    evolution: 'sylph_tempest_domain',
+    requires: 'wind_glide'
+  },
+  sylph_tempest_domain: {
+    id: 'sylph_tempest_domain',
+    name: 'Ngự Kiếm Linh Hồn (Telekinetic Sword)',
+    type: 'evolution',
+    icon: '🗡️🧚',
+    description: 'TIẾN HÓA CẤP 1 (Magic Survival Fusion): Tinh linh chuyển hóa thành 8 Ngự Kiếm Linh Hồn (Telekinetic Swords) lơ lửng quanh người, liên tục xuất kích xé toạc mọi kẻ địch với tốc độ cực hạn và xuyên thấu liên hoàn!',
+    baseCooldown: 0.44,
+    baseDamage: 105,
+    baseSpeed: 780,
+    baseArea: 35,
+    pierce: 5,
+    maxLevel: 1,
+    evolution: 'spirit_storm_empress',
+    requires: 'reinforcement'
+  },
+  spirit_storm_empress: {
+    id: 'spirit_storm_empress',
+    name: 'Vạn Kiếm Quy Tông (Infinite Spirit Blades)',
+    type: 'super_evolution',
+    icon: '👑🗡️',
+    description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Khai mở Vạn Kiếm Trận với 16 Đại Thần Kiếm bay hộ thể, giải phóng cuồng phong kiếm khí xuyên thấu vô hạn toàn bản đồ kèm kiếm áp chấn động!',
+    baseCooldown: 0.35,
+    baseDamage: 215,
+    baseSpeed: 880,
+    baseArea: 55,
+    pierce: 99,
     maxLevel: 1
   },
 
@@ -111,7 +161,7 @@ const SPELL_DEFS = {
     icon: '🔱🐉',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa thân Hải Thần Noelle, triệu hồi 3 Thủy Long khổng lồ và 12 thương thần bảo hộ xoay quanh nghiền nát địch!',
     baseCooldown: 1.39,
-    baseDamage: 418,
+    baseDamage: 220,
     baseArea: 300,
     maxLevel: 1
   },
@@ -136,7 +186,7 @@ const SPELL_DEFS = {
     icon: '🌌⚔️',
     description: 'TIẾN HÓA CẤP 1: Nhát chém xé toạc không gian xuyên suốt toàn màn hình theo hướng mục tiêu!',
     baseCooldown: 2.64,
-    baseDamage: 236,
+    baseDamage: 118,
     baseArea: 480,
     maxLevel: 1,
     evolution: 'death_thrust_void',
@@ -149,7 +199,7 @@ const SPELL_DEFS = {
     icon: '⚡🌑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Đòn đâm nén tụ hắc ma pháp thổi bay và tiêu diệt mọi kẻ địch trên đường thẳng xuyên màn hình!',
     baseCooldown: 1.6,
-    baseDamage: 480,
+    baseDamage: 240,
     baseArea: 650,
     maxLevel: 1
   },
@@ -161,7 +211,7 @@ const SPELL_DEFS = {
     icon: '⚡👢',
     description: 'Tia sét nhảy chuyền liên tiếp giữa mục tiêu bị khóa và các kẻ địch lân cận.',
     baseCooldown: 1.05,
-    baseDamage: 19,
+    baseDamage: 24,
     chains: 6,
     maxLevel: 5,
     evolution: 'thunder_fiend',
@@ -185,7 +235,7 @@ const SPELL_DEFS = {
     icon: '⚡👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa Lôi Ma Thần Tối Thượng, sấm sét liên hoàn giáng 16 tia một lúc, giật lan toàn bản đồ và làm choáng vĩnh viễn!',
     baseCooldown: 0.98,
-    baseDamage: 330,
+    baseDamage: 180,
     baseArea: 320,
     maxLevel: 1
   },
@@ -197,7 +247,7 @@ const SPELL_DEFS = {
     icon: '🦁🔥',
     description: 'Tung chuỗi đấm lửa cuồng bạo liên hoàn về phía mục tiêu với tốc độ cực đại.',
     baseCooldown: 0.96,
-    baseDamage: 23,
+    baseDamage: 26,
     baseArea: 75,
     maxLevel: 5,
     evolution: 'calidos_purgatory',
@@ -210,7 +260,7 @@ const SPELL_DEFS = {
     icon: '🌋🔥',
     description: 'TIẾN HÓA CẤP 1: Cột lửa địa ngục bùng nổ toàn diện bao trùm mặt đất, thiêu rụi mọi kẻ địch!',
     baseCooldown: 1.77,
-    baseDamage: 149,
+    baseDamage: 105,
     baseArea: 180,
     maxLevel: 1,
     evolution: 'sol_prominence_sun'
@@ -222,7 +272,7 @@ const SPELL_DEFS = {
     icon: '☀️🔥',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Quả cầu mặt trời rực lửa thiêu rụi toàn màn hình, bùng nổ sóng lửa liên tục đẩy lùi và thiêu đốt quái vật ra tro!',
     baseCooldown: 1.23,
-    baseDamage: 454,
+    baseDamage: 230,
     baseArea: 350,
     maxLevel: 1
   },
@@ -234,7 +284,7 @@ const SPELL_DEFS = {
     icon: '💧🗡️',
     description: 'Rót những ngọn thương thủy ngân kim loại từ trên trời cắm phập xuống mục tiêu.',
     baseCooldown: 1.52,
-    baseDamage: 22,
+    baseDamage: 25,
     baseArea: 80,
     maxLevel: 5,
     evolution: 'silver_spears',
@@ -259,7 +309,7 @@ const SPELL_DEFS = {
     icon: '🛡️🦅',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Thần khiên thủy ngân bao phủ đẩy lùi kẻ địch, đồng thời phóng 32 ngọn thương hủy diệt mọi mục tiêu!',
     baseCooldown: 1.23,
-    baseDamage: 393,
+    baseDamage: 205,
     baseArea: 300,
     maxLevel: 1
   },
@@ -271,7 +321,7 @@ const SPELL_DEFS = {
     icon: '🌹➰',
     description: 'Quất những ngọn roi gai hoa hồng màu lam uốn lượn hình quạt, làm chảy máu kẻ địch.',
     baseCooldown: 1.28,
-    baseDamage: 21,
+    baseDamage: 24,
     baseArea: 95,
     maxLevel: 5,
     evolution: 'scarlet_rose_bloom',
@@ -296,7 +346,7 @@ const SPELL_DEFS = {
     icon: '🌹💙',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Vườn hoa hồng xanh nở rộ toàn bản đồ giam hãm và xé nát toàn bộ kẻ địch trong hương hoa hủy diệt!',
     baseCooldown: 1.39,
-    baseDamage: 374,
+    baseDamage: 195,
     baseArea: 320,
     maxLevel: 1
   },
@@ -308,7 +358,7 @@ const SPELL_DEFS = {
     icon: '⏳✨',
     description: 'Tạo quả cầu thời gian giam cầm kẻ địch và rút cạn sinh mệnh của chúng.',
     baseCooldown: 2.32,
-    baseDamage: 17,
+    baseDamage: 22,
     baseArea: 95,
     duration: 3.5,
     maxLevel: 5,
@@ -334,7 +384,7 @@ const SPELL_DEFS = {
     icon: '⏳👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Ngưng đọng tuyệt đối thời gian toàn bản đồ, nghiền nát mọi kẻ địch thành tro bụi của lịch sử!',
     baseCooldown: 1.6,
-    baseDamage: 418,
+    baseDamage: 220,
     baseArea: 380,
     maxLevel: 1
   },
@@ -370,7 +420,7 @@ const SPELL_DEFS = {
     icon: '⛓️💥',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cú vung chày bão lửa thần thánh thổi bay mọi quái vật với 100% tỉ lệ chí mạng nổ long trời lở đất!',
     baseCooldown: 1.39,
-    baseDamage: 402,
+    baseDamage: 215,
     baseArea: 280,
     maxLevel: 1
   },
@@ -382,7 +432,7 @@ const SPELL_DEFS = {
     icon: '🐑☁️',
     description: 'Cừu bông xoay quanh bảo vệ người chơi, gây sát thương và thỉnh thoảng tạo ra đùi thịt hồi máu.',
     baseCooldown: 2.17,
-    baseDamage: 18,
+    baseDamage: 23,
     maxLevel: 5,
     evolution: 'food_feast',
     requires: 'clover_fortune'
@@ -406,7 +456,7 @@ const SPELL_DEFS = {
     icon: '🐺🍲',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Triệu hồi Ma Sói Khổng Lồ ngoạm sạch mọi kẻ địch trên màn hình, hồi đầy thanh máu tức thì!',
     baseCooldown: 1.34,
-    baseDamage: 436,
+    baseDamage: 225,
     baseArea: 320,
     maxLevel: 1
   },
@@ -446,7 +496,7 @@ const SPELL_DEFS = {
     icon: '☀️👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Quả cầu Thái Dương phát ra 4 chùm laser ánh sáng xoay 360 độ quét rực toàn màn hình và bão kiếm quang rơi như mưa sao băng!',
     baseCooldown: 1.08,
-    baseDamage: 330,
+    baseDamage: 190,
     baseArea: 280,
     maxLevel: 1
   },
@@ -472,7 +522,7 @@ const SPELL_DEFS = {
     icon: '🐺🌑',
     description: 'TIẾN HÓA HUYỀN THOẠI: Bầy Sói Bóng Tối Canis lao vút 4 hướng cắn xé kẻ địch, tạo lốc hắc ám nuốt chửng quái vật và hồi máu cực mạnh!',
     baseCooldown: 1.14,
-    baseDamage: 166,
+    baseDamage: 108,
     baseArea: 220,
     maxLevel: 1,
     evolution: 'shadow_devil_union'
@@ -484,7 +534,7 @@ const SPELL_DEFS = {
     icon: '😈🌑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Đồng hóa 4 đại quỷ cùng lúc, mở cánh cổng địa ngục nuốt chửng quái vật và tàng hình hút máu bất tử!',
     baseCooldown: 1.18,
-    baseDamage: 471,
+    baseDamage: 235,
     baseArea: 360,
     maxLevel: 1
   },
@@ -511,7 +561,7 @@ const SPELL_DEFS = {
     icon: '⚔️🌌',
     description: 'TIẾN HÓA HUYỀN THOẠI: Cự Kiếm Khai Thiên giáng xuống tạo chấn động địa chấn ma thuật hủy diệt toàn bộ khu vực!',
     baseCooldown: 1.77,
-    baseDamage: 304,
+    baseDamage: 120,
     baseArea: 320,
     maxLevel: 1,
     evolution: 'ultimate_light_slash'
@@ -523,7 +573,7 @@ const SPELL_DEFS = {
     icon: '🌟⚔️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Triệu hồi 100 Cổ Kiếm Khai Thiên giáng xuống như mưa sao băng quét sạch toàn bộ lục địa Clover!',
     baseCooldown: 1.39,
-    baseDamage: 505,
+    baseDamage: 240,
     baseArea: 400,
     maxLevel: 1
   },
@@ -549,7 +599,7 @@ const SPELL_DEFS = {
     icon: '🔄🕸️',
     description: 'TIẾN HÓA CẤP 1: Vòng tròn bẫy liên hoàn phản lại mọi sát thương và tạo chấn động nổ diện rộng!',
     baseCooldown: 1.66,
-    baseDamage: 136,
+    baseDamage: 98,
     baseArea: 200,
     maxLevel: 1,
     evolution: 'infernal_reflect_void'
@@ -561,7 +611,7 @@ const SPELL_DEFS = {
     icon: '💥🪞',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Ma trận bẫy hư không phản kích vô hạn x5 sát thương, biến toàn bộ đòn đánh địch thành vụ nổ diệt vong!',
     baseCooldown: 1.39,
-    baseDamage: 454,
+    baseDamage: 225,
     baseArea: 350,
     maxLevel: 1
   },
@@ -574,7 +624,7 @@ const SPELL_DEFS = {
     icon: '🌳✨',
     description: 'Rễ cây ma thuật trồi lên quấn chặt quái vật, rút mana hồi máu cho người chơi!',
     baseCooldown: 1.6,
-    baseDamage: 22,
+    baseDamage: 25,
     baseArea: 120,
     maxLevel: 5,
     evolution: 'mistilteinn_roots',
@@ -587,7 +637,7 @@ const SPELL_DEFS = {
     icon: '🌲✨',
     description: 'TIẾN HÓA CẤP 1: Cây Thần Mistilteinn nở hoa trói toàn bộ chiến trường và hút sinh mệnh!',
     baseCooldown: 1.7,
-    baseDamage: 130,
+    baseDamage: 96,
     baseArea: 220,
     maxLevel: 1,
     evolution: 'yggdrasil_rebirth'
@@ -599,7 +649,7 @@ const SPELL_DEFS = {
     icon: '🌳👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cây Sinh Mệnh Yggdrasil khổng lồ bao bọc toàn thế giới, ban quyền bất tử hồi phục và nghiền nát quân địch!',
     baseCooldown: 1.39,
-    baseDamage: 427,
+    baseDamage: 220,
     baseArea: 380,
     maxLevel: 1
   },
@@ -612,7 +662,7 @@ const SPELL_DEFS = {
     icon: '💭🌸',
     description: 'Tỏa ra làn sương mộng ảo ru ngủ quái vật và làm biến dạng không gian gây sát thương ma thuật.',
     baseCooldown: 1.74,
-    baseDamage: 20,
+    baseDamage: 23,
     baseArea: 130,
     maxLevel: 5,
     evolution: 'glamour_world',
@@ -625,7 +675,7 @@ const SPELL_DEFS = {
     icon: '🌌💭',
     description: 'TIẾN HÓA CẤP 1: Nhấn chìm chiến trường vào chiều không gian giấc mơ, quái vật hóa thành bánh kẹo và nổ tung!',
     baseCooldown: 1.77,
-    baseDamage: 144,
+    baseDamage: 102,
     baseArea: 240,
     maxLevel: 1,
     evolution: 'dream_god_reality'
@@ -637,7 +687,7 @@ const SPELL_DEFS = {
     icon: '👑💭',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Biến mọi giấc mơ thành hiện thực, triệu hồi thiên thạch kẹo ngọt và sấm chớp mộng cảnh xóa sổ toàn bản đồ!',
     baseCooldown: 1.23,
-    baseDamage: 462,
+    baseDamage: 230,
     baseArea: 380,
     maxLevel: 1
   },
@@ -663,7 +713,7 @@ const SPELL_DEFS = {
     icon: '⚔️💨',
     description: 'TIẾN HÓA CẤP 1: Lưỡi hái thích nghi với thuộc tính của địch, chém xuyên giáp 100%!',
     baseCooldown: 1.29,
-    baseDamage: 149,
+    baseDamage: 110,
     baseArea: 180,
     maxLevel: 1,
     evolution: 'infinite_cleave'
@@ -675,7 +725,7 @@ const SPELL_DEFS = {
     icon: '⚡⚔️',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Chém đứt chính cả không gian và thời gian, 16 nhát chém xé rách toàn màn hình quét sạch mọi loại boss!',
     baseCooldown: 0.92,
-    baseDamage: 471,
+    baseDamage: 235,
     baseArea: 320,
     maxLevel: 1
   },
@@ -688,7 +738,7 @@ const SPELL_DEFS = {
     icon: '🎨🖌️',
     description: 'Phóng ra các vệt màu ma thuật kết hợp nguyên tố Đất, Nước, Lửa, Gió!',
     baseCooldown: 1.36,
-    baseDamage: 22,
+    baseDamage: 25,
     baseArea: 100,
     maxLevel: 5,
     evolution: 'masterpiece_beast',
@@ -701,7 +751,7 @@ const SPELL_DEFS = {
     icon: '🐉🎨',
     description: 'TIẾN HÓA CẤP 1: Vẽ nên thần thú khổng lồ phun bão nguyên tố 4 mùa quét sạch chiến trường!',
     baseCooldown: 1.59,
-    baseDamage: 140,
+    baseDamage: 98,
     baseArea: 210,
     maxLevel: 1,
     evolution: 'twilight_valhalla'
@@ -713,7 +763,7 @@ const SPELL_DEFS = {
     icon: '🌈👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Bức tranh kiệt tác thần thánh ban sức mạnh tuyệt đối, quái vật chạm vào lập tức tan thành sắc màu!',
     baseCooldown: 1.39,
-    baseDamage: 445,
+    baseDamage: 225,
     baseArea: 360,
     maxLevel: 1
   },
@@ -726,7 +776,7 @@ const SPELL_DEFS = {
     icon: '🐦⛓️',
     description: 'Hắc điểu bay lượn mổ mắt và bắn ra các đinh ma pháp phong ấn tốc độ di chuyển của địch.',
     baseCooldown: 1.31,
-    baseDamage: 21,
+    baseDamage: 24,
     baseArea: 105,
     maxLevel: 5,
     evolution: 'nero_binding',
@@ -739,7 +789,7 @@ const SPELL_DEFS = {
     icon: '⛓️⬛',
     description: 'TIẾN HÓA CẤP 1: Xích phong ấn cổ đại trói cứng các cụm quái vật và khóa toàn bộ chiêu thức của chúng!',
     baseCooldown: 1.37,
-    baseDamage: 130,
+    baseDamage: 96,
     baseArea: 190,
     maxLevel: 1,
     evolution: 'eternal_prison_coffin'
@@ -751,7 +801,7 @@ const SPELL_DEFS = {
     icon: '⚰️⬛',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Quan tài phong ấn vĩnh cửu nuốt chửng toàn bộ quái vật và boss, khóa chặt vĩnh viễn không thể cựa quậy!',
     baseCooldown: 1.23,
-    baseDamage: 462,
+    baseDamage: 230,
     baseArea: 350,
     maxLevel: 1
   },
@@ -778,7 +828,7 @@ const SPELL_DEFS = {
     icon: '🐉🔥',
     description: 'TIẾN HÓA CẤP 1: Rồng lửa xoắn ốc càn quét toàn màn hình để lại vệt nham thạch thiêu đốt vạn vật!',
     baseCooldown: 1.48,
-    baseDamage: 146,
+    baseDamage: 106,
     baseArea: 220,
     maxLevel: 1,
     evolution: 'flame_dragon_emperor'
@@ -790,7 +840,7 @@ const SPELL_DEFS = {
     icon: '👑🐉',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hóa thân Viêm Long Bá Đế, triệu hồi bão rồng lửa thiêu rụi toàn map với sát thương nổ long trời lở đất!',
     baseCooldown: 1.29,
-    baseDamage: 480,
+    baseDamage: 235,
     baseArea: 370,
     maxLevel: 1
   },
@@ -817,7 +867,7 @@ const SPELL_DEFS = {
     icon: '🌌✂️',
     description: 'TIẾN HÓA CẤP 1: Nhát chém không gian xóa sổ hoàn toàn quái vật và đạn ma pháp!',
     baseCooldown: 1.48,
-    baseDamage: 161,
+    baseDamage: 112,
     baseArea: 210,
     maxLevel: 1,
     evolution: 'absolute_void_annihilation'
@@ -829,7 +879,7 @@ const SPELL_DEFS = {
     icon: '🌌👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Tạo lỗ đen không gian tuyệt đối nuốt chửng toàn bộ bản đồ và xóa sạch kẻ địch khỏi thực tại!',
     baseCooldown: 1.39,
-    baseDamage: 499,
+    baseDamage: 240,
     baseArea: 380,
     maxLevel: 1
   },
@@ -842,7 +892,7 @@ const SPELL_DEFS = {
     icon: '💎🗡️',
     description: 'Phóng hàng loạt phi kiếm kim cương sắc nhọn ghim cứng kẻ địch.',
     baseCooldown: 1.28,
-    baseDamage: 23,
+    baseDamage: 25,
     baseSpeed: 490,
     pierce: 4,
     maxLevel: 5,
@@ -856,7 +906,7 @@ const SPELL_DEFS = {
     icon: '🔱💎',
     description: 'TIẾN HÓA CẤP 1: Đại thương kim cương kết hợp lửa địa ngục phát nổ diện rộng!',
     baseCooldown: 1.48,
-    baseDamage: 136,
+    baseDamage: 98,
     baseArea: 200,
     maxLevel: 1,
     evolution: 'crystal_colossus'
@@ -868,7 +918,7 @@ const SPELL_DEFS = {
     icon: '🗿💎',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Người khổng lồ khoáng thạch bất hoại giáng chùy xuống đất tạo động đất xóa sổ toàn bộ địch!',
     baseCooldown: 1.39,
-    baseDamage: 454,
+    baseDamage: 225,
     baseArea: 350,
     maxLevel: 1
   },
@@ -895,7 +945,7 @@ const SPELL_DEFS = {
     icon: '⚡🌑',
     description: 'TIẾN HÓA CẤP 1: Chùm tia ánh sáng đen hủy diệt quét xuyên suốt bản đồ thiêu rụi mọi hàng ngũ!',
     baseCooldown: 1.25,
-    baseDamage: 155,
+    baseDamage: 108,
     baseArea: 230,
     maxLevel: 1,
     evolution: 'demon_light_judgment'
@@ -907,7 +957,7 @@ const SPELL_DEFS = {
     icon: '🌑👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Hắc ma thần quang giáng 32 tia sấm sét đen từ thiên giới nghiền nát toàn bộ chiến trường!',
     baseCooldown: 1.18,
-    baseDamage: 489,
+    baseDamage: 235,
     baseArea: 390,
     maxLevel: 1
   },
@@ -920,7 +970,7 @@ const SPELL_DEFS = {
     icon: '🧪☠️',
     description: 'Tạo vùng sương mù độc dược ăn mòn liên tục kẻ địch và làm chậm 25% tốc độ chạy.',
     baseCooldown: 1.44,
-    baseDamage: 19,
+    baseDamage: 23,
     baseArea: 80,
     duration: 2.5,
     maxLevel: 5,
@@ -948,7 +998,7 @@ const SPELL_DEFS = {
     icon: '☠️👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Màn sương độc thần cổ đại bao phủ cả bản đồ, quái vật dính độc phát nổ lây lan sang kẻ địch khác!',
     baseCooldown: 1.39,
-    baseDamage: 367,
+    baseDamage: 185,
     baseArea: 280,
     maxLevel: 1
   },
@@ -961,7 +1011,7 @@ const SPELL_DEFS = {
     icon: '🪄✨',
     description: 'Bắn ra tinh thể lăng kính ma pháp đa sắc xuyên phá kẻ địch và phân tách thành nhiều tia nhỏ.',
     baseCooldown: 1.28,
-    baseDamage: 21,
+    baseDamage: 24,
     baseSpeed: 420,
     pierce: 3,
     maxLevel: 5,
@@ -989,7 +1039,7 @@ const SPELL_DEFS = {
     icon: '🪄👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Sóng ánh sáng cầu vồng chuyển hóa toàn màn hình biến đạn địch thành ngọc hồi máu và nghiền nát quân đoàn quái!',
     baseCooldown: 1.39,
-    baseDamage: 384,
+    baseDamage: 195,
     baseArea: 320,
     maxLevel: 1
   },
@@ -1030,7 +1080,7 @@ const SPELL_DEFS = {
     icon: '🏰👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Triệu hồi Cự Pháo Đài Hắc Bộc Ngưu dậm nát mặt đất tạo sóng xung kích diệt thần 360 độ!',
     baseCooldown: 1.34,
-    baseDamage: 427,
+    baseDamage: 220,
     baseArea: 300,
     maxLevel: 1
   },
@@ -1043,7 +1093,7 @@ const SPELL_DEFS = {
     icon: '🌸💥',
     description: 'Bắn ra chùm tia pháo hoa thực vật xuyên thấu hàng ngũ địch, có 20% hồi 2 HP khi trúng đích.',
     baseCooldown: 1.36,
-    baseDamage: 23,
+    baseDamage: 25,
     baseSpeed: 460,
     pierce: 4,
     maxLevel: 5,
@@ -1071,7 +1121,7 @@ const SPELL_DEFS = {
     icon: '🌸👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cây Thần Địa Đàng khai mở, liên tục phóng 16 chùm hoa pháo diệt thần và bất tử hồi máu 5% mỗi 2 giây!',
     baseCooldown: 1.39,
-    baseDamage: 374,
+    baseDamage: 190,
     baseArea: 320,
     maxLevel: 1
   },
@@ -1112,7 +1162,7 @@ const SPELL_DEFS = {
     icon: '🔩👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Cột giáo khoan thép khổng lồ từ thiên giới cắm thẳng xuống đất tạo sóng chấn động sắt thép toàn màn hình!',
     baseCooldown: 1.29,
-    baseDamage: 402,
+    baseDamage: 210,
     baseArea: 290,
     maxLevel: 1
   },
@@ -1151,7 +1201,7 @@ const SPELL_DEFS = {
     icon: '🗿👑',
     description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Đại địa nứt toác toàn màn hình, dung nham và đá tảng phun trào làm choáng và quét sạch quái vật!',
     baseCooldown: 1.48,
-    baseDamage: 411,
+    baseDamage: 215,
     baseArea: 310,
     maxLevel: 1
   },
@@ -1177,7 +1227,7 @@ const SPELL_DEFS = {
     icon: '⬛⚡',
     description: 'TIẾN HÓA CẤP 1: Thiết lập khối không gian đen tối áp chế tuyệt đối mọi sinh linh, phóng mưa gai xương Ma Quỷ 360 độ!',
     baseCooldown: 1.43,
-    baseDamage: 185,
+    baseDamage: 125,
     baseArea: 230,
     maxLevel: 1
   },
@@ -1203,7 +1253,7 @@ const SPELL_DEFS = {
     icon: '🩸😈',
     description: 'TIẾN HÓA CẤP 1: Triệu hồi Cự Đại Huyết Ma Thú càn quét bản đồ, kích nổ vòng hoa huyết nguyền rủa và hút máu cực đại!',
     baseCooldown: 1.69,
-    baseDamage: 170,
+    baseDamage: 120,
     baseArea: 220,
     maxLevel: 1
   },
@@ -1216,7 +1266,7 @@ const SPELL_DEFS = {
     icon: '🌌⚫',
     description: 'Giáng vùng trọng lực ngàn cân ép bẹp toàn bộ kẻ địch xuống đất, làm chậm và gây sát thương nghiền nát.',
     baseCooldown: 2.2,
-    baseDamage: 48,
+    baseDamage: 38,
     baseArea: 130,
     maxLevel: 5,
     evolution: 'singularity_black_hole',
@@ -1229,7 +1279,7 @@ const SPELL_DEFS = {
     icon: '⚫💥',
     description: 'TIẾN HÓA CẤP 1: Tạo ra điểm dị thường trọng lực nuốt chửng toàn bộ quái vật vào tâm rồi phát nổ hủy diệt không gian!',
     baseCooldown: 1.95,
-    baseDamage: 214,
+    baseDamage: 125,
     baseArea: 250,
     maxLevel: 1
   },
@@ -1255,7 +1305,7 @@ const SPELL_DEFS = {
     icon: '🔥🦅',
     description: 'TIẾN HÓA CẤP 1: Thần Điểu Phượng Hoàng rực lửa sải cánh bay lượn toàn chiến trường, để lại vệt lửa vĩnh cửu và hồi sinh mệnh!',
     baseCooldown: 1.3,
-    baseDamage: 162,
+    baseDamage: 115,
     baseArea: 220,
     maxLevel: 1
   },
@@ -1281,7 +1331,7 @@ const SPELL_DEFS = {
     icon: '🌈⚔️',
     description: 'TIẾN HÓA CẤP 1: Khai mở kho tàng ma pháp sao chép tối thượng, giải phóng liên tục 8 loại ma đạn nguyên tố bão táp 360 độ!',
     baseCooldown: 1.23,
-    baseDamage: 155,
+    baseDamage: 110,
     baseArea: 240,
     maxLevel: 1
   },
@@ -1294,7 +1344,7 @@ const SPELL_DEFS = {
     icon: '🐾🐺',
     description: 'Nhát vuốt ma thú hung bạo cào xé mục tiêu trong cự ly gần, gây choáng nhẹ và hất tung quái vật cản đường.',
     baseCooldown: 1.3,
-    baseDamage: 40,
+    baseDamage: 36,
     baseArea: 105,
     maxLevel: 5,
     evolution: 'mythic_beast_rampage',
@@ -1307,7 +1357,7 @@ const SPELL_DEFS = {
     icon: '🐺💥',
     description: 'TIẾN HÓA CẤP 1: Khai mở Con Mắt Thứ Ba, phóng ra các đợt cào xé ma khí khổng lồ đan chéo kèm sóng xung kích thú thần hủy diệt!',
     baseCooldown: 1.11,
-    baseDamage: 192,
+    baseDamage: 125,
     baseArea: 220,
     maxLevel: 1
   },
@@ -1458,6 +1508,28 @@ class SpellManager {
     // Update active projectiles
     for (let i = this.projectiles.length - 1; i >= 0; i--) {
       const proj = this.projectiles[i];
+
+      if (proj.isHoming) {
+        if (!proj.targetEnemy || proj.targetEnemy.hp <= 0 || proj.targetEnemy.isDead) {
+          const targets = this.getNearestEnemies(proj.x, proj.y, 1);
+          proj.targetEnemy = targets.length > 0 ? targets[0] : null;
+        }
+        if (proj.targetEnemy) {
+          const tdx = proj.targetEnemy.x - proj.x;
+          const tdy = proj.targetEnemy.y - proj.y;
+          const targetAngle = Math.atan2(tdy, tdx);
+          const currentAngle = Math.atan2(proj.vy, proj.vx);
+          let diff = targetAngle - currentAngle;
+          while (diff < -Math.PI) diff += Math.PI * 2;
+          while (diff > Math.PI) diff -= Math.PI * 2;
+          const turnRate = (proj.turnSpeed || (proj.isSuperEvo ? 14 : 10)) * dt;
+          const newAngle = currentAngle + Math.sign(diff) * Math.min(Math.abs(diff), turnRate);
+          const curSpeed = Math.hypot(proj.vx, proj.vy) || 450;
+          proj.vx = Math.cos(newAngle) * curSpeed;
+          proj.vy = Math.sin(newAngle) * curSpeed;
+        }
+      }
+
       proj.x += proj.vx * dt;
       proj.y += proj.vy * dt;
       proj.life -= dt;
@@ -1654,7 +1726,7 @@ class SpellManager {
     const def = SPELL_DEFS[spellId];
     if (!def) return;
 
-    const levelScale = 1 + (p.level - 1) * 0.025;
+    const levelScale = 1 + (p.level - 1) * 0.012;
     const dmgMult = (1 + p.damageBonus) * (1 + (level - 1) * 0.18) * levelScale;
     const areaMult = (1 + p.areaBonus) * (1 + (level - 1) * 0.12);
     const damage = Math.round(def.baseDamage * dmgMult);
@@ -1754,6 +1826,153 @@ class SpellManager {
           });
         }
         this.playSound('windBlade');
+        break;
+      }
+
+      case 'sylph_spirits': {
+        const spiritCount = 1 + level + (p.charId === 'sylph' ? 1 : 0);
+        const orbitR = 52 + level * 3;
+        const isBlade = level >= 5;
+        const isFamiliar = level >= 4;
+        const scaledSpeed = def.baseSpeed * (1 + (level >= 3 ? 0.2 : 0) + (isBlade ? 0.2 : 0));
+        const scaledDamage = Math.round(damage * (1 + (level - 1) * 0.25));
+        const pierce = isBlade ? 2 : (isFamiliar ? 1 : 0);
+        const nearestEnemies = this.getNearestEnemies(p.x, p.y, spiritCount);
+
+        for (let i = 0; i < spiritCount; i++) {
+          const orbitAngle = (this.game.tick * 3.2) + (i * Math.PI * 2) / spiritCount;
+          const sx = p.x + Math.cos(orbitAngle) * orbitR;
+          const sy = p.y + Math.sin(orbitAngle) * orbitR;
+
+          let aimAngle = targetAngle;
+          let target = null;
+          if (nearestEnemies.length > 0) {
+            target = nearestEnemies[i % nearestEnemies.length];
+            aimAngle = Math.atan2(target.y - sy, target.x - sx);
+          } else {
+            aimAngle = targetAngle + (i - (spiritCount - 1) / 2) * 0.22;
+          }
+
+          setTimeout(() => {
+            if (!this.game || this.game.state !== 'PLAYING') return;
+            this.projectiles.push({
+              type: 'sylph_spirit_bolt',
+              x: sx,
+              y: sy,
+              vx: Math.cos(aimAngle) * scaledSpeed,
+              vy: Math.sin(aimAngle) * scaledSpeed,
+              radius: (12 + (isFamiliar ? 3 : 0)) * areaMult,
+              damage: scaledDamage,
+              isCrit: isCrit,
+              color: isBlade ? '#34d399' : '#10b981',
+              pierce: pierce,
+              life: 1.8,
+              isHoming: true,
+              isBlade: isBlade,
+              isFamiliar: isFamiliar,
+              turnSpeed: isBlade ? 15 : (isFamiliar ? 12 : 9),
+              targetEnemy: target
+            });
+            this.spawnImpactParticles(sx, sy, isBlade ? '#fef08a' : '#6ee7b7', 3);
+          }, i * 38);
+        }
+        this.playSound(isBlade ? 'slash' : 'windBlade');
+        break;
+      }
+
+      case 'sylph_tempest_domain': {
+        const spiritCount = 8;
+        const orbitR = 72;
+        const nearestEnemies = this.getNearestEnemies(p.x, p.y, spiritCount);
+        this.spawnShockwave(p.x, p.y, '#34d399', 280 * areaMult, 0.35);
+
+        for (let i = 0; i < spiritCount; i++) {
+          const orbitAngle = (this.game.tick * 4.4) + (i * Math.PI * 2) / spiritCount;
+          const sx = p.x + Math.cos(orbitAngle) * orbitR;
+          const sy = p.y + Math.sin(orbitAngle) * orbitR;
+
+          let target = nearestEnemies[i % (nearestEnemies.length || 1)] || null;
+          let aimAngle = target ? Math.atan2(target.y - sy, target.x - sx) : targetAngle + (i - 3.5) * 0.25;
+
+          setTimeout(() => {
+            if (!this.game || this.game.state !== 'PLAYING') return;
+            this.projectiles.push({
+              type: 'sylph_spirit_bolt',
+              x: sx,
+              y: sy,
+              vx: Math.cos(aimAngle) * def.baseSpeed,
+              vy: Math.sin(aimAngle) * def.baseSpeed,
+              radius: 18 * areaMult,
+              damage: damage,
+              isCrit: isCrit,
+              color: '#34d399',
+              pierce: 5,
+              life: 2.0,
+              isHoming: true,
+              isBlade: true,
+              isTelekineticSword: true,
+              turnSpeed: 17,
+              targetEnemy: target,
+              isEvo: true
+            });
+            this.spawnImpactParticles(sx, sy, '#34d399', 4);
+          }, i * 22);
+        }
+        this.playSound('windBlade');
+        break;
+      }
+
+      case 'spirit_storm_empress': {
+        this.game.shakeScreen(15, 0.45);
+        this.spawnShockwave(p.x, p.y, '#10b981', 560, 0.5);
+        this.spawnShockwave(p.x, p.y, '#fef08a', 400, 0.4);
+
+        const spiritCount = 16;
+        const orbitR = 95;
+
+        this.aoeZones.push({
+          x: p.x,
+          y: p.y,
+          radius: 240 * areaMult,
+          damage: Math.round(damage * 0.35),
+          interval: 0.11,
+          tickTimer: 0,
+          life: 3.0,
+          color: '#10b981',
+          pull: true,
+          isEmpressStorm: true
+        });
+
+        for (let i = 0; i < 16; i++) {
+          const orbitAngle = (this.game.tick * 5.2) + (i * Math.PI * 2) / 16;
+          const sx = p.x + Math.cos(orbitAngle) * orbitR;
+          const sy = p.y + Math.sin(orbitAngle) * orbitR;
+          const aimAngle = (i * Math.PI * 2) / 16 + targetAngle;
+
+          setTimeout(() => {
+            if (!this.game || this.game.state !== 'PLAYING') return;
+            this.projectiles.push({
+              type: 'sylph_spirit_bolt',
+              x: sx,
+              y: sy,
+              vx: Math.cos(aimAngle) * def.baseSpeed,
+              vy: Math.sin(aimAngle) * def.baseSpeed,
+              radius: 24 * areaMult,
+              damage: damage,
+              isCrit: isCrit,
+              color: '#6ee7b7',
+              pierce: 99,
+              life: 2.4,
+              isHoming: true,
+              isBlade: true,
+              isTelekineticSword: true,
+              turnSpeed: 20,
+              isSuperEvo: true
+            });
+            this.spawnImpactParticles(sx, sy, '#fde047', 6);
+          }, i * 18);
+        }
+        this.playSound('dimensionSlash');
         break;
       }
 
@@ -3545,13 +3764,37 @@ class SpellManager {
     }
 
     if (actualCrit) {
-      const critMult = Math.min(2.0, Math.max(1.0, 1.0 + ((p && p.critDmgBonus) || 0) * 0.5));
+      const critMult = Math.min(3.0, 1.75 + ((p && p.critDmgBonus) || 0));
       amount = Math.round(amount * critMult);
     }
 
     if (enemy.isShielding) {
       amount = Math.max(1, Math.round(amount * 0.25));
     }
+
+    // Boss Phase 2 Enrage & Enrage Shield
+    if (enemy.enrageShieldTimer > 0) {
+      amount = Math.max(1, Math.round(amount * 0.10));
+      if (Math.random() < 0.4) {
+        this.floatingTexts.push({
+          x: enemy.x + (Math.random() - 0.5) * 30,
+          y: enemy.y - 35,
+          text: 'BẤT TỬ CUỒNG NỘ!',
+          color: '#facc15',
+          size: 16,
+          life: 0.65
+        });
+      }
+    } else if (enemy.isBoss && enemy.isEnraged) {
+      // Vỏ Bọc Ma Thần: giảm 25% sát thương nhận vào
+      amount = Math.max(1, Math.round(amount * 0.75));
+    }
+
+    // Boss Damage Reduction & Anti-oneshot Cap: đòn đánh đơn lẻ không thể gây quá 6% maxHp của Boss
+    if (enemy.isBoss && enemy.maxHp > 0) {
+      amount = Math.min(amount, Math.ceil(enemy.maxHp * 0.06));
+    }
+
     enemy.hp -= amount;
     enemy.hitFlashTimer = 0.08;
     this.playSound('hit');
@@ -3634,6 +3877,9 @@ class SpellManager {
 
     // 3. Lightning Chains (Lôi ma pháp liên hoàn)
     this.drawLightningChains(ctx, tick);
+
+    // 3.5. Sylph Orbiting Spirits (Tinh linh hộ vệ bay xung quanh người chơi)
+    this.drawSylphOrbitingSpirits(ctx, tick);
 
     // 4. Projectiles (Đạn ma pháp & Tinh linh có vệt sáng)
     this.drawProjectiles(ctx, tick);
@@ -3824,6 +4070,168 @@ class SpellManager {
   }
 
   // -------------------------------------------------------------------------
+  // 2.5. SYLPH ORBITING SPIRITS (Tiểu Tinh Linh Bão Tố Xoay Quanh Pháp Sư)
+  // -------------------------------------------------------------------------
+  drawSylphOrbitingSpirits(ctx, tick) {
+    const p = this.game.player;
+    if (!p || p.hp <= 0) return;
+
+    let spiritCount = 0;
+    let orbitR = 54;
+    let tier = 1;
+    let mainColor = '#10b981';
+    let haloColor = '#6ee7b7';
+    let isBladeMode = false;
+
+    if (p.weapons && p.weapons['spirit_storm_empress']) {
+      spiritCount = 16;
+      orbitR = 84;
+      tier = 3;
+      mainColor = '#6ee7b7';
+      haloColor = '#fef08a';
+      isBladeMode = true;
+    } else if (p.weapons && p.weapons['sylph_tempest_domain']) {
+      spiritCount = 8;
+      orbitR = 70;
+      tier = 2;
+      mainColor = '#34d399';
+      haloColor = '#a7f3d0';
+      isBladeMode = true;
+    } else if (p.weapons && p.weapons['sylph_spirits']) {
+      const item = p.weapons['sylph_spirits'];
+      const lv = item.level || 1;
+      spiritCount = 1 + lv + (p.charId === 'sylph' ? 1 : 0);
+      orbitR = 50 + lv * 2.8;
+      tier = 1;
+      mainColor = lv >= 4 ? '#34d399' : '#10b981';
+      haloColor = lv >= 5 ? '#fef08a' : '#6ee7b7';
+      isBladeMode = lv >= 5;
+    } else if (p.charId === 'sylph') {
+      spiritCount = 2;
+      orbitR = 48;
+      tier = 1;
+      mainColor = '#10b981';
+      haloColor = '#6ee7b7';
+    }
+
+    if (spiritCount <= 0) return;
+
+    const rotSpeed = tier === 3 ? 4.2 : (tier === 2 ? 3.4 : 2.5);
+
+    // Subtle wind magic circle under spirits
+    ctx.save();
+    ctx.globalAlpha = 0.24;
+    ctx.strokeStyle = haloColor;
+    ctx.lineWidth = 1.4;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y + 4, orbitR, orbitR * 0.72, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    for (let i = 0; i < spiritCount; i++) {
+      const angle = (tick * rotSpeed) + (i * Math.PI * 2) / spiritCount;
+      const sx = p.x + Math.cos(angle) * orbitR;
+      const sy = p.y + Math.sin(angle) * (orbitR * 0.72) + Math.sin(tick * 6 + i) * 3;
+
+      ctx.save();
+      ctx.translate(sx, sy);
+
+      // Trailing spark behind spirit/blade
+      const tAngle = angle - 0.22;
+      const tx = p.x + Math.cos(tAngle) * orbitR;
+      const ty = p.y + Math.sin(tAngle) * (orbitR * 0.72);
+      ctx.save();
+      ctx.globalAlpha = 0.35;
+      ctx.fillStyle = haloColor;
+      ctx.beginPath();
+      ctx.arc(tx - sx, ty - sy, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      if (isBladeMode) {
+        // Orbiting Flying Sword / Telekinetic Sword (Ngự Kiếm Linh Hồn)
+        ctx.rotate(angle + Math.PI / 2); // Point along orbit ring
+        const bladeLen = tier === 3 ? 24 : (tier === 2 ? 20 : 16);
+        const bladeW = tier === 3 ? 5.5 : 4.5;
+
+        // Glowing sword aura
+        ctx.globalAlpha = 0.45;
+        ctx.fillStyle = haloColor;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, bladeLen * 0.7, bladeW * 1.8, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Sharp double-edged blade
+        ctx.globalAlpha = 0.95;
+        ctx.fillStyle = mainColor;
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(bladeLen, 0); // Tip
+        ctx.lineTo(-bladeLen * 0.55, -bladeW);
+        ctx.lineTo(-bladeLen * 0.55, bladeW);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Crossguard
+        ctx.fillStyle = haloColor;
+        ctx.fillRect(-bladeLen * 0.6, -bladeW * 1.5, 3.2, bladeW * 3.0);
+
+        // Hilt & Pommel
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(-bladeLen * 0.9, -1.5, bladeLen * 0.3, 3);
+        ctx.beginPath();
+        ctx.arc(-bladeLen * 0.92, 0, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Glowing white blade spine
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.0;
+        ctx.beginPath();
+        ctx.moveTo(bladeLen * 0.85, 0);
+        ctx.lineTo(-bladeLen * 0.45, 0);
+        ctx.stroke();
+      } else {
+        // Spirit / Familiar Fairy Orb
+        const wingW = 7 + (tier > 1 ? 2 : 0);
+        const wingFlutter = Math.sin(tick * 16 + i * 2.5) * 2.5;
+
+        ctx.globalAlpha = 0.85;
+        ctx.fillStyle = haloColor;
+        // Left Wing
+        ctx.beginPath();
+        ctx.ellipse(-4, -4, wingW, 3 + wingFlutter * 0.4, -0.6, 0, Math.PI * 2);
+        ctx.fill();
+        // Right Wing
+        ctx.beginPath();
+        ctx.ellipse(4, -4, wingW, 3 + wingFlutter * 0.4, 0.6, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Spirit Body / Core
+        const radGrad = ctx.createRadialGradient(0, 0, 1, 0, 0, 6 + tier);
+        radGrad.addColorStop(0, '#ffffff');
+        radGrad.addColorStop(0.4, mainColor);
+        radGrad.addColorStop(1, 'rgba(16, 185, 129, 0)');
+        ctx.fillStyle = radGrad;
+        ctx.beginPath();
+        ctx.arc(0, 0, 6 + tier, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Center bright white spark
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(0, 0, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // 3. PROJECTILES (Đạn Ma Pháp, Tinh Linh & Phi Kiếm Có Vệt Sáng)
   // -------------------------------------------------------------------------
   drawProjectiles(ctx, tick) {
@@ -3853,6 +4261,103 @@ class SpellManager {
       }
 
       switch (proj.type) {
+        // SPIRIT BOLT (Tiễn Tinh Linh & Phi Kiếm Ngự Kiếm - Magic Survival Spirit & Telekinetic Sword)
+        case 'sylph_spirit_bolt': {
+          const isSuper = proj.isSuperEvo;
+          const isEvo = proj.isEvo || isSuper;
+          const isBlade = proj.isBlade || proj.isTelekineticSword || isEvo;
+
+          if (isBlade) {
+            // TELEKINETIC FLYING SWORD (Ngự Kiếm Phi Hành - Magic Survival Fusion)
+            const swordLen = r * 2.2;
+            const swordW = r * 0.55;
+
+            // Radiant Sword Trail Glow
+            ctx.fillStyle = isSuper ? '#fef08a' : (isEvo ? '#a7f3d0' : '#6ee7b7');
+            ctx.globalAlpha = 0.5;
+            ctx.beginPath();
+            ctx.ellipse(0, 0, swordLen * 0.7, swordW * 1.8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Anime Sword Blade
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = isSuper ? '#34d399' : (isEvo ? '#10b981' : '#059669');
+            ctx.strokeStyle = isSuper ? '#ffffff' : '#ecfdf5';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.moveTo(swordLen, 0); // Sharp Diamond Tip
+            ctx.lineTo(-swordLen * 0.55, -swordW);
+            ctx.lineTo(-swordLen * 0.55, swordW);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Sword Crossguard
+            ctx.fillStyle = isSuper ? '#fde047' : '#34d399';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.rect(-swordLen * 0.62, -swordW * 1.6, 3.5, swordW * 3.2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Sword Hilt & Pommel Gem
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(-swordLen * 0.95, -1.8, swordLen * 0.33, 3.6);
+            ctx.beginPath();
+            ctx.arc(-swordLen * 0.98, 0, 2.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Luminous White Center Spine
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.moveTo(swordLen * 0.85, 0);
+            ctx.lineTo(-swordLen * 0.45, 0);
+            ctx.stroke();
+
+            if (isSuper) {
+              // Divine Wings & Aura on the Flying Sword
+              ctx.strokeStyle = '#fde047';
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.moveTo(0, -swordW * 1.8);
+              ctx.lineTo(swordLen * 0.4, 0);
+              ctx.lineTo(0, swordW * 1.8);
+              ctx.stroke();
+            }
+          } else {
+            // BASE SPIRIT ARROW / DART (Level 1-4)
+            const wingFlick = Math.sin(tick * 22 + proj.x * 0.05) * 2;
+            ctx.fillStyle = '#6ee7b7';
+            ctx.globalAlpha = 0.75;
+            ctx.beginPath();
+            ctx.ellipse(-r * 0.4, -r * 0.7, r * 0.7, r * 0.35 + wingFlick * 0.3, -0.5, 0, Math.PI * 2);
+            ctx.ellipse(-r * 0.4, r * 0.7, r * 0.7, r * 0.35 + wingFlick * 0.3, 0.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+
+            // Sharp Crescent Spirit Needle
+            ctx.fillStyle = '#10b981';
+            ctx.strokeStyle = '#ecfdf5';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.moveTo(r * 2.0, 0);
+            ctx.bezierCurveTo(r * 0.6, -r * 0.8, -r * 0.6, -r * 0.6, -r * 1.3, 0);
+            ctx.bezierCurveTo(-r * 0.6, r * 0.6, r * 0.6, r * 0.8, r * 2.0, 0);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Luminous White Core
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(r * 0.3, 0, r * 0.42, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          break;
+        }
+
         // A. WIND SCYTHE (Lưỡi Dao Gió Cực Sắc Yuno)
         case 'wind_scythe': {
           ctx.fillStyle = '#34d399';

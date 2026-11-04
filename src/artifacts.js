@@ -9,9 +9,9 @@ const ARTIFACT_DEFS = {
     icon: '👑',
     tagline: 'Thời Gian Thần Khí Tối Cao',
     description: 'Bảo vật tối thượng chứa Thời Gian Ma Pháp của Đệ Nhị Thập Bát Đại Ma Pháp Đế Julius Novachrono.',
-    stats: { damageBonus: 0.08, cooldownReduction: 0.06, expBonus: 0.10 },
+    stats: { damageBonus: 0.05, cooldownReduction: 0.04, expBonus: 0.07 },
     skillName: 'Ngưng Đọng Thời Không',
-    skillDesc: 'Cứ mỗi 45 giây, làm đóng băng toàn bộ quái vật trên bản đồ trong 3.5 giây!',
+    skillDesc: 'Cứ mỗi 45 giây, làm đóng băng toàn bộ quái vật (Boss bị làm chậm 50%) trong 3.5 giây!',
     cooldown: 45
   },
   demon_blade_licht: {
@@ -21,7 +21,7 @@ const ARTIFACT_DEFS = {
     icon: '🗡️✨',
     tagline: 'Thánh Kiếm Tộc Yêu Tinh',
     description: 'Mảnh vỡ thanh kiếm thần của thủ lĩnh tộc Yêu Tinh Licht, chứa linh lực kiếm thuật vô song.',
-    stats: { critChance: 0.06, critDmgBonus: 0.15, damageBonus: 0.08 },
+    stats: { critChance: 0.04, critDmgBonus: 0.10, damageBonus: 0.05 },
     skillName: 'Kiếm Khí Cổ Đại',
     skillDesc: 'Đòn đánh có 35% cơ hội phóng ra 6 luồng kiếm khí ánh sáng tự truy sát kẻ địch!',
     cooldown: 1.5
@@ -33,7 +33,7 @@ const ARTIFACT_DEFS = {
     icon: '🩸😈',
     tagline: 'Trái Tim Tối Cao Ma Vương',
     description: 'Trái tim ác quỷ tối cao của Ma Vương Minh Giới Lucifero, khao khát nuốt chửng sinh mệnh.',
-    stats: { maxHp: 60, damageBonus: 0.10, areaBonus: 0.10 },
+    stats: { maxHp: 42, damageBonus: 0.07, areaBonus: 0.07 },
     skillName: 'Hấp Huyết Ma Trận',
     skillDesc: 'Tiêu diệt quái hồi 1 HP. Khi hạ Boss hồi ngay 25% Máu và cuồng bạo +30% Tốc Đánh trong 10s!',
     cooldown: 0
@@ -45,7 +45,7 @@ const ARTIFACT_DEFS = {
     icon: '⏳',
     tagline: 'Bảo Vật Nghịch Chuyển Tử Sinh',
     description: 'Tạo vật thời gian cổ xưa có thể đảo ngược dòng chảy sinh tử và tái sinh linh hồn.',
-    stats: { cooldownReduction: 0.08, maxHp: 40, speed: 0.06 },
+    stats: { cooldownReduction: 0.05, maxHp: 28, speed: 0.04 },
     skillName: 'Nghịch Đảo Thời Gian',
     skillDesc: 'Khi nhận sát thương chí tử, thoát chết và xóa sạch đạn xung quanh, hồi phục 50% HP (1 lần/trận).',
     cooldown: 99999
@@ -186,14 +186,22 @@ class ArtifactSystem {
     this.isKiCharged = false;
   }
 
+  reset() {
+    this.collection = {};
+    this.equipped = [null, null, null];
+    this.timers = {};
+    this.reviveUsed = false;
+    this.stillTimer = 0;
+    this.isKiCharged = false;
+  }
+
   loadData(savedData) {
-    if (savedData && savedData.artifacts) {
+    this.reset();
+    if (savedData && savedData.artifacts && typeof savedData.artifacts === 'object') {
       this.collection = Object.assign({}, savedData.artifacts);
     }
     if (savedData && Array.isArray(savedData.equippedArtifacts)) {
       this.equipped = savedData.equippedArtifacts.slice(0, 3);
-    } else {
-      this.equipped = [null, null, null];
     }
     // Clean up invalid IDs
     this.equipped = this.equipped.map(id => (id && ARTIFACT_DEFS[id]) ? id : null);
@@ -459,10 +467,15 @@ class ArtifactSystem {
     this.game.spells.floatingTexts.push({ x: this.game.player.x, y: this.game.player.y - 35, text: '👑 NGƯNG ĐỌNG THỜI GIAN!', color: '#38bdf8', size: 22, life: 1.2 });
     this.game.spells.spawnShockwave(this.game.player.x, this.game.player.y, '#38bdf8', 600, 0.5);
 
-    // Freeze all regular enemies and projectiles
+    // Freeze all regular enemies and projectiles (Bosses are slowed by 50% instead of frozen)
     for (const e of this.game.enemies) {
-      e.speedMod = 0;
-      e.speedModTimer = duration;
+      if (e.isBoss) {
+        e.speedMod = 0.5;
+        e.speedModTimer = duration;
+      } else {
+        e.speedMod = 0;
+        e.speedModTimer = duration;
+      }
     }
     if (this.game.enemyManager && this.game.enemyManager.enemyProjectiles) {
       this.game.enemyManager.enemyProjectiles = [];
@@ -501,8 +514,13 @@ class ArtifactSystem {
 
     for (const e of this.game.enemies) {
       if (Math.hypot(e.x - p.x, e.y - p.y) < 240) {
-        e.speedMod = 0;
-        e.speedModTimer = 2.5;
+        if (e.isBoss) {
+          e.speedMod = 0.5;
+          e.speedModTimer = 2.5;
+        } else {
+          e.speedMod = 0;
+          e.speedModTimer = 2.5;
+        }
         this.game.spells.applyDamage(e, 160, false, '#059669');
       }
     }

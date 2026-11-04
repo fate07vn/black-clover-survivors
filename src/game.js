@@ -101,6 +101,20 @@ const CHARACTERS = {
     specialTrait: 'Tia thần phạt ma quang hắc ám xuyên thủng mọi chướng ngại vật; +25% Tốc độ di chuyển!',
     unlocked: false
   },
+  sylph: {
+    id: 'sylph',
+    name: 'Sylph (Đại Tinh Linh Bão Tố)',
+    title: 'Đại Tinh Linh Phong Ma Pháp',
+    rarity: 'legendary',
+    squad: 'Tinh Linh Thánh Khải',
+    magic: 'Phong Tinh Linh Ma Pháp',
+    baseHp: 160,
+    baseSpeed: 245,
+    baseArmor: 0.12,
+    startingWeapon: 'sylph_spirits',
+    specialTrait: '+25% Tốc chạy & Triệu hồi bầy tiểu Tinh Linh bay quanh tự động bắn Tinh Linh Tiễn (chiêu Spirit)! Kháng hoàn toàn làm chậm!',
+    unlocked: false
+  },
 
   // ✨ SỬ THI (EPIC) - 4 SAO
   yami: {
@@ -668,6 +682,7 @@ class Game {
     this.worldWidth = 4000;
     this.worldHeight = 4000;
     this.camera = { x: 0, y: 0 };
+    this.mapZoom = 1.0;
     this.shake = { intensity: 0, duration: 0 };
     this.screenShakeEnabled = true;
     this.gameSpeed = 1.0;
@@ -761,6 +776,7 @@ class Game {
       if (s) {
         const data = JSON.parse(s);
         if (data.gameSpeed !== undefined) this.gameSpeed = data.gameSpeed;
+        if (data.mapZoom !== undefined) this.mapZoom = Math.max(0.65, Math.min(1.35, parseFloat(data.mapZoom) || 1.0));
         if (data.screenShakeEnabled !== undefined) this.screenShakeEnabled = data.screenShakeEnabled;
         if (data.sfxVolume !== undefined && window.soundEngine && window.soundEngine.setSFXVolume) {
           window.soundEngine.setSFXVolume(data.sfxVolume);
@@ -776,6 +792,7 @@ class Game {
     try {
       const data = {
         gameSpeed: this.gameSpeed || 1.0,
+        mapZoom: this.mapZoom || 1.0,
         screenShakeEnabled: this.screenShakeEnabled !== false,
         sfxVolume: window.soundEngine ? window.soundEngine.sfxVolume : 0.8,
         bgmVolume: window.soundEngine ? window.soundEngine.bgmVolume : 0.6
@@ -969,18 +986,20 @@ class Game {
   }
 
   getSaveStorageKey() {
-    if (typeof window !== 'undefined' && window.authManager && window.authManager.isLoggedIn() && window.authManager.currentUser) {
-      return 'BC_USER_DATA_' + window.authManager.currentUser.username.toLowerCase();
+    if (typeof window !== 'undefined' && window.authManager) {
+      if (window.authManager.isLoggedIn() && window.authManager.currentUser) {
+        return 'BC_USER_DATA_' + window.authManager.currentUser.username.toLowerCase();
+      }
+      return 'BC_GUEST_DATA';
     }
-    // Fallback directly from localStorage so that reloading the page never loses user key
+    // Fallback directly from localStorage only when active token and user exist
     try {
+      const token = localStorage.getItem('BC_AUTH_TOKEN');
       const savedUser = localStorage.getItem('BC_AUTH_USER');
-      if (savedUser) {
+      if (token && savedUser) {
         const u = JSON.parse(savedUser);
         if (u && u.username) return 'BC_USER_DATA_' + u.username.toLowerCase();
       }
-      const lastUser = localStorage.getItem('BC_LAST_USER');
-      if (lastUser) return 'BC_USER_DATA_' + lastUser.toLowerCase();
     } catch (e) {}
     return 'BC_GUEST_DATA';
   }
@@ -1012,7 +1031,23 @@ class Game {
         if (data.characterUpgrades) this.characterUpgrades = data.characterUpgrades;
         if (data.bannerPity) this.bannerPity = data.bannerPity;
         if (data.pity1000Counter !== undefined) this.pity1000Counter = data.pity1000Counter;
-        if (data.artifactsSystem && this.artifacts) this.artifacts.loadData(data.artifactsSystem);
+
+        if (storageKey === 'BC_GUEST_DATA') {
+          // Auto-clean contaminated artifacts from previous logout bug on a fresh guest
+          if (data.artifactsSystem && data.artifactsSystem.artifacts && Object.keys(data.artifactsSystem.artifacts).length > 0) {
+            const isFreshGuest = (!data.unlocked || data.unlocked.length <= 1) && (!data.currency || (data.currency.coins === 0 && data.currency.tickets === 0));
+            if (isFreshGuest) {
+              data.artifactsSystem = { artifacts: {}, equippedArtifacts: [null, null, null] };
+            }
+          }
+        }
+        if (this.artifacts) {
+          if (data.artifactsSystem) {
+            this.artifacts.loadData(data.artifactsSystem);
+          } else {
+            this.artifacts.reset();
+          }
+        }
       } else {
         // Fresh guest or new user clean slate
         this.currency = {
@@ -1028,10 +1063,6 @@ class Game {
             const u = JSON.parse(su);
             if (u && u.username) defaultName = u.username;
           }
-          if (defaultName === 'Khách (Tập Sự)') {
-            const lu = localStorage.getItem('BC_LAST_USER');
-            if (lu) defaultName = lu;
-          }
         } catch (e) {}
         this.playerName = (typeof window !== 'undefined' && window.authManager && window.authManager.isLoggedIn() && window.authManager.currentUser)
           ? window.authManager.currentUser.username
@@ -1040,6 +1071,9 @@ class Game {
         Object.keys(CHARACTERS).forEach(id => {
           CHARACTERS[id].unlocked = (id === 'asta');
         });
+        if (this.artifacts) {
+          this.artifacts.reset();
+        }
       }
     } catch (e) {
       console.warn('Lỗi khi nạp dữ liệu lưu game:', e);
@@ -1078,8 +1112,12 @@ class Game {
     this.characterUpgrades = {};
     this.bannerPity = {};
     if (this.artifacts) {
-      this.artifacts.owned = {};
-      this.artifacts.equipped = [null, null, null];
+      if (typeof this.artifacts.reset === 'function') {
+        this.artifacts.reset();
+      } else {
+        this.artifacts.collection = {};
+        this.artifacts.equipped = [null, null, null];
+      }
     }
     try {
       localStorage.setItem('BC_GUEST_DATA', JSON.stringify(this.exportSaveData()));
@@ -1453,7 +1491,24 @@ class Game {
         e.preventDefault();
         this.playerDash();
       }
+
+      // Quick Zoom Hotkeys: [ or - to zoom out, ] or + to zoom in
+      if (e.key === '[' || e.key === '-') {
+        if (typeof adjustMapZoomStep === 'function') adjustMapZoomStep(-0.05);
+      } else if (e.key === ']' || e.key === '=' || e.key === '+') {
+        if (typeof adjustMapZoomStep === 'function') adjustMapZoomStep(0.05);
+      }
     });
+
+    window.addEventListener('wheel', (e) => {
+      if (this.state !== 'PLAYING') return;
+      if (e.target && e.target.closest && e.target.closest('.overlay, .results-modal, .modal-overlay-custom, .hud-top, #hud, #joystickZone, .settings-modal-box')) return;
+      const delta = e.deltaY < 0 ? 0.05 : -0.05;
+      const newZoom = Math.max(0.65, Math.min(1.35, (this.mapZoom || 1.0) + delta));
+      this.mapZoom = Math.round(newZoom * 100) / 100;
+      this.saveSettings();
+      if (typeof updateMapZoomUI === 'function') updateMapZoomUI(this.mapZoom);
+    }, { passive: true });
 
     window.addEventListener('keyup', (e) => {
       if (e.key) this.keys[e.key.toLowerCase()] = false;
@@ -1477,8 +1532,9 @@ class Game {
       // Do not process enemy targeting if clicking interactive HUD or overlay elements
       if (e.target.closest('button, .hud-btn, .dash-btn, .slot-icon, .overlay, #joystickZone, input, select')) return;
 
-      const worldX = e.clientX + this.camera.x;
-      const worldY = e.clientY + this.camera.y;
+      const zoom = this.mapZoom || 1.0;
+      const worldX = (e.clientX / zoom) + this.camera.x;
+      const worldY = (e.clientY / zoom) + this.camera.y;
 
       let clicked = null;
       let closest = 50;
@@ -1604,13 +1660,13 @@ class Game {
       maxHp: char.baseHp + bonusHp,
       hp: char.baseHp + bonusHp,
       hpRegen: regenHp,
-      speed: char.baseSpeed * bonusSpd,
+      speed: char.baseSpeed * (char.id === 'sylph' ? 1.25 : 1.0) * bonusSpd,
       armor: Math.min(0.70, (char.baseArmor || 0) + bonusArmor),
       damageBonus: bonusDmg,
       areaBonus: (char.id === 'noelle' ? 0.3 : 0),
       critChance: (char.id === 'yami' ? 0.15 : (char.id === 'nacht' ? 0.12 : 0)) + bonusCrit,
       critDmgBonus: (up.crit || 0) * 0.02,
-      cooldownReduction: (char.id === 'luck' ? 0.15 : (char.id === 'licht' ? 0.12 : 0)) + bonusCd,
+      cooldownReduction: (char.id === 'luck' ? 0.15 : (char.id === 'licht' || char.id === 'sylph' ? 0.12 : 0)) + bonusCd,
       pickupRadius: 80 + bonusMagnet,
       expBonus: (char.id === 'julius' ? 0.3 : 0) + bonusExp,
       rerollsLeft: up.reroll || 0,
@@ -1620,6 +1676,7 @@ class Game {
       isDashing: false,
       dashDuration: 0.24,
       dashDurationTimer: 0,
+      gravitySlowTimer: 0,
 
       isDevilMode: char.id === 'black_asta',
       isSpiritMode: false,
@@ -1676,6 +1733,9 @@ class Game {
     window.focus();
 
     this.updateHUD();
+    if (typeof updateMapZoomUI === 'function') {
+      updateMapZoomUI(this.mapZoom || 1.0);
+    }
   }
 
   playerDash() {
@@ -1947,7 +2007,7 @@ class Game {
                 </div>
                 <div class="stat-gear-desc">${def.description || ''}</div>
                 <div style="font-size:11px; color:#34d399; margin-top:4px; font-weight:700;">
-                  ✨ Tích lũy hiện tại: ${infId === 'infinite_vitality' ? `+${infLv * 50} HP Tối Đa` : `+${infLv * 10}% Sát Thương Toàn Bộ`}
+                  ✨ Tích lũy hiện tại: ${infId === 'infinite_vitality' ? `+${infLv * 25} HP Tối Đa` : `+${infLv * 5}% Sát Thương Toàn Bộ`}
                 </div>
               </div>
             `;
@@ -2039,15 +2099,9 @@ class Game {
     this.updateHUD();
   }
 
-  // Vampire Survivors Standard Linear Step EXP Formula (Paced & Balanced)
+  // Polynomial Step Curve EXP Formula (Overhaul Paced & Balanced)
   calculateNextExp(level) {
-    if (level < 20) {
-      return 15 + (level - 1) * 18;
-    } else if (level < 40) {
-      return 358 + (level - 20) * 25;
-    } else {
-      return 858 + (level - 40) * 35;
-    }
+    return Math.round(18 + (level - 1) * 28 + Math.pow(level, 1.65) * 4);
   }
 
   addExp(amount) {
@@ -2236,9 +2290,9 @@ class Game {
         const isSuper = (def.type === 'evolution');
 
         if (isSuper) {
-          // Tier 3 Super Evolution: Chỉ áp dụng cho kĩ năng chính của nhân vật đã chọn khi đạt Cấp 10+!
+          // Tier 3 Super Evolution: Yêu cầu đạt Cấp 25+ và thời gian trận đấu >= 10 phút (600s)!
           const isMain = item.isStartingWeapon || wId === p.startingWeaponId || def.id === p.startingWeaponId;
-          if (isMain && p.level >= 10 && evoDef && !p.weapons[evoDef.id]) {
+          if (isMain && p.level >= 25 && this.gameTime >= 600 && evoDef && !p.weapons[evoDef.id]) {
             pool.push({
               id: evoDef.id,
               type: 'evolution',
@@ -2290,7 +2344,7 @@ class Game {
           name: def.name,
           icon: def.icon,
           badge: `Cấp ${item.level} ➔ Cấp ${nextLv}`,
-          description: def.description,
+          description: (def.levelDescriptions && def.levelDescriptions[nextLv]) ? def.levelDescriptions[nextLv] : def.description,
           evolutionInfo: evoDef ? {
             evoName: evoDef.name,
             evoIcon: evoDef.icon,
@@ -2425,7 +2479,7 @@ class Game {
       name: vitDef ? vitDef.name : 'Sinh Mệnh Vô Cực',
       icon: vitDef ? vitDef.icon : '💖',
       badge: `VÔ HẠN (Cấp ${infVitLv} ➔ ${infVitLv + 1})`,
-      description: `Tăng vĩnh viễn +50 Máu Tối Đa và hồi phục ngay +50 HP (Đã tích lũy: +${infVitLv * 50} HP). Có thể chọn vô hạn lần!`,
+      description: `Tăng vĩnh viễn +25 Máu Tối Đa và hồi phục ngay +25 HP (Đã tích lũy: +${infVitLv * 25} HP). Có thể chọn vô hạn lần!`,
       isInfinite: true
     });
 
@@ -2435,7 +2489,7 @@ class Game {
       name: mightDef ? mightDef.name : 'Sức Mạnh Vô Cực',
       icon: mightDef ? mightDef.icon : '🔥',
       badge: `VÔ HẠN (Cấp ${infMightLv} ➔ ${infMightLv + 1})`,
-      description: `Tăng vĩnh viễn +10% Sát Thương toàn bộ chiêu thức (Đã tích lũy: +${infMightLv * 10}%). Có thể chọn vô hạn lần!`,
+      description: `Tăng vĩnh viễn +5% Sát Thương toàn bộ chiêu thức (Đã tích lũy: +${infMightLv * 5}%). Có thể chọn vô hạn lần!`,
       isInfinite: true
     });
 
@@ -2476,12 +2530,12 @@ class Game {
       p.infinitePassives[choice.id] = (p.infinitePassives[choice.id] || 0) + 1;
       this.recalculatePassives();
       if (choice.id === 'infinite_vitality') {
-        p.hp = Math.min(p.maxHp, p.hp + 50);
+        p.hp = Math.min(p.maxHp, p.hp + 25);
         window.soundEngine.pickup();
         this.spells.floatingTexts.push({
           x: p.x,
           y: p.y - 20,
-          text: '+50 MÁU TỐI ĐA! (HỒI 50 HP)',
+          text: '+25 MÁU TỐI ĐA! (HỒI 25 HP)',
           color: '#ec4899',
           size: 16,
           life: 0.8
@@ -2491,7 +2545,7 @@ class Game {
         this.spells.floatingTexts.push({
           x: p.x,
           y: p.y - 20,
-          text: '+10% SÁT THƯƠNG VÔ HẠN!',
+          text: '+5% SÁT THƯƠNG VÔ HẠN!',
           color: '#f97316',
           size: 16,
           life: 0.8
@@ -2513,12 +2567,18 @@ class Game {
     const p = this.player;
     if (!p) return;
     const up = this.getCharUpgrades(p.charId);
+    const charDef = (typeof CHARACTERS !== 'undefined' ? CHARACTERS[p.charId] : null) || (window.CHARACTERS && window.CHARACTERS[p.charId]) || {};
 
     const infVitLv = (p.infinitePassives && p.infinitePassives.infinite_vitality) || 0;
     const infMightLv = (p.infinitePassives && p.infinitePassives.infinite_might) || 0;
 
-    p.damageBonus = (up.strength || 0) * 0.015 + (infMightLv * 0.10);
-    p.cooldownReduction = (p.charId === 'luck' ? 0.15 : (p.charId === 'licht' ? 0.12 : 0)) + ((up.reflexes || 0) * 0.01);
+    // 1. Reset fully to character base + talent values BEFORE applying passives and relics (Fixes double-dipping bug)
+    p.armor = (charDef.baseArmor || 0) + ((up.armor || 0) * 0.01);
+    p.hpRegen = ((up.synthesis || 0) * 0.1) + (charDef.baseRegen || 0);
+    this.coinDropMultiplier = 1.0 + ((up.fortune || 0) * 0.04);
+
+    p.damageBonus = (up.strength || 0) * 0.015 + (infMightLv * 0.05);
+    p.cooldownReduction = (p.charId === 'luck' ? 0.15 : (p.charId === 'licht' || p.charId === 'sylph' ? 0.12 : 0)) + ((up.reflexes || 0) * 0.01);
     p.areaBonus = (p.charId === 'noelle' ? 0.3 : (p.charId === 'licht' ? 0.35 : 0));
     
     // Base Crit Values: If no character trait and no upgrades/relics, starts from 0%
@@ -2533,15 +2593,16 @@ class Game {
 
     let speedBonus = 1 + ((up.stride || 0) * 0.015);
     if (p.charId === 'yuno') speedBonus += 0.2;
+    if (p.charId === 'sylph') speedBonus += 0.25;
     if (p.charId === 'grey') p.pickupRadius += 30;
 
     let manaSkinLv = 0;
     for (const [id, lv] of Object.entries(p.passives)) {
-      if (id === 'reinforcement') p.damageBonus += lv * 0.14;
+      if (id === 'reinforcement') p.damageBonus += lv * 0.10; // Cân bằng: +10% sát thương/cấp (Tối đa +50%)
       if (id === 'wind_glide') speedBonus += lv * 0.14;
       if (id === 'mana_skin') {
         manaSkinLv = lv;
-        p.armor = Math.min(0.70, (CHARACTERS[p.charId].baseArmor || 0) + ((up.armor || 0) * 0.01) + lv * 0.10);
+        p.armor = Math.min(0.70, p.armor + lv * 0.10);
       }
       if (id === 'ki_sense') p.critChance += lv * 0.20; // +20% Crit Rate per level (Max 100%)
       if (id === 'crit_damage') p.critDmgBonus += lv * 0.40; // +40% Crit Damage per level (Max 200% at Lv 5)
@@ -2551,17 +2612,18 @@ class Game {
       if (id === 'clover_fortune') p.expBonus += lv * 0.25;
     }
 
-    p.maxHp = CHARACTERS[p.charId].baseHp + ((up.vitality || 0) * 4) + (manaSkinLv * 30) + (infVitLv * 50);
-    p.speed = CHARACTERS[p.charId].baseSpeed * speedBonus;
+    p.maxHp = (charDef.baseHp || 100) + ((up.vitality || 0) * 4) + (manaSkinLv * 30) + (infVitLv * 25);
+    p.speed = (charDef.baseSpeed || 200) * speedBonus;
 
-    // Apply Artifact & Relic stats
+    // Apply Artifact & Relic stats cleanly onto base + passives
     if (this.artifacts) {
       this.artifacts.applyEquippedStats(p);
     }
 
-    // Caps per user requirement: Max Crit Rate = 100% (1.0), Max Crit Damage = 200% (2.0)
+    // Caps per user requirement: Max Crit Rate = 100% (1.0), Max Crit Damage = 200% (2.0), Max Armor = 70% (0.70)
     p.critChance = Math.min(1.0, Math.max(0, p.critChance || 0));
     p.critDmgBonus = Math.min(2.0, Math.max(0, p.critDmgBonus || 0));
+    p.armor = Math.min(0.70, Math.max(0, p.armor || 0));
   }
 
   updateTargeting() {
@@ -2590,6 +2652,7 @@ class Game {
         const dist = Math.sqrt(distSq);
         let score = 1000 - dist;
         if (e.isBoss) score += 3000;
+        else if (e.type === 'demon_charger' || e.type === 'armored_boar') score += (e.isCharging || e.isPreCharging ? 900 : 500);
         else if (e.type === 'lesser_devil' || e.type === 'high_devil') score += 400;
 
         if (score > highestScore) {
@@ -2865,8 +2928,19 @@ class Game {
     if (boss && boss.hp > 0 && !boss.isDead) {
       bossContainer.classList.remove('hidden');
       const bPct = Math.max(0, Math.min(100, (boss.hp / boss.maxHp) * 100));
-      document.getElementById('bossHpFill').style.width = `${bPct}%`;
-      document.getElementById('bossNameText').innerText = boss.name;
+      const fillEl = document.getElementById('bossHpFill');
+      if (fillEl) {
+        fillEl.style.width = `${bPct}%`;
+        if (boss.isEnraged) {
+          fillEl.style.background = 'linear-gradient(90deg, #ef4444, #dc2626, #7f1d1d)';
+        } else {
+          fillEl.style.background = '';
+        }
+      }
+      const nameEl = document.getElementById('bossNameText');
+      if (nameEl) {
+        nameEl.innerText = boss.isEnraged ? `🔥 ${boss.name} [CUỒNG NỘ - PHASE 2]` : boss.name;
+      }
     } else {
       bossContainer.classList.add('hidden');
     }
@@ -2987,6 +3061,7 @@ class Game {
       let spd = p.speed;
 
       if (p.isDashing) spd *= 2.8;
+      if (p.gravitySlowTimer > 0) spd *= 0.8;
 
       p.x += normX * spd * dt;
       p.y += normY * spd * dt;
@@ -3001,6 +3076,9 @@ class Game {
     if (p.dashDurationTimer > 0) {
       p.dashDurationTimer -= dt;
       if (p.dashDurationTimer <= 0) p.isDashing = false;
+    }
+    if (p.gravitySlowTimer > 0) {
+      p.gravitySlowTimer -= dt;
     }
 
     this.rebuildSpatialGrid();
@@ -3096,9 +3174,12 @@ class Game {
       this.drops.splice(0, this.drops.length - 160);
     }
 
-    // Camera follow
-    this.camera.x = p.x - this.canvas.width / 2;
-    this.camera.y = p.y - this.canvas.height / 2;
+    // Camera follow with zoom support
+    const zoom = this.mapZoom || 1.0;
+    const viewW = this.canvas.width / zoom;
+    const viewH = this.canvas.height / zoom;
+    this.camera.x = p.x - viewW / 2;
+    this.camera.y = p.y - viewH / 2;
 
     if (this.shake.duration > 0) {
       this.shake.duration -= dt;
@@ -3130,9 +3211,11 @@ class Game {
       this.triggerComboBanner(`🎫 RƯƠNG MAY MẮN: NHẬN +${amt} VÉ TRIỆU HỒI!`);
       this.spells.floatingTexts.push({ x: this.player.x, y: this.player.y - 35, text: `+${amt} 🎫 VÉ!`, color: '#fbbf24', size: 22, life: 1.0 });
     } else if (roll < 0.70) {
-      // 3. Level Up immediately
-      this.triggerComboBanner(`🆙 RƯƠNG TRI THỨC: THĂNG CẤP MA PHÁP NGAY LẬP TỨC!`);
-      this.triggerLevelUp();
+      // 3. Balanced EXP progress (+35% nextExp)
+      const bonusExp = Math.max(1, Math.round((this.player.nextExp || 100) * 0.35));
+      this.triggerComboBanner('🆙 RƯƠNG TRI THỨC: NHẬN +35% KINH NGHIỆM TIẾN TRÌNH!');
+      this.addExp(bonusExp);
+      this.spells.floatingTexts.push({ x: this.player.x, y: this.player.y - 35, text: `+${bonusExp} EXP (+35%)!`, color: '#a855f7', size: 22, life: 1.0 });
     } else if (roll < 0.85) {
       // 4. Full Map Magnet
       this.triggerComboBanner(`🧲 RƯƠNG BÍ THUẬT: KÍCH HOẠT NAM CHÂM TOÀN BẢN ĐỒ!`);
@@ -3182,6 +3265,8 @@ class Game {
     }
 
     ctx.save();
+    const zoom = this.mapZoom || 1.0;
+    ctx.scale(zoom, zoom);
     ctx.translate(-this.camera.x, -this.camera.y);
 
     const isUnderworld = this.selectedMapId === 'underworld_palace';
@@ -3191,7 +3276,7 @@ class Game {
 
     // 2. Ground Details (Clovers on Map 1, Magma Cracks on Map 2)
     if (window.Sprites && window.Sprites.drawGroundDetails) {
-      window.Sprites.drawGroundDetails(ctx, this.camera, this.canvas.width, this.canvas.height, this.tick, isUnderworld);
+      window.Sprites.drawGroundDetails(ctx, this.camera, this.canvas.width / zoom, this.canvas.height / zoom, this.tick, isUnderworld);
     }
 
     // 3. Dynamic Player Illumination Halo
@@ -3208,7 +3293,7 @@ class Game {
 
     // 4. Ambient Motes
     if (window.Sprites && window.Sprites.drawAmbient) {
-      window.Sprites.drawAmbient(ctx, this.camera, this.canvas.width, this.canvas.height, this.lastDt, this.tick, isUnderworld);
+      window.Sprites.drawAmbient(ctx, this.camera, this.canvas.width / zoom, this.canvas.height / zoom, this.lastDt, this.tick, isUnderworld);
     }
 
     // 5. Drops
@@ -3300,8 +3385,9 @@ class Game {
 
   drawWorldBackground(ctx, isUnderworld) {
     const cam = this.camera;
-    const cw = this.canvas.width;
-    const ch = this.canvas.height;
+    const zoom = this.mapZoom || 1.0;
+    const cw = this.canvas.width / zoom;
+    const ch = this.canvas.height / zoom;
 
     // ----------------------------------------------------
     // LỚP A: ĐỊA HÌNH NỀN (Terrain Tiles 200x200 & Cobblestone Paths)
@@ -4430,7 +4516,7 @@ class Game {
 
     window.soundEngine.gachaSummonStart();
 
-    const legendaries = ['julius', 'mereoleona', 'black_asta', 'lumiere', 'nacht', 'licht', 'zenon', 'vanica', 'dante', 'secre', 'patry'];
+    const legendaries = ['julius', 'mereoleona', 'black_asta', 'lumiere', 'nacht', 'licht', 'zenon', 'vanica', 'dante', 'secre', 'patry', 'sylph'];
     const epics = ['yami', 'fuegoleon', 'nozel', 'charlotte', 'dorothy', 'william', 'jack', 'langris', 'henry', 'fana', 'rhya', 'vetto'];
     const rares = ['yuno', 'noelle', 'luck', 'leopold', 'rill', 'mars', 'zora', 'gordon', 'grey', 'mimosa', 'klaus'];
     const commons = ['asta', 'magna', 'finral', 'charmy', 'sol'];
@@ -4474,7 +4560,7 @@ class Game {
           highestRarity = rTier;
           is1000PityTrigger = true;
         } else {
-          // Nếu đã mở khóa toàn bộ 39 tướng, thưởng lớn Jackpot +5,000 Coins (không tặng vé)!
+          // Nếu đã mở khóa toàn bộ 40 tướng, thưởng lớn Jackpot +5,000 Coins (không tặng vé)!
           this.currency.coins += 5000;
           totalDupCoins += 5000;
         }
@@ -4801,6 +4887,7 @@ const CHAR_EMOJIS = {
   nacht: '🐕',
   secre: '🐦',
   patry: '⚡',
+  sylph: '🧚🌪️',
   // Sử Thi
   yami: '🌑',
   mereoleona: '🦁',
@@ -4910,8 +4997,8 @@ const GACHA_BANNERS = {
     title: '✨ Tinh Linh Thánh Khải',
     badge: 'Galar Gen 8',
     desc: 'Hòa quyện linh hồn cùng Sylph, Salamander và Undine để khai mở sức mạnh Thánh Khải tối thượng!',
-    featured: ['yuno', 'fuegoleon', 'noelle'],
-    pool: ['yuno', 'fuegoleon', 'noelle', 'charlotte', 'lumiere'],
+    featured: ['sylph', 'yuno', 'fuegoleon', 'noelle'],
+    pool: ['sylph', 'yuno', 'fuegoleon', 'noelle', 'charlotte', 'lumiere'],
     shinyOdds: '2%'
   },
   ultimate: {

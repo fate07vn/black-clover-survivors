@@ -275,6 +275,7 @@ class AuthManager {
     this.safeRemoveItem('BC_AUTH_TOKEN');
     this.safeRemoveItem('BC_AUTH_USER');
     this.safeRemoveItem('BC_REMEMBER_LOGIN');
+    this.safeRemoveItem('BC_LAST_USER');
     this.updateUI();
 
     const g = this.game || window.gameInstance || (window.ensureGameInstance && window.ensureGameInstance());

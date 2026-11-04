@@ -238,6 +238,9 @@ const Sprites = {
       case 'sol':
         this.drawLuck(ctx, p, tick);
         break;
+      case 'sylph':
+        this.drawSylph(ctx, p, tick);
+        break;
       case 'julius':
       case 'lumiere':
       case 'licht':
@@ -1914,6 +1917,227 @@ const Sprites = {
     ctx.restore();
   },
 
+  // 14. SYLPH (ĐẠI TINH LINH BÃO TỐ - BELL)
+  drawSylph(ctx, p, tick) {
+    const facing = p.facing || 1;
+    const floatBob = Math.sin(tick * 0.24) * 4;
+    const wingFlutter = Math.sin(tick * 0.55);
+
+    ctx.save();
+    ctx.translate(p.x, p.y + floatBob);
+    ctx.scale(facing, 1);
+
+    // Radiant Emerald & Golden Spirit Aura
+    this.drawAura(ctx, 0, -4, 30, 'rgba(52, 211, 153, 0.45)', 25);
+    this.drawAura(ctx, 0, -4, 18, 'rgba(254, 240, 138, 0.35)', 15);
+
+    // Floating Ground Shadow
+    const shadowGrad = ctx.createRadialGradient(0, 20 - floatBob, 1, 0, 20 - floatBob, 14);
+    shadowGrad.addColorStop(0, 'rgba(0,0,0,0.35)');
+    shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = shadowGrad;
+    ctx.beginPath();
+    ctx.ellipse(0, 20 - floatBob, 14, 4.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 4 Fairy Wings (2 Upper, 2 Lower with translucent emerald/gold gradient)
+    const upperWingSpan = 22 + wingFlutter * 3;
+    const lowerWingSpan = 14 + wingFlutter * 2;
+
+    const wingGrad = ctx.createLinearGradient(0, -10, -upperWingSpan, -25);
+    wingGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+    wingGrad.addColorStop(0.4, 'rgba(110, 231, 183, 0.85)');
+    wingGrad.addColorStop(0.8, 'rgba(253, 224, 71, 0.7)');
+    wingGrad.addColorStop(1, 'rgba(52, 211, 153, 0.4)');
+
+    ctx.save();
+    ctx.fillStyle = wingGrad;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.2;
+
+    // Upper Left Wing (back)
+    ctx.beginPath();
+    ctx.moveTo(-2, -8);
+    ctx.bezierCurveTo(-10, -22, -upperWingSpan, -26, -upperWingSpan - 4, -14);
+    ctx.bezierCurveTo(-upperWingSpan + 2, -6, -10, -4, -2, -6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Lower Left Wing (back)
+    ctx.beginPath();
+    ctx.moveTo(-2, -5);
+    ctx.bezierCurveTo(-8, -10, -lowerWingSpan, -8, -lowerWingSpan - 2, 2);
+    ctx.bezierCurveTo(-lowerWingSpan + 4, 8, -6, 2, -2, -3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    // Slender Fairy Legs with mint slippers
+    ctx.fillStyle = '#ffedd5';
+    ctx.beginPath();
+    ctx.rect(-3.5, 8, 2.5, 9);
+    ctx.rect(1, 8, 2.5, 9);
+    ctx.fill();
+
+    ctx.fillStyle = '#10b981';
+    ctx.beginPath();
+    ctx.ellipse(-2.2, 17, 2, 1.2, 0, 0, Math.PI * 2);
+    ctx.ellipse(2.2, 17, 2, 1.2, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Emerald Fairy Tunic / Dress with golden ribbon
+    const dressGrad = ctx.createLinearGradient(0, -6, 0, 10);
+    dressGrad.addColorStop(0, '#059669');
+    dressGrad.addColorStop(0.5, '#10b981');
+    dressGrad.addColorStop(1, '#34d399');
+
+    ctx.fillStyle = dressGrad;
+    ctx.beginPath();
+    ctx.moveTo(0, -7);
+    ctx.lineTo(4, -4);
+    ctx.lineTo(7, 7);
+    ctx.bezierCurveTo(4, 9, -4, 9, -7, 7);
+    ctx.lineTo(-4, -4);
+    ctx.closePath();
+    ctx.fill();
+
+    // Gold waist belt & ribbon
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.rect(-4.5, 1, 9, 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(0, 3);
+    ctx.quadraticCurveTo(-4, 7, -6, 12);
+    ctx.lineTo(-4, 12);
+    ctx.quadraticCurveTo(-2, 7, 1, 3);
+    ctx.fill();
+
+    // Slender Arms with dainty hands
+    ctx.fillStyle = '#ffedd5';
+    ctx.beginPath();
+    ctx.ellipse(-6, -2, 2, 6, -0.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(6, -1, 2, 6, 0.4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Petite Fairy Face
+    ctx.fillStyle = '#ffedd5';
+    ctx.beginPath();
+    ctx.arc(0, -11, 7.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cute pink blush
+    ctx.fillStyle = 'rgba(244, 63, 94, 0.5)';
+    ctx.beginPath();
+    ctx.ellipse(-3.5, -9.5, 2, 1, 0, 0, Math.PI * 2);
+    ctx.ellipse(3.5, -9.5, 2, 1, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Big Anime Emerald Eyes
+    ctx.fillStyle = '#065f46';
+    ctx.beginPath();
+    ctx.ellipse(2.5, -11.5, 2.2, 3, 0, 0, Math.PI * 2);
+    ctx.ellipse(-2.5, -11.5, 1.8, 2.8, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#34d399';
+    ctx.beginPath();
+    ctx.ellipse(2.5, -10.5, 1.6, 1.8, 0, 0, Math.PI * 2);
+    ctx.ellipse(-2.5, -10.5, 1.3, 1.7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(3.2, -12.5, 1, 0, Math.PI * 2);
+    ctx.arc(-1.8, -12.5, 0.8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cute Smile
+    ctx.strokeStyle = '#e11d48';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(0.5, -8, 1.8, 0.1, Math.PI - 0.1);
+    ctx.stroke();
+
+    // Golden Fairy Hair with flowing anime twintails & bangs
+    ctx.fillStyle = '#fef08a';
+    ctx.strokeStyle = '#ca8a04';
+    ctx.lineWidth = 0.8;
+
+    ctx.beginPath();
+    ctx.arc(0, -12.5, 8.5, Math.PI, Math.PI * 2);
+    ctx.fill();
+
+    // Left Twin Tail (wind swaying)
+    const hairSway = Math.sin(tick * 0.28) * 4;
+    ctx.beginPath();
+    ctx.moveTo(-6, -12);
+    ctx.bezierCurveTo(-14, -8, -16 + hairSway, 0, -12 + hairSway, 8);
+    ctx.bezierCurveTo(-9 + hairSway, 5, -8, -4, -4, -8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Right Twin Tail (wind swaying)
+    ctx.beginPath();
+    ctx.moveTo(6, -12);
+    ctx.bezierCurveTo(14, -8, 16 - hairSway, 0, 12 - hairSway, 8);
+    ctx.bezierCurveTo(9 - hairSway, 5, 8, -4, 4, -8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Front bangs
+    ctx.beginPath();
+    ctx.moveTo(-7, -13);
+    ctx.lineTo(-4, -9);
+    ctx.lineTo(-1, -12);
+    ctx.lineTo(2, -9);
+    ctx.lineTo(6, -11);
+    ctx.lineTo(7, -14);
+    ctx.closePath();
+    ctx.fill();
+
+    // Ahoge (hair antenna) swaying in the breeze
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.quadraticCurveTo(5 + hairSway * 0.5, -25, 2, -26);
+    ctx.quadraticCurveTo(3, -21, 0, -18);
+    ctx.fill();
+    ctx.stroke();
+
+    // Gold Leaf Tiara / Fairy Crown
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.moveTo(-4, -17);
+    ctx.lineTo(-2, -21);
+    ctx.lineTo(0, -18);
+    ctx.lineTo(2, -21);
+    ctx.lineTo(4, -17);
+    ctx.closePath();
+    ctx.fill();
+
+    // Front Wing (overlapping body for 3D depth)
+    ctx.save();
+    ctx.fillStyle = wingGrad;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(2, -8);
+    ctx.bezierCurveTo(10, -22, upperWingSpan, -26, upperWingSpan + 4, -14);
+    ctx.bezierCurveTo(upperWingSpan - 2, -6, 10, -4, 2, -6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.restore();
+  },
+
   // =========================================================================
   // ENEMY & BOSS SPRITE ROUTER (Chuyển đổi hình vẽ sang Anime Path)
   // =========================================================================
@@ -1924,7 +2148,8 @@ const Sprites = {
     ctx.save();
     ctx.translate(e.x, e.y);
 
-    if (e.vx < 0) {
+    const facingLeft = (e.isPreCharging || e.isCharging) ? (Math.cos(e.chargeAngle || 0) < 0) : (e.vx < 0);
+    if (facingLeft) {
       ctx.scale(-1, 1);
     }
 
@@ -1947,7 +2172,73 @@ const Sprites = {
       return;
     }
 
+    // Boss Enrage Aura & Demon Magic Circle (Phase 2)
+    if (e.isBoss && e.isEnraged) {
+      const jitter = Math.sin(tick * 0.8) * 2;
+
+      // 1. Pháp Trận Ác Quỷ (Demon Magic Circle) đỏ thẫm (#ef4444) xoay nhanh dưới chân + rung gằn nhẹ
+      ctx.save();
+      ctx.translate(0, e.radius * 0.85 + jitter);
+      const rot = (tick * 0.12) % (Math.PI * 2);
+      ctx.rotate(rot);
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 2.5;
+      ctx.shadowColor = '#dc2626';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, e.radius * 1.35, e.radius * 0.55, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Magic Runes / Pentagram spokes
+      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(239, 68, 68, 0.75)';
+      for (let i = 0; i < 4; i++) {
+        const ang = rot + i * (Math.PI / 2);
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(ang) * e.radius * 1.15, Math.sin(ang) * e.radius * 0.45);
+        ctx.lineTo(Math.cos(ang + Math.PI) * e.radius * 1.15, Math.sin(ang + Math.PI) * e.radius * 0.45);
+        ctx.stroke();
+      }
+      ctx.shadowBlur = 0;
+      ctx.restore();
+
+      // 2. Lớp hào quang lửa đen-đỏ nhấp nháy quanh thân Boss
+      const auraPulse = Math.sin(tick * 0.35) * 4;
+      const auraGrad = ctx.createRadialGradient(0, -e.radius * 0.2, e.radius * 0.3, 0, -e.radius * 0.2, e.radius * 1.35 + auraPulse);
+      auraGrad.addColorStop(0, 'rgba(239, 68, 68, 0.38)');
+      auraGrad.addColorStop(0.5, 'rgba(153, 27, 27, 0.25)');
+      auraGrad.addColorStop(0.85, 'rgba(24, 24, 27, 0.2)');
+      auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = auraGrad;
+      ctx.beginPath();
+      ctx.arc(0, -e.radius * 0.2, e.radius * 1.35 + auraPulse, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Khiên Bất Tử Cuồng Nộ (1.2s Enrage Shield)
+    if (e.enrageShieldTimer > 0) {
+      ctx.save();
+      ctx.strokeStyle = '#facc15';
+      ctx.lineWidth = 3;
+      ctx.shadowColor = '#eab308';
+      ctx.shadowBlur = 12;
+      ctx.setLineDash([8, 4]);
+      ctx.beginPath();
+      ctx.arc(0, -e.radius * 0.2, e.radius * 1.25, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(250, 204, 21, 0.18)';
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.restore();
+    }
+
     switch (e.type) {
+      case 'armored_boar':
+        this.drawArmoredBoar(ctx, e, tick);
+        break;
+      case 'demon_charger':
+        this.drawDemonCharger(ctx, e, tick);
+        break;
       case 'bandit':
         this.drawBandit(ctx, e, tick);
         break;
@@ -2006,6 +2297,44 @@ const Sprites = {
         // Generic horned demon if unknown
         this.drawLesserDevil(ctx, e, tick);
         break;
+    }
+
+    // 3. Biểu tượng 💢 CUỒNG NỘ phía trên thanh máu mục tiêu / đầu Boss
+    if (e.isBoss && e.isEnraged) {
+      ctx.save();
+      if (facingLeft) {
+        ctx.scale(-1, 1); // Unflip so text is always readable left-to-right
+      }
+      const tagY = -e.radius - 24;
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Badge pill background
+      const badgeText = '💢 CUỒNG NỘ (PHASE 2)';
+      const textW = ctx.measureText(badgeText).width + 12;
+      ctx.fillStyle = 'rgba(127, 29, 29, 0.9)';
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 1.5;
+      if (ctx.roundRect) {
+        ctx.beginPath();
+        ctx.roundRect(-textW / 2, tagY - 9, textW, 18, 9);
+        ctx.fill();
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.rect(-textW / 2, tagY - 9, textW, 18);
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      // Text with red glow
+      ctx.fillStyle = '#fee2e2';
+      ctx.shadowColor = '#ef4444';
+      ctx.shadowBlur = 6;
+      ctx.fillText(badgeText, 0, tagY);
+      ctx.shadowBlur = 0;
+      ctx.restore();
     }
 
     ctx.restore();
@@ -2106,19 +2435,22 @@ const Sprites = {
     ctx.closePath();
     ctx.fill();
 
-    // Occult Wand in Hand
-    ctx.strokeStyle = '#78350f';
+    // Crimson Occult Blood Scythe
+    ctx.strokeStyle = '#450a0a';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(8, 6);
-    ctx.lineTo(16, -10);
+    ctx.moveTo(6, 12);
+    ctx.lineTo(15, -16);
     ctx.stroke();
-    // Amethyst orb on top
-    ctx.fillStyle = '#c084fc';
-    ctx.shadowColor = '#9333ea';
+    // Curved blood scythe blade
+    ctx.fillStyle = '#e11d48';
+    ctx.shadowColor = '#be123c';
     ctx.shadowBlur = 8;
     ctx.beginPath();
-    ctx.arc(16, -10, 3, 0, Math.PI * 2);
+    ctx.moveTo(15, -16);
+    ctx.quadraticCurveTo(28, -20, 24, -6);
+    ctx.quadraticCurveTo(20, -14, 15, -12);
+    ctx.closePath();
     ctx.fill();
     ctx.shadowBlur = 0;
   },
@@ -2538,6 +2870,251 @@ const Sprites = {
     ctx.arc(2.5, -12, 1.5, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
+  },
+
+  // -------------------------------------------------------------------------
+  // BESTIARY: ARMORED BOAR (Thiết Giáp Ma Thú / Berserk Iron Charger)
+  // -------------------------------------------------------------------------
+  drawArmoredBoar(ctx, e, tick) {
+    const isCharging = e.isCharging;
+    const isPre = e.isPreCharging;
+    const isStunned = e.stunTimer > 0;
+    const bob = isCharging ? 0 : Math.sin(tick * 0.3) * 2;
+    const shake = isPre ? (Math.random() - 0.5) * 4 : 0;
+
+    ctx.save();
+    ctx.translate(shake, bob);
+
+    // Charging after-image / speed trail
+    if (isCharging) {
+      ctx.fillStyle = 'rgba(234, 88, 12, 0.35)';
+      ctx.beginPath();
+      ctx.ellipse(-14, 0, 16, 9, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Heavy Boar Muscular Body
+    ctx.fillStyle = '#1c1917';
+    ctx.beginPath();
+    ctx.ellipse(0, 2, 17, 11, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Steel Back Armor Plates
+    ctx.fillStyle = '#44403c';
+    ctx.beginPath();
+    ctx.ellipse(-2, -4, 13, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Iron Plates / Rivets on back
+    ctx.fillStyle = '#78716c';
+    [-8, -2, 4].forEach(xOff => {
+      ctx.beginPath();
+      ctx.arc(xOff, -7, 1.8, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Spiked Mane along spine
+    ctx.fillStyle = '#ea580c';
+    for (let i = -10; i <= 6; i += 5) {
+      ctx.beginPath();
+      ctx.moveTo(i, -9);
+      ctx.lineTo(i + 2, -15);
+      ctx.lineTo(i + 4, -9);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Boar Head with Heavy Iron Ramming Plate
+    const headY = isCharging ? 4 : (isPre ? 5 : 0);
+    ctx.fillStyle = '#292524';
+    ctx.beginPath();
+    ctx.moveTo(6, -6 + headY);
+    ctx.lineTo(19, 1 + headY);
+    ctx.lineTo(16, 8 + headY);
+    ctx.lineTo(6, 7 + headY);
+    ctx.closePath();
+    ctx.fill();
+
+    // Heavy Ramming Plate on Snout/Forehead
+    ctx.fillStyle = isCharging ? '#f97316' : '#a8a29e';
+    ctx.strokeStyle = '#57534e';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(11, -5 + headY);
+    ctx.lineTo(21, 2 + headY);
+    ctx.lineTo(17, 7 + headY);
+    ctx.lineTo(10, 4 + headY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Massive Curved Tusks
+    ctx.fillStyle = '#fef08a';
+    ctx.strokeStyle = '#ca8a04';
+    ctx.lineWidth = 1;
+    // Lower Tusk
+    ctx.beginPath();
+    ctx.moveTo(16, 6 + headY);
+    ctx.quadraticCurveTo(24, 7 + headY, 23, -2 + headY);
+    ctx.lineTo(20, 4 + headY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Glowing Crimson / Fiery Eyes
+    ctx.fillStyle = isPre ? '#ef4444' : (isCharging ? '#fbbf24' : '#dc2626');
+    ctx.shadowColor = ctx.fillStyle;
+    ctx.shadowBlur = isPre || isCharging ? 12 : 5;
+    ctx.beginPath();
+    ctx.arc(12, -1 + headY, isPre || isCharging ? 2.5 : 1.8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Steam puffs from nostrils during pre-charge
+    if (isPre) {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.beginPath();
+      ctx.arc(22, 4 + headY, 2 + Math.random() * 2, 0, Math.PI * 2);
+      ctx.arc(25, 3 + headY, 3 + Math.random() * 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Legs / Hooves
+    ctx.fillStyle = '#1c1917';
+    ctx.fillRect(-10, 10, 4, 6);
+    ctx.fillRect(-2, 10, 4, 6);
+    ctx.fillRect(6, 10, 4, 6);
+
+    // Stun indicator
+    if (isStunned) {
+      ctx.fillStyle = '#fde047';
+      ctx.font = '11px sans-serif';
+      ctx.fillText('💫', 0, -18);
+    }
+
+    ctx.restore();
+  },
+
+  // -------------------------------------------------------------------------
+  // BESTIARY: DEMON CHARGER (Ma Ngưu Cuồng Nộ / Demonic Minotaur Charger)
+  // -------------------------------------------------------------------------
+  drawDemonCharger(ctx, e, tick) {
+    const isCharging = e.isCharging;
+    const isPre = e.isPreCharging;
+    const isStunned = e.stunTimer > 0;
+    const bob = isCharging ? 0 : Math.sin(tick * 0.22) * 2;
+    const shake = isPre ? (Math.random() - 0.5) * 5 : 0;
+
+    ctx.save();
+    ctx.translate(shake, bob);
+
+    // Demonic Charging Aura / Shadow Flames
+    if (isCharging) {
+      ctx.fillStyle = 'rgba(220, 38, 38, 0.35)';
+      ctx.beginPath();
+      ctx.arc(-12, 0, 22, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Heavy Muscular Demonic Torso
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.moveTo(-12, -14);
+    ctx.lineTo(12, -14);
+    ctx.lineTo(14, 14);
+    ctx.lineTo(-14, 14);
+    ctx.closePath();
+    ctx.fill();
+
+    // Spiked Crimson Plate Armor on Torso
+    ctx.fillStyle = '#881337';
+    ctx.beginPath();
+    ctx.moveTo(-9, -10);
+    ctx.lineTo(9, -10);
+    ctx.lineTo(11, 8);
+    ctx.lineTo(-11, 8);
+    ctx.closePath();
+    ctx.fill();
+
+    // Spiked Iron Pauldrons (Shoulder Guards)
+    ctx.fillStyle = '#312e81';
+    ctx.beginPath();
+    ctx.arc(-14, -10, 6, 0, Math.PI * 2);
+    ctx.arc(14, -10, 6, 0, Math.PI * 2);
+    ctx.fill();
+    // Pauldron Spikes
+    ctx.fillStyle = '#94a3b8';
+    ctx.beginPath();
+    ctx.moveTo(-18, -12);
+    ctx.lineTo(-24, -18);
+    ctx.lineTo(-14, -16);
+    ctx.moveTo(18, -12);
+    ctx.lineTo(24, -18);
+    ctx.lineTo(14, -16);
+    ctx.fill();
+
+    // Demonic Horned Head / Minotaur Skull
+    const headY = isCharging ? 6 : (isPre ? 7 : -2);
+    ctx.fillStyle = '#1e1b4b';
+    ctx.beginPath();
+    ctx.arc(0, -18 + headY, 9, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Massive Obsidian Forward-Curving Ramming Horns
+    ctx.fillStyle = isCharging ? '#ef4444' : (isPre ? '#f59e0b' : '#020617');
+    ctx.strokeStyle = '#dc2626';
+    ctx.lineWidth = 1.5;
+
+    // Left Horn (Curving forward for ramming)
+    ctx.beginPath();
+    ctx.moveTo(-6, -22 + headY);
+    ctx.quadraticCurveTo(-22, -30 + headY, -18, -10 + headY);
+    ctx.quadraticCurveTo(-14, -18 + headY, -4, -20 + headY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Right Horn
+    ctx.beginPath();
+    ctx.moveTo(6, -22 + headY);
+    ctx.quadraticCurveTo(22, -30 + headY, 18, -10 + headY);
+    ctx.quadraticCurveTo(14, -18 + headY, 4, -20 + headY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Glowing Demonic Eyes
+    ctx.fillStyle = isPre ? '#fde047' : '#ef4444';
+    ctx.shadowColor = ctx.fillStyle;
+    ctx.shadowBlur = isPre || isCharging ? 14 : 6;
+    ctx.beginPath();
+    ctx.arc(-3.5, -17 + headY, isPre || isCharging ? 2.8 : 1.8, 0, Math.PI * 2);
+    ctx.arc(3.5, -17 + headY, isPre || isCharging ? 2.8 : 1.8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Glowing Rune on Forehead
+    ctx.fillStyle = '#fb7185';
+    ctx.beginPath();
+    ctx.arc(0, -22 + headY, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Heavy Hooves / Sturdy Stance
+    ctx.fillStyle = '#020617';
+    ctx.fillRect(-12, 14, 8, 8);
+    ctx.fillRect(4, 14, 8, 8);
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(-12, 20, 8, 3);
+    ctx.fillRect(4, 20, 8, 3);
+
+    // Stunned stars
+    if (isStunned) {
+      ctx.fillStyle = '#fde047';
+      ctx.font = '12px sans-serif';
+      ctx.fillText('💫', -4, -32);
+    }
+
+    ctx.restore();
   },
 
   // =========================================================================

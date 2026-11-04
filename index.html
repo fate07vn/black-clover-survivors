@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Black Clover: Magic Survivor (Ma Pháp Sinh Tồn)</title>
-  <link rel="stylesheet" href="style.css?v=bc171">
+  <link rel="stylesheet" href="style.css?v=bc177">
 <style id="inlined-styles">
 /* Black Clover: Magic Survivor - Dark Fantasy Anime UI Styling */
 
@@ -3619,6 +3619,7 @@ html, body {
         <button id="btnStatsInspector" class="hud-btn" title="Xem Toàn Bộ Chỉ Số Nhân Vật (Phím C)" onclick="openStatsInspector()">📊 CHỈ SỐ</button>
         <button id="btnEvoInspector" class="hud-btn" title="Xem Toàn Bộ Công Thức & Yêu Cầu Tiến Hóa (Phím B)" onclick="openEvolutionModal()" style="border-color: #38bdf8; color: #38bdf8;">📖 TIẾN HÓA</button>
         <button id="btnSpeedToggle" class="hud-btn" title="Chỉnh nhanh tốc độ (1x - 10x)" onclick="cycleSpeedToggle()">⚡ 1x</button>
+        <button id="btnZoomToggle" class="hud-btn" title="Chỉnh nhanh tầm nhìn map (0.75x - 1.25x)" onclick="cycleZoomToggle()">🔍 1.0x</button>
         <button id="btnAutoTarget" class="hud-btn" title="Bật/Tắt tự động ghim mục tiêu" onclick="toggleTargetLock()">🎯 GHIM: BẬT</button>
         <button id="btnPause" class="hud-btn" title="Tạm dừng" onclick="togglePauseGame()">⏸️</button>
       </div>
@@ -3728,13 +3729,13 @@ html, body {
   <div id="charSelectModal" class="modal-overlay-custom hidden">
     <div class="modal-dialog-box" style="max-width: 960px;">
       <div class="modal-header-bar">
-        <div class="modal-header-title">🧙‍♂️ DANH SÁCH MA ĐẠO SĨ (39 PHÁP SƯ HUYỀN THOẠI)</div>
+        <div class="modal-header-title">🧙‍♂️ DANH SÁCH MA ĐẠO SĨ (40 PHÁP SƯ HUYỀN THOẠI)</div>
         <button class="modal-btn-close" onclick="closeCharSelectModal()">✕</button>
       </div>
 
       <div class="modal-body-scrollable">
         <div class="char-filter-tabs">
-          <button class="char-filter-tab active" data-filter="all" onclick="filterCharRoster('all', this)">Tất Cả (39)</button>
+          <button class="char-filter-tab active" data-filter="all" onclick="filterCharRoster('all', this)">Tất Cả (40)</button>
           <button class="char-filter-tab" data-filter="legendary" onclick="filterCharRoster('legendary', this)">⭐ Thần Thoại</button>
           <button class="char-filter-tab" data-filter="epic" onclick="filterCharRoster('epic', this)">✨ Sử Thi</button>
           <button class="char-filter-tab" data-filter="rare" onclick="filterCharRoster('rare', this)">🌟 Hiếm</button>
@@ -3783,7 +3784,7 @@ html, body {
             <div style="font-size: 12px; font-weight: 800; color: #f59e0b; text-transform: uppercase;" id="gachaBannerSubtitle">BANNER ĐẶC BIỆT TỶ LỆ CAO</div>
             <div style="font-size: 24px; font-weight: 900; color: #fff; margin: 4px 0;" id="gachaBannerMainTitle">ĐẠI CHIẾN MA PHÁP & QUỶ THẦN</div>
             <div style="font-size: 13px; color: #cbd5e1; line-height: 1.4;" id="gachaBannerDesc">
-              Cơ hội triệu hồi Julius, Lumiere, Black Asta, Zenon, Dante, Vanica cùng 39 Ma Đạo Sĩ hùng mạnh! Mở khóa nhân vật mới hoặc nhận thưởng Coins & Vé khi trùng lặp!
+              Cơ hội triệu hồi Julius, Lumiere, Black Asta, Zenon, Dante, Vanica cùng 40 Ma Đạo Sĩ hùng mạnh! Mở khóa nhân vật mới hoặc nhận thưởng Coins & Vé khi trùng lặp!
             </div>
           </div>
           <div style="font-size: 64px; text-shadow: 0 0 25px rgba(245, 158, 11, 0.8);" id="gachaBannerIcon">📖✨</div>
@@ -4177,7 +4178,7 @@ html, body {
 
       <!-- TABS NAVIGATION BAR -->
       <div class="settings-nav-tabs">
-        <button id="tabBtnAudio" class="settings-tab-btn active" onclick="switchSettingsTab('audio')">🔊 Âm Thanh</button>
+        <button id="tabBtnAudio" class="settings-tab-btn active" onclick="switchSettingsTab('audio')">⚙️ Chung & Âm Thanh</button>
         <button id="tabBtnKeyboard" class="settings-tab-btn" onclick="switchSettingsTab('keyboard')">🎮 Bàn Phím (PC)</button>
         <button id="tabBtnTouch" class="settings-tab-btn" onclick="switchSettingsTab('touch')">📱 Cảm Ứng (Mobile)</button>
       </div>
@@ -4225,13 +4226,34 @@ html, body {
                 <button class="preset-btn" data-speed="10.0" onclick="setSpeedPreset(10.0)">⚡ 10.0x</button>
               </div>
             </div>
+
+            <div class="setting-item">
+              <div class="setting-header">
+                <span>🔍 Tầm Nhìn Bản Đồ (Map Zoom):</span>
+                <span id="zoomValText" class="setting-val-badge gold">1.0x (Chuẩn)</span>
+              </div>
+              <input type="range" id="sliderMapZoom" min="65" max="135" step="5" value="100" class="setting-slider gold" oninput="changeMapZoom(this.value)">
+              <div class="speed-presets zoom-presets">
+                <button class="preset-btn" data-zoom="0.75" onclick="setMapZoomPreset(0.75)">🔭 0.75x (Rộng / Xa)</button>
+                <button class="preset-btn" data-zoom="0.85" onclick="setMapZoomPreset(0.85)">0.85x (Bao Quát)</button>
+                <button class="preset-btn active" data-zoom="1.0" onclick="setMapZoomPreset(1.0)">🎯 1.0x (Chuẩn)</button>
+                <button class="preset-btn" data-zoom="1.15" onclick="setMapZoomPreset(1.15)">1.15x</button>
+                <button class="preset-btn" data-zoom="1.25" onclick="setMapZoomPreset(1.25)">🔍 1.25x (Gần)</button>
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 6px;">
+                <button class="btn-setting-toggle" style="flex: 1; padding: 6px 10px; font-size: 13px;" onclick="adjustMapZoomStep(-0.05)">➖ Thu Nhỏ (-)</button>
+                <button class="btn-setting-toggle" style="flex: 1; padding: 6px 10px; font-size: 13px;" onclick="adjustMapZoomStep(0.05)">➕ Phóng To (+)</button>
+                <button class="btn-setting-toggle" style="flex: 1; padding: 6px 10px; font-size: 13px; color: #38bdf8;" onclick="setMapZoomPreset(1.0)">↺ Đặt Lại (1.0x)</button>
+              </div>
+            </div>
           </div>
         </div>
 
         <!-- TAB 2: KEYBOARD (PC) -->
         <div id="tabContentKeyboard" class="settings-tab-content hidden">
-          <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 12px; background: rgba(15, 23, 42, 0.7); padding: 8px 12px; border-radius: 8px; border-left: 3px solid #38bdf8;">
-            💡 <strong>Cách đổi phím:</strong> Bấm vào nút phím bất kỳ bên dưới, sau đó ấn phím mới trên bàn phím của bạn. Nhấn <strong>Esc</strong> để hủy thao tác đổi.
+          <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 12px; background: rgba(15, 23, 42, 0.7); padding: 8px 12px; border-radius: 8px; border-left: 3px solid #38bdf8; line-height: 1.6;">
+            💡 <strong>Cách đổi phím:</strong> Bấm vào nút phím bất kỳ bên dưới, sau đó ấn phím mới trên bàn phím của bạn. Nhấn <strong>Esc</strong> để hủy thao tác đổi.<br>
+            🔍 <strong>Phím tắt Zoom Map:</strong> Nhấn <strong>[</strong> hoặc <strong>-</strong> để thu nhỏ tầm nhìn, nhấn <strong>]</strong> hoặc <strong>+</strong> để phóng to, hoặc <strong>Cuộn chuột (Wheel)</strong> khi đang trong trận đấu!
           </div>
 
           <div class="keybind-grid">
@@ -4411,13 +4433,13 @@ html, body {
 
 
   <!-- Core Scripts with Cache-Buster Queries -->
-  <script src="src/audio.js?v=bc171"></script>
-  <script src="src/sprites.js?v=bc171"></script>
-  <script src="src/spells.js?v=bc171"></script>
-  <script src="src/enemies.js?v=bc171"></script>
-  <script src="src/artifacts.js?v=bc171"></script>
-  <script src="src/auth.js?v=bc171"></script>
-  <script src="src/game.js?v=bc171"></script>
+  <script src="src/audio.js?v=bc180"></script>
+  <script src="src/sprites.js?v=bc180"></script>
+  <script src="src/spells.js?v=bc180"></script>
+  <script src="src/enemies.js?v=bc180"></script>
+  <script src="src/artifacts.js?v=bc180"></script>
+  <script src="src/auth.js?v=bc180"></script>
+  <script src="src/game.js?v=bc180"></script>
 
   <!-- Global App Controller & Event Handlers -->
   <script>
@@ -4430,6 +4452,7 @@ html, body {
       nacht: '🐾',
       secre: '🐦',
       patry: '✨',
+      sylph: '🧚🌪️',
 
       // Sử Thi (Epic)
       yami: '🌑',
@@ -4706,7 +4729,7 @@ html, body {
         if (tabArtifacts) tabArtifacts.classList.remove('active');
         if (subtitle) subtitle.innerText = 'BANNER ĐẶC BIỆT TỶ LỆ CAO';
         if (title) title.innerText = 'ĐẠI CHIẾN MA PHÁP & QUỶ THẦN';
-        if (desc) desc.innerText = 'Cơ hội triệu hồi Julius, Lumiere, Black Asta, Zenon, Dante, Vanica cùng 39 Ma Đạo Sĩ hùng mạnh! Giảm tối đa trùng lặp, ưu tiên mở khóa tướng mới!';
+        if (desc) desc.innerText = 'Cơ hội triệu hồi Julius, Lumiere, Black Asta, Zenon, Dante, Vanica cùng 40 Ma Đạo Sĩ hùng mạnh! Giảm tối đa trùng lặp, ưu tiên mở khóa tướng mới!';
         if (icon) icon.innerText = '📖✨';
         if (singleBtn) singleBtn.innerText = '🔮 TRIỆU HỒI PHÁP SƯ x1';
         if (multiBtn) multiBtn.innerText = '🌟 TRIỆU HỒI PHÁP SƯ x10';
@@ -4750,7 +4773,7 @@ html, body {
       if (pFill) pFill.style.width = `${Math.min(100, (pCount / 1000) * 100)}%`;
 
       const allChars = typeof CHARACTERS !== 'undefined' ? Object.keys(CHARACTERS) : [];
-      const totalChars = allChars.length || 39;
+      const totalChars = allChars.length || 40;
       const owned = g.unlockedCharacters ? g.unlockedCharacters.size : 4;
       if (pRew) {
         if (owned >= totalChars) {
@@ -5435,9 +5458,83 @@ html, body {
       const slider = document.getElementById('sliderSpeed');
       if (slider) slider.value = Math.round(spd * 100);
 
-      document.querySelectorAll('.preset-btn').forEach(btn => {
+      document.querySelectorAll('.speed-presets:not(.zoom-presets) .preset-btn').forEach(btn => {
+        if (!btn.dataset.speed) return;
         const bSpd = parseFloat(btn.dataset.speed);
         if (Math.abs(bSpd - spd) < 0.05) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    function changeMapZoom(val) {
+      const z = parseFloat(val) / 100;
+      setMapZoomPreset(z);
+    }
+
+    function setMapZoomPreset(zoom) {
+      zoom = Math.max(0.65, Math.min(1.35, parseFloat(zoom)));
+      zoom = Math.round(zoom * 100) / 100;
+      const g = ensureGameInstance();
+      if (g) {
+        g.mapZoom = zoom;
+        g.saveSettings();
+      }
+      updateMapZoomUI(zoom);
+    }
+
+    function adjustMapZoomStep(delta) {
+      const g = ensureGameInstance();
+      const current = (g && g.mapZoom) ? g.mapZoom : 1.0;
+      setMapZoomPreset(current + delta);
+    }
+
+    function cycleZoomToggle() {
+      const g = ensureGameInstance();
+      if (g) {
+        const zoomLevels = [1.0, 0.85, 0.75, 1.25, 1.15];
+        let current = g.mapZoom || 1.0;
+        let next = 1.0;
+        for (let i = 0; i < zoomLevels.length; i++) {
+          if (Math.abs(zoomLevels[i] - current) < 0.04) {
+            next = zoomLevels[(i + 1) % zoomLevels.length];
+            break;
+          }
+        }
+        if (next === 1.0 && Math.abs(current - 1.0) < 0.04) {
+          next = 0.85;
+        }
+        setMapZoomPreset(next);
+      }
+    }
+
+    function updateMapZoomUI(zoom) {
+      zoom = Math.round(zoom * 100) / 100;
+      const zoomText = document.getElementById('zoomValText');
+      if (zoomText) {
+        let label = `${zoom.toFixed(2)}x`;
+        if (Math.abs(zoom - 0.75) < 0.03) label = '0.75x (Rộng / Xa)';
+        else if (Math.abs(zoom - 0.85) < 0.03) label = '0.85x (Bao Quát)';
+        else if (Math.abs(zoom - 1.0) < 0.03) label = '1.0x (Chuẩn)';
+        else if (Math.abs(zoom - 1.15) < 0.03) label = '1.15x';
+        else if (Math.abs(zoom - 1.25) < 0.03) label = '1.25x (Gần)';
+        zoomText.innerText = label;
+      }
+
+      const hudBtn = document.getElementById('btnZoomToggle');
+      if (hudBtn) {
+        hudBtn.innerText = '🔍 ' + zoom.toFixed(2) + 'x';
+      }
+
+      const slider = document.getElementById('sliderMapZoom');
+      if (slider) slider.value = Math.round(zoom * 100);
+
+      document.querySelectorAll('.zoom-presets .preset-btn').forEach(btn => {
+        if (!btn.dataset.zoom) return;
+        const bZoom = parseFloat(btn.dataset.zoom);
+        if (Math.abs(bZoom - zoom) < 0.03) {
           btn.classList.add('active');
         } else {
           btn.classList.remove('active');
@@ -5740,6 +5837,8 @@ html, body {
       updateShakeUI();
       const spd = (g && g.gameSpeed) || 1.0;
       updateSpeedUI(spd);
+      const zoom = (g && g.mapZoom) || 1.0;
+      updateMapZoomUI(zoom);
     }
 
     function openSettingsModal() {
