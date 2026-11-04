@@ -139,40 +139,9 @@ const Sprites = {
     ctx.restore();
   },
 
-  // GROUND DETAILS (Cỏ 3 lá / Vết nứt dung nham ma pháp)
+  // GROUND DETAILS (Integrated into Infinite Procedural drawWorldBackground in game.js)
   drawGroundDetails(ctx, camera, screenW, screenH, tick, isUnderworld) {
-    const gridSize = 350;
-    const startX = Math.floor(camera.x / gridSize) * gridSize;
-    const startY = Math.floor(camera.y / gridSize) * gridSize;
-    const endX = camera.x + screenW + gridSize;
-    const endY = camera.y + screenH + gridSize;
-
-    for (let gx = startX; gx < endX; gx += gridSize) {
-      for (let gy = startY; gy < endY; gy += gridSize) {
-        const seed = Math.sin(gx * 12.9898 + gy * 78.233) * 43758.5453;
-        const offsetX = (Math.abs(seed) % 250);
-        const offsetY = (Math.abs(seed * 1.5) % 250);
-        const x = gx + offsetX;
-        const y = gy + offsetY;
-
-        if (isUnderworld) {
-          ctx.strokeStyle = 'rgba(239, 68, 68, 0.22)';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(x - 10, y);
-          ctx.lineTo(x + 4, y - 5);
-          ctx.lineTo(x + 12, y + 4);
-          ctx.stroke();
-        } else {
-          ctx.fillStyle = 'rgba(34, 197, 94, 0.2)';
-          ctx.beginPath();
-          ctx.arc(x - 3, y - 3, 2.5, 0, Math.PI * 2);
-          ctx.arc(x + 3, y - 3, 2.5, 0, Math.PI * 2);
-          ctx.arc(x, y + 3, 2.5, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-    }
+    // Ground details are now fully handled by the 3-Layer Procedural Biome system in game.js
   },
 
   // AMBIENT PARTICLES (Lá bay, đốm sáng mana trôi bồng bềnh)
@@ -211,6 +180,13 @@ const Sprites = {
   drawPlayerSprite(ctx, p, tick) {
     if (!p) return;
     const cid = p.charId || 'asta';
+    const scale = p.isPreview ? 1.0 : (p.spriteScale || 0.74); // Compact hero size (~26% smaller for optimal battlefield view)
+
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.scale(scale, scale);
+    ctx.translate(-p.x, -p.y);
+
     switch (cid) {
       case 'asta':
       case 'black_asta':
@@ -277,6 +253,8 @@ const Sprites = {
         this.drawJulius ? this.drawJulius(ctx, p, tick) : this.drawAsta(ctx, p, tick);
         break;
     }
+
+    ctx.restore();
   },
 
   // 1. ASTA (Tam Diệp -> Ngũ Diệp Thảo / Black Asta)

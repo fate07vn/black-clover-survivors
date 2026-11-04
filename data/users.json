@@ -9,8 +9,8 @@
       "lastLogin": "2026-11-04T04:52:08.316Z",
       "saveData": {
         "currency": {
-          "coins": 944278,
-          "tickets": 83,
+          "coins": 950101,
+          "tickets": 112,
           "purpleTickets": 5,
           "diamonds": 19
         },
@@ -144,7 +144,7 @@
             },
             "charmy_feast_box": {
               "star": 3,
-              "count": 39
+              "count": 40
             },
             "yami_dark_pipe": {
               "star": 3,
@@ -176,7 +176,7 @@
             },
             "yggdrasil_life_seed": {
               "star": 3,
-              "count": 9
+              "count": 10
             },
             "lucifero_demon_heart": {
               "star": 3,
@@ -214,7 +214,7 @@
           "sensitivity": 1
         }
       },
-      "lastSaved": "2026-11-03T20:07:28.496Z",
+      "lastSaved": "2026-11-04T11:01:30.749Z",
       "activeToken": "1538edb95b8a5655a6db9fc98a2b43b3763f2ed6ef94483a"
     },
     "lo1": {

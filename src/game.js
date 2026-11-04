@@ -1573,7 +1573,7 @@ class Game {
       y: this.worldHeight / 2,
       vx: 0,
       vy: 0,
-      radius: 14,
+      radius: 11,
       facing: 1,
       isMoving: false,
 
@@ -2971,8 +2971,7 @@ class Game {
       else if (mx < 0) p.facing = -1;
     }
 
-    p.x = Math.max(50, Math.min(this.worldWidth - 50, p.x));
-    p.y = Math.max(50, Math.min(this.worldHeight - 50, p.y));
+    // Infinite Procedural Map: Player moves freely without boundary clamping!
 
     if (p.dashTimer > 0) p.dashTimer -= dt;
     if (p.dashDurationTimer > 0) {
@@ -2998,16 +2997,16 @@ class Game {
       console.error('Artifacts update error:', artErr);
     }
 
-    // Periodic chest spawning across the map
+    // Periodic chest spawning across the map (Infinite Procedural Map: spawns around player)
     this.chestSpawnTimer = (this.chestSpawnTimer || 35) - dt;
     if (this.chestSpawnTimer <= 0) {
       this.chestSpawnTimer = 35 + Math.random() * 15;
       const existingChests = this.drops.filter(d => d.type === 'chest').length;
       if (existingChests < 4) {
         const angle = Math.random() * Math.PI * 2;
-        const dist = 360 + Math.random() * 400;
-        const cx = Math.max(100, Math.min(this.worldWidth - 100, p.x + Math.cos(angle) * dist));
-        const cy = Math.max(100, Math.min(this.worldHeight - 100, p.y + Math.sin(angle) * dist));
+        const dist = 360 + Math.random() * 400; // 360 - 760px radius
+        const cx = p.x + Math.cos(angle) * dist;
+        const cy = p.y + Math.sin(angle) * dist;
         this.spawnDrop(cx, cy, 'chest', 100);
         this.spells.floatingTexts.push({ x: p.x, y: p.y - 40, text: `🎁 RƯƠNG MA ĐẠO XUẤT HIỆN!`, color: '#fbbf24', size: 16, life: 1.2 });
       }
@@ -3266,61 +3265,871 @@ class Game {
     }
   }
 
+  // ==========================================
+  // INFINITE PROCEDURAL MAP SYSTEM (BLACK CLOVER)
+  // ==========================================
+  hashCoords(cx, cy, seed = 0) {
+    let h = (cx * 374761393 + cy * 668265263 + seed * 1442695040888963407) ^ 0x5bf03635;
+    h = Math.imul(h ^ (h >>> 13), 1274126177);
+    return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+  }
+
   drawWorldBackground(ctx, isUnderworld) {
+    const cam = this.camera;
+    const cw = this.canvas.width;
+    const ch = this.canvas.height;
+
+    // ----------------------------------------------------
+    // LỚP A: ĐỊA HÌNH NỀN (Terrain Tiles 200x200 & Cobblestone Paths)
+    // ----------------------------------------------------
     const tileSize = 200;
-    const startX = Math.floor(this.camera.x / tileSize) * tileSize;
-    const startY = Math.floor(this.camera.y / tileSize) * tileSize;
-    const endX = this.camera.x + this.canvas.width + tileSize;
-    const endY = this.camera.y + this.canvas.height + tileSize;
+    const tStartX = Math.floor((cam.x - 200) / tileSize) * tileSize;
+    const tStartY = Math.floor((cam.y - 200) / tileSize) * tileSize;
+    const tEndX = cam.x + cw + 200;
+    const tEndY = cam.y + ch + 200;
 
-    for (let x = startX; x < endX; x += tileSize) {
-      for (let y = startY; y < endY; y += tileSize) {
-        const checker = (Math.floor(x / tileSize) + Math.floor(y / tileSize)) % 2 === 0;
+    const grassColors = ['#111f16', '#15241b', '#0e1a13', '#192b1f', '#132118'];
+    const basaltColors = ['#161216', '#120e12', '#1a1419', '#0f0c0f', '#1e141a'];
 
-        if (isUnderworld) {
-          // MAP 2: Obsidian & Molten Ground
-          ctx.fillStyle = checker ? '#1c1917' : '#0c0a09';
+    for (let x = tStartX; x < tEndX; x += tileSize) {
+      for (let y = tStartY; y < tEndY; y += tileSize) {
+        const cx = Math.floor(x / tileSize);
+        const cy = Math.floor(y / tileSize);
+        const hTile = this.hashCoords(cx, cy, 1);
+
+        // Con đường lát đá cổ (Cobblestone Paths)
+        const isPathX = Math.abs(((cy % 16) + 16) % 16 - 8) <= 1 && this.hashCoords(cx, Math.floor(cy / 16), 5) < 0.85;
+        const isPathY = Math.abs(((cx % 16) + 16) % 16 - 8) <= 1 && this.hashCoords(Math.floor(cx / 16), cy, 6) < 0.85;
+        const isPath = isPathX || isPathY;
+
+        if (isPath) {
+          // Cobblestone Path Texture
+          ctx.fillStyle = isUnderworld ? '#20181b' : '#292524';
           ctx.fillRect(x, y, tileSize, tileSize);
-          ctx.strokeStyle = 'rgba(239, 68, 68, 0.06)';
-          ctx.lineWidth = 1.5;
-          ctx.strokeRect(x, y, tileSize, tileSize);
+
+          // Render individual stone slabs for rich detail
+          const stoneH = this.hashCoords(cx, cy, 7);
+          ctx.strokeStyle = isUnderworld ? 'rgba(239, 68, 68, 0.08)' : 'rgba(255, 255, 255, 0.05)';
+          ctx.lineWidth = 1;
+          for (let si = 0; si < 4; si++) {
+            const stoneX = x + 10 + (si % 2) * 90;
+            const stoneY = y + 10 + Math.floor(si / 2) * 90;
+            const shade = 0.03 + ((stoneH + si * 0.2) % 1) * 0.06;
+            ctx.fillStyle = isUnderworld ? `rgba(244, 63, 94, ${shade})` : `rgba(214, 211, 209, ${shade})`;
+            ctx.fillRect(stoneX, stoneY, 80, 80);
+            ctx.strokeRect(stoneX, stoneY, 80, 80);
+          }
         } else {
-          // MAP 1: Clover Grass & Paving
-          ctx.fillStyle = checker ? '#141a18' : '#0e1412';
+          // Natural Terrain Tile
+          const palette = isUnderworld ? basaltColors : grassColors;
+          const colorIdx = Math.floor(hTile * palette.length);
+          ctx.fillStyle = palette[colorIdx];
           ctx.fillRect(x, y, tileSize, tileSize);
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+
+          // Subtle natural ground texture accents
+          ctx.strokeStyle = isUnderworld ? 'rgba(220, 38, 38, 0.035)' : 'rgba(255, 255, 255, 0.02)';
           ctx.lineWidth = 1;
           ctx.strokeRect(x, y, tileSize, tileSize);
         }
       }
     }
 
-    // Center Grand Magic Seal
-    const centerX = this.worldWidth / 2;
-    const centerY = this.worldHeight / 2;
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.rotate(this.tick * 0.005);
+    // ----------------------------------------------------
+    // ĐẠI PHÁP TRẬN CỔ ĐẠI (Grand Magic Seals mỗi vùng 1600x1600)
+    // ----------------------------------------------------
+    const sealGrid = 1600;
+    const sStartX = Math.floor((cam.x - 450) / sealGrid) * sealGrid;
+    const sStartY = Math.floor((cam.y - 450) / sealGrid) * sealGrid;
+    const sEndX = cam.x + cw + 450;
+    const sEndY = cam.y + ch + 450;
 
-    if (isUnderworld) {
-      ctx.strokeStyle = 'rgba(220, 38, 38, 0.4)';
+    for (let sx = sStartX; sx < sEndX; sx += sealGrid) {
+      for (let sy = sStartY; sy < sEndY; sy += sealGrid) {
+        const sealX = sx + 800;
+        const sealY = sy + 800;
+
+        // Skip if outside viewport
+        if (Math.hypot(sealX - (cam.x + cw / 2), sealY - (cam.y + ch / 2)) > Math.max(cw, ch) + 380) continue;
+
+        ctx.save();
+        ctx.translate(sealX, sealY);
+        ctx.rotate(this.tick * 0.005);
+
+        const sealRad = 280;
+        const ringColor = isUnderworld ? 'rgba(220, 38, 38, 0.35)' : 'rgba(245, 158, 11, 0.32)';
+        const runeColor = isUnderworld ? 'rgba(168, 85, 247, 0.28)' : 'rgba(52, 211, 153, 0.26)';
+
+        // Concentric Magic Rings
+        ctx.strokeStyle = ringColor;
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.arc(0, 0, sealRad, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(0, 0, sealRad * 0.82, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = runeColor;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.arc(0, 0, sealRad * 0.55, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Star of David / Octagram Arcane Geometry inside the seal
+        const pts = 8;
+        ctx.beginPath();
+        for (let p = 0; p < pts * 2; p++) {
+          const r = p % 2 === 0 ? sealRad * 0.8 : sealRad * 0.42;
+          const ang = (Math.PI / pts) * p;
+          const px = Math.cos(ang) * r;
+          const py = Math.sin(ang) * r;
+          if (p === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.stroke();
+
+        // 8 Perimeter Rune Circles
+        ctx.fillStyle = ringColor;
+        for (let r = 0; r < 8; r++) {
+          const ang = (Math.PI / 4) * r + this.tick * 0.003;
+          const rx = Math.cos(ang) * (sealRad * 0.91);
+          const ry = Math.sin(ang) * (sealRad * 0.91);
+          ctx.beginPath();
+          ctx.arc(rx, ry, 6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Central Core Motif (Clover on Map 1, Demon Eye on Map 2)
+        if (isUnderworld) {
+          ctx.fillStyle = 'rgba(239, 68, 68, 0.4)';
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 32, 16, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#09090b';
+          ctx.beginPath();
+          ctx.arc(0, 0, 7, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = 'rgba(245, 158, 11, 0.4)';
+          ctx.beginPath();
+          ctx.arc(0, 0, 18, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        ctx.restore();
+      }
+    }
+
+    // ----------------------------------------------------
+    // LỚP B: CHI TIẾT MÔI TRƯỜNG NHỎ (Micro Details 150x150)
+    // ----------------------------------------------------
+    const microSize = 150;
+    const mStartX = Math.floor((cam.x - 150) / microSize) * microSize;
+    const mStartY = Math.floor((cam.y - 150) / microSize) * microSize;
+    const mEndX = cam.x + cw + 150;
+    const mEndY = cam.y + ch + 150;
+
+    for (let x = mStartX; x < mEndX; x += microSize) {
+      for (let y = mStartY; y < mEndY; y += microSize) {
+        const mcx = Math.floor(x / microSize);
+        const mcy = Math.floor(y / microSize);
+        const hVal = this.hashCoords(mcx, mcy, 10);
+        const px = x + 25 + this.hashCoords(mcx, mcy, 11) * 100;
+        const py = y + 25 + this.hashCoords(mcx, mcy, 12) * 100;
+
+        if (isUnderworld) {
+          // MAP 2: UNDERWORLD PALACE DETAILS
+          if (hVal < 0.28) {
+            // 1. Khe Nứt Dung Nham (Molten Lava Cracks)
+            const pulse = 0.55 + 0.45 * Math.sin(this.tick * 0.06 + px * 0.05);
+            ctx.strokeStyle = `rgba(249, 115, 22, ${pulse * 0.8})`;
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(px - 14, py - 4);
+            ctx.lineTo(px - 2, py + 8);
+            ctx.lineTo(px + 12, py + 2);
+            ctx.lineTo(px + 22, py + 14);
+            ctx.stroke();
+
+            // Inner hot core
+            ctx.strokeStyle = `rgba(254, 240, 138, ${pulse * 0.9})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          } else if (hVal < 0.52) {
+            // 2. Vũng Huyết Ma Pháp Sôi Sục (Bubbling Blood Mana Pool)
+            ctx.fillStyle = 'rgba(159, 18, 57, 0.45)';
+            ctx.beginPath();
+            ctx.ellipse(px, py, 18, 11, 0.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Bubbles popping
+            const bPhase = (this.tick * 0.04 + px * 0.1) % 1;
+            ctx.strokeStyle = 'rgba(244, 63, 94, 0.6)';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.arc(px + Math.cos(px) * 6, py + Math.sin(py) * 3, 2 + bPhase * 4, 0, Math.PI * 2);
+            ctx.stroke();
+          } else if (hVal < 0.74) {
+            // 3. Mảnh Vỡ Không Gian Tím Đen (Void Space Shards)
+            const floatY = py + Math.sin(this.tick * 0.06 + px * 0.1) * 5;
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.65)';
+            ctx.beginPath();
+            ctx.moveTo(px, floatY - 12);
+            ctx.lineTo(px + 7, floatY);
+            ctx.lineTo(px, floatY + 9);
+            ctx.lineTo(px - 6, floatY - 2);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.strokeStyle = '#c084fc';
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          } else {
+            // 4. Cụm Gai Xương Nhỏ (Small Bone Spikes)
+            ctx.fillStyle = '#e2e8f0';
+            ctx.beginPath();
+            ctx.moveTo(px - 6, py + 6);
+            ctx.lineTo(px - 2, py - 12);
+            ctx.lineTo(px + 1, py + 6);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.fillStyle = '#cbd5e1';
+            ctx.beginPath();
+            ctx.moveTo(px + 2, py + 6);
+            ctx.lineTo(px + 7, py - 8);
+            ctx.lineTo(px + 10, py + 6);
+            ctx.closePath();
+            ctx.fill();
+          }
+        } else {
+          // MAP 1: CLOVER PLAINS DETAILS
+          if (hVal < 0.35) {
+            // 1. Khóm Cỏ Ba Lá & Cỏ Bốn Lá Hiếm
+            const isFourLeaf = this.hashCoords(mcx, mcy, 13) < 0.14; // 14% chance 4-Leaf Clover!
+            const count = isFourLeaf ? 4 : 3;
+            const rLeaf = isFourLeaf ? 5.5 : 4.5;
+
+            if (isFourLeaf) {
+              // Golden Aura for 4-Leaf Clover
+              const auraPulse = 0.4 + 0.3 * Math.sin(this.tick * 0.08 + px);
+              ctx.fillStyle = `rgba(250, 204, 21, ${auraPulse})`;
+              ctx.beginPath();
+              ctx.arc(px, py, 14, 0, Math.PI * 2);
+              ctx.fill();
+            }
+
+            // Leaves
+            ctx.fillStyle = isFourLeaf ? '#10b981' : '#22c55e';
+            for (let l = 0; l < count; l++) {
+              const ang = (Math.PI * 2 / count) * l;
+              const lx = px + Math.cos(ang) * (rLeaf + 1.5);
+              const ly = py + Math.sin(ang) * (rLeaf + 1.5);
+              ctx.beginPath();
+              ctx.arc(lx, ly, rLeaf, 0, Math.PI * 2);
+              ctx.fill();
+            }
+
+            // Stem & gold accents for 4-leaf
+            ctx.strokeStyle = isFourLeaf ? '#fbbf24' : '#15803d';
+            ctx.lineWidth = isFourLeaf ? 1.5 : 1;
+            ctx.beginPath();
+            ctx.moveTo(px, py);
+            ctx.lineTo(px - 2, py + 7);
+            ctx.stroke();
+          } else if (hVal < 0.54) {
+            // 2. Hoa Ma Thảo Xanh Lam (Blue Mana Flowers)
+            ctx.fillStyle = '#38bdf8';
+            for (let f = 0; f < 5; f++) {
+              const a = (Math.PI * 2 / 5) * f;
+              ctx.beginPath();
+              ctx.arc(px + Math.cos(a) * 4, py + Math.sin(a) * 4, 3, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            // Yellow mana pollen center
+            ctx.fillStyle = '#fef08a';
+            ctx.beginPath();
+            ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (hVal < 0.72) {
+            // 3. Phiến Đá Rêu Phong (Mossy Ancient Stones)
+            ctx.fillStyle = '#475569';
+            ctx.beginPath();
+            ctx.ellipse(px, py, 12, 8, 0.3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Emerald moss on top
+            ctx.fillStyle = '#16a34a';
+            ctx.beginPath();
+            ctx.ellipse(px - 2, py - 3, 7, 4, 0.2, 0, Math.PI * 2);
+            ctx.fill();
+          } else if (hVal < 0.88) {
+            // 4. Bụi Cây Đung Đưa (Swaying Bushes)
+            const sway = Math.sin(this.tick * 0.05 + px * 0.02) * 3;
+            ctx.fillStyle = '#1e3a29';
+            ctx.beginPath();
+            ctx.arc(px + sway, py, 13, 0, Math.PI * 2);
+            ctx.arc(px + 8 + sway, py - 4, 10, 0, Math.PI * 2);
+            ctx.arc(px - 7 + sway, py - 2, 9, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // 5. Đom Đóm Mana Lơ Lửng (Floating Mana Fireflies)
+            const fx = px + Math.sin(this.tick * 0.07 + py) * 9;
+            const fy = py + Math.cos(this.tick * 0.06 + px) * 9;
+            const fAlpha = 0.5 + 0.45 * Math.sin(this.tick * 0.09 + px);
+
+            ctx.fillStyle = `rgba(254, 240, 138, ${fAlpha * 0.3})`;
+            ctx.beginPath();
+            ctx.arc(fx, fy, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#fef08a';
+            ctx.beginPath();
+            ctx.arc(fx, fy, 2.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+    }
+
+    // ----------------------------------------------------
+    // LỚP C: KỲ QUAN BLACK CLOVER (Iconic Landmarks 1200x1200)
+    // ----------------------------------------------------
+    const macroSize = 1200;
+    const lStartX = Math.floor((cam.x - 450) / macroSize) * macroSize;
+    const lStartY = Math.floor((cam.y - 450) / macroSize) * macroSize;
+    const lEndX = cam.x + cw + 450;
+    const lEndY = cam.y + ch + 450;
+
+    for (let lx = lStartX; lx < lEndX; lx += macroSize) {
+      for (let ly = lStartY; ly < lEndY; ly += macroSize) {
+        const mcx = Math.floor(lx / macroSize);
+        const mcy = Math.floor(ly / macroSize);
+        const lType = Math.floor(this.hashCoords(mcx, mcy, 33) * 3);
+        const lPosX = lx + 600 + (this.hashCoords(mcx, mcy, 31) - 0.5) * 400;
+        const lPosY = ly + 600 + (this.hashCoords(mcx, mcy, 32) - 0.5) * 400;
+
+        // Skip rendering if landmark is far outside camera view
+        if (lPosX < cam.x - 300 || lPosX > cam.x + cw + 300 || lPosY < cam.y - 300 || lPosY > cam.y + ch + 300) {
+          continue;
+        }
+
+        if (isUnderworld) {
+          if (lType === 0) this.drawQliphothRoots(ctx, lPosX, lPosY);
+          else if (lType === 1) this.drawZenonBones(ctx, lPosX, lPosY);
+          else this.drawGravityCrater(ctx, lPosX, lPosY);
+        } else {
+          if (lType === 0) this.drawDemonSkull(ctx, lPosX, lPosY);
+          else if (lType === 1) this.drawElfSanctuary(ctx, lPosX, lPosY);
+          else this.drawManaSpring(ctx, lPosX, lPosY);
+        }
+      }
+    }
+  }
+
+  // ----------------------------------------------------
+  // LANDMARK 1: HỘP SỌ MA THẦN CỔ ĐẠI LÀNG HAGE (ANCIENT DEMON SKULL)
+  // ----------------------------------------------------
+  drawDemonSkull(ctx, x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    // Ground Shadow / Crusted Ground
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.beginPath();
+    ctx.ellipse(0, 45, 140, 50, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Giant Curving Demon Horns (Left & Right)
+    ctx.fillStyle = '#334155';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 3;
+
+    // Left Horn
+    ctx.beginPath();
+    ctx.moveTo(-50, -35);
+    ctx.bezierCurveTo(-110, -75, -145, -35, -135, 15);
+    ctx.bezierCurveTo(-155, -20, -115, -95, -42, -50);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Right Horn
+    ctx.beginPath();
+    ctx.moveTo(50, -35);
+    ctx.bezierCurveTo(110, -75, 145, -35, 135, 15);
+    ctx.bezierCurveTo(155, -20, 115, -95, 42, -50);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Weathered Ancient Skull Dome
+    ctx.fillStyle = '#cbd5e1';
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.ellipse(0, -10, 68, 55, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Snout / Teeth Area
+    ctx.fillStyle = '#94a3b8';
+    ctx.beginPath();
+    ctx.rect(-34, 25, 68, 28);
+    ctx.fill();
+    ctx.stroke();
+
+    // Weathering cracks across bone
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(-20, -45);
+    ctx.lineTo(-12, -25);
+    ctx.lineTo(-24, -5);
+    ctx.moveTo(15, -40);
+    ctx.lineTo(25, -20);
+    ctx.stroke();
+
+    // 4 Hollow Sunken Eye Cavities
+    ctx.fillStyle = '#0f172a';
+    // Upper eyes
+    ctx.beginPath();
+    ctx.ellipse(-26, -5, 14, 18, -0.15, 0, Math.PI * 2);
+    ctx.ellipse(26, -5, 14, 18, 0.15, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Lower demonic eye slits
+    ctx.beginPath();
+    ctx.ellipse(-25, 16, 8, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(25, 16, 8, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Ancient Demon Slayer Sword Plunged into the Skull Crown
+    ctx.fillStyle = '#64748b';
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 2.5;
+
+    // Crossguard
+    ctx.beginPath();
+    ctx.rect(-36, -72, 72, 9);
+    ctx.fill();
+    ctx.stroke();
+
+    // Pommel & Hilt
+    ctx.beginPath();
+    ctx.rect(-6, -108, 12, 36);
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, -114, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Rusted Blade plunged deep into bone
+    ctx.fillStyle = '#475569';
+    ctx.beginPath();
+    ctx.moveTo(-16, -63);
+    ctx.lineTo(16, -63);
+    ctx.lineTo(8, -25);
+    ctx.lineTo(-8, -25);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Tiny Statue of 1st Wizard King Lumiere standing atop the skull
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(0, -128, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fef08a';
+    ctx.fillRect(-4, -123, 8, 9);
+
+    // Glowing Golden Aura of Lumiere
+    const lumPulse = 0.35 + 0.25 * Math.sin(this.tick * 0.08);
+    ctx.fillStyle = `rgba(250, 204, 21, ${lumPulse})`;
+    ctx.beginPath();
+    ctx.arc(0, -125, 16, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Landmark Name Banner
+    ctx.font = 'bold 11px Nunito, sans-serif';
+    ctx.fillStyle = 'rgba(254, 240, 138, 0.85)';
+    ctx.textAlign = 'center';
+    ctx.fillText('⚔️ HỘP SỌ MA THẦN HAGE', 0, 68);
+
+    ctx.restore();
+  }
+
+  // ----------------------------------------------------
+  // LANDMARK 2: TÀN TÍCH ĐỀN THỜ YÊU TINH (ELF SANCTUARY RUINS)
+  // ----------------------------------------------------
+  drawElfSanctuary(ctx, x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    // Circular Cobblestone Foundation
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.5)';
+    ctx.beginPath();
+    ctx.arc(0, 0, 130, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(52, 211, 153, 0.28)';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Inner Elven Arcane Ring
+    ctx.strokeStyle = 'rgba(16, 185, 129, 0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(0, 0, 85, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 6 Marble Pillars (Some broken, some covered in emerald ivy)
+    for (let p = 0; p < 6; p++) {
+      const ang = (Math.PI * 2 / 6) * p;
+      const px = Math.cos(ang) * 105;
+      const py = Math.sin(ang) * 105;
+      const isBroken = p % 2 === 1;
+
+      // Base pedestal
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(px - 10, py - 6, 20, 12);
+
+      // Pillar Column
+      ctx.fillStyle = '#e2e8f0';
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1.5;
+      const pHeight = isBroken ? 20 : 42;
+      ctx.fillRect(px - 7, py - pHeight, 14, pHeight);
+      ctx.strokeRect(px - 7, py - pHeight, 14, pHeight);
+
+      // Ivy vines on standing pillars
+      if (!isBroken) {
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(px - 5, py);
+        ctx.quadraticCurveTo(px + 6, py - 18, px - 4, py - 38);
+        ctx.stroke();
+      } else {
+        // Tumbled stone block nearby
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillRect(px + 8, py - 4, 11, 9);
+      }
+    }
+
+    // Center Sacred Monolith Stone Tablet
+    ctx.fillStyle = '#1e293b';
+    ctx.strokeStyle = '#059669';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.rect(-16, -26, 32, 52);
+    ctx.fill();
+    ctx.stroke();
+
+    // Glowing Elven Mana Runes
+    const pulse = 0.5 + 0.45 * Math.sin(this.tick * 0.08);
+    ctx.fillStyle = `rgba(52, 211, 153, ${pulse})`;
+    ctx.beginPath();
+    ctx.arc(0, -6, 6, 0, Math.PI * 2);
+    ctx.arc(0, 10, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Ambient Mana Pillar
+    ctx.fillStyle = `rgba(16, 185, 129, ${pulse * 0.15})`;
+    ctx.beginPath();
+    ctx.arc(0, 0, 45, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Name banner
+    ctx.font = 'bold 11px Nunito, sans-serif';
+    ctx.fillStyle = 'rgba(110, 231, 183, 0.9)';
+    ctx.textAlign = 'center';
+    ctx.fillText('🏛️ TÀN TÍCH ĐỀN THỜ ELF', 0, 85);
+
+    ctx.restore();
+  }
+
+  // ----------------------------------------------------
+  // LANDMARK 3: GIẾNG MANA HOÀNG GIA (ROYAL MANA SPRING)
+  // ----------------------------------------------------
+  drawManaSpring(ctx, x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    // Stone Masonry Basin Border
+    ctx.fillStyle = '#334155';
+    ctx.beginPath();
+    ctx.arc(0, 0, 95, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // 4 Clover Cornerstone Blocks
+    for (let c = 0; c < 4; c++) {
+      const a = (Math.PI / 2) * c;
+      const cx = Math.cos(a) * 95;
+      const cy = Math.sin(a) * 95;
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Sacred Crystal Water
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.arc(0, 0, 82, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Expanding Continuous Water Ripples
+    const ripPhase1 = (this.tick * 0.02) % 1;
+    const ripPhase2 = (this.tick * 0.02 + 0.5) % 1;
+
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 15 + ripPhase1 * 60, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
+    ctx.beginPath();
+    ctx.arc(0, 0, 15 + ripPhase2 * 60, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // 3 Floating Golden Lotus Blooms
+    for (let l = 0; l < 3; l++) {
+      const la = (Math.PI * 2 / 3) * l + 0.4;
+      const lx = Math.cos(la) * 44;
+      const ly = Math.sin(la) * 44;
+
+      ctx.fillStyle = '#fde047';
+      for (let p = 0; p < 6; p++) {
+        const pa = (Math.PI / 3) * p;
+        ctx.beginPath();
+        ctx.arc(lx + Math.cos(pa) * 5, ly + Math.sin(pa) * 5, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = '#f97316';
+      ctx.beginPath();
+      ctx.arc(lx, ly, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Glowing Mana Spring Core
+    const pulse = 0.4 + 0.35 * Math.sin(this.tick * 0.07);
+    ctx.fillStyle = `rgba(125, 211, 252, ${pulse * 0.28})`;
+    ctx.beginPath();
+    ctx.arc(0, 0, 50, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Name Banner
+    ctx.font = 'bold 11px Nunito, sans-serif';
+    ctx.fillStyle = 'rgba(186, 230, 253, 0.95)';
+    ctx.textAlign = 'center';
+    ctx.fillText('💧 GIẾNG MANA HOÀNG GIA', 0, 75);
+
+    ctx.restore();
+  }
+
+  // ----------------------------------------------------
+  // LANDMARK 4: RỄ CÂY ÁC QUỶ QLIPHOTH (TREE OF QLIPHOTH ROOTS)
+  // ----------------------------------------------------
+  drawQliphothRoots(ctx, x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    // Dark Abyssal Ground Crack Base
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+    ctx.beginPath();
+    ctx.ellipse(0, 20, 130, 65, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 3 Massive Twisted Demonic Roots
+    ctx.strokeStyle = '#18181b';
+    ctx.lineWidth = 38;
+    ctx.beginPath();
+    ctx.moveTo(-110, 50);
+    ctx.quadraticCurveTo(-45, -35, 0, -80);
+    ctx.quadraticCurveTo(55, -25, 120, 60);
+    ctx.moveTo(-20, 70);
+    ctx.quadraticCurveTo(15, 10, 0, -80);
+    ctx.stroke();
+
+    // Pulsing Demonic Blood Veins along the roots
+    const veinPulse = 0.5 + 0.45 * Math.sin(this.tick * 0.08);
+    ctx.strokeStyle = `rgba(239, 68, 68, ${veinPulse})`;
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.moveTo(-100, 48);
+    ctx.quadraticCurveTo(-40, -30, 0, -75);
+    ctx.quadraticCurveTo(50, -20, 110, 58);
+    ctx.moveTo(-15, 65);
+    ctx.quadraticCurveTo(12, 10, 0, -75);
+    ctx.stroke();
+
+    // Vein Junction Nodes (Blood Glow)
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.arc(-42, -28, 6, 0, Math.PI * 2);
+    ctx.arc(48, -18, 6, 0, Math.PI * 2);
+    ctx.arc(0, -75, 8, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Dark Purple Miasma Fog
+    ctx.fillStyle = `rgba(88, 28, 135, ${veinPulse * 0.25})`;
+    ctx.beginPath();
+    ctx.arc(0, 0, 85, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Name Banner
+    ctx.font = 'bold 11px Nunito, sans-serif';
+    ctx.fillStyle = 'rgba(248, 113, 113, 0.95)';
+    ctx.textAlign = 'center';
+    ctx.fillText('🩸 RỄ CÂY ÁC QUỶ QLIPHOTH', 0, 85);
+
+    ctx.restore();
+  }
+
+  // ----------------------------------------------------
+  // LANDMARK 5: RỪNG GAI XƯƠNG CỦA ZENON (ZENON'S BONE SPIKES)
+  // ----------------------------------------------------
+  drawZenonBones(ctx, x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    // Shattered Ground Crater
+    ctx.fillStyle = '#0c0a09';
+    ctx.beginPath();
+    ctx.ellipse(0, 25, 120, 50, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 8 Colossal Ivory Bone Spikes piercing diagonally into the sky
+    const spikes = [
+      { bx: -60, by: 35, tx: -110, ty: -70, w: 22 },
+      { bx: -35, by: 40, tx: -55, ty: -125, w: 28 },
+      { bx: -10, by: 45, tx: -15, ty: -150, w: 32 },
+      { bx: 15, by: 42, tx: 35, ty: -135, w: 26 },
+      { bx: 45, by: 38, tx: 85, ty: -95, w: 24 },
+      { bx: 70, by: 32, tx: 125, ty: -50, w: 18 },
+      { bx: -85, by: 30, tx: -140, ty: -25, w: 16 }
+    ];
+
+    for (const sp of spikes) {
+      // Main bone body
+      ctx.fillStyle = '#e2e8f0';
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 2.5;
+
+      ctx.beginPath();
+      ctx.moveTo(sp.bx - sp.w / 2, sp.by);
+      ctx.lineTo(sp.tx, sp.ty);
+      ctx.lineTo(sp.bx + sp.w / 2, sp.by);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Sharp bone shadow side
+      ctx.fillStyle = '#94a3b8';
+      ctx.beginPath();
+      ctx.moveTo(sp.bx, sp.by);
+      ctx.lineTo(sp.tx, sp.ty);
+      ctx.lineTo(sp.bx + sp.w / 2, sp.by);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Demonic Blood Streaks on center spike
+    ctx.strokeStyle = '#dc2626';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-15, -135);
+    ctx.lineTo(-12, -70);
+    ctx.lineTo(-8, 10);
+    ctx.stroke();
+
+    // Name Banner
+    ctx.font = 'bold 11px Nunito, sans-serif';
+    ctx.fillStyle = 'rgba(226, 232, 240, 0.95)';
+    ctx.textAlign = 'center';
+    ctx.fillText('💀 RỪNG GAI XƯƠNG ZENON', 0, 75);
+
+    ctx.restore();
+  }
+
+  // ----------------------------------------------------
+  // LANDMARK 6: PHÁP TRẬN TRỌNG LỰC LUCIFERO (GRAVITY SINGULARITY CRATER)
+  // ----------------------------------------------------
+  drawGravityCrater(ctx, x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    // Concentric Fractured Crater Plates
+    ctx.fillStyle = '#1c1917';
+    ctx.beginPath();
+    ctx.arc(0, 0, 125, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.35)';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.fillStyle = '#0c0a09';
+    ctx.beginPath();
+    ctx.arc(0, 0, 85, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(168, 85, 247, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Swirling Crimson / Violet Accretion Disk
+    ctx.save();
+    ctx.rotate(this.tick * 0.04);
+    for (let a = 0; a < 6; a++) {
+      const ang = (Math.PI / 3) * a;
+      ctx.strokeStyle = a % 2 === 0 ? 'rgba(239, 68, 68, 0.6)' : 'rgba(168, 85, 247, 0.5)';
       ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.arc(0, 0, 320, 0, Math.PI * 2);
-      ctx.stroke();
-    } else {
-      ctx.strokeStyle = 'rgba(245, 158, 11, 0.3)';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(0, 0, 280, 0, Math.PI * 2);
+      ctx.arc(0, 0, 48, ang, ang + 0.7);
       ctx.stroke();
     }
     ctx.restore();
 
-    // World Boundary Barrier
-    ctx.strokeStyle = isUnderworld ? '#7c2d12' : '#ef4444';
-    ctx.lineWidth = 6;
-    ctx.strokeRect(0, 0, this.worldWidth, this.worldHeight);
+    // Central Gravity Singularity Void (Pitch Black)
+    ctx.fillStyle = '#000000';
+    ctx.beginPath();
+    ctx.arc(0, 0, 26, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // 6 Shattered Levitating Basalt Boulders bobbing in the gravity field
+    for (let b = 0; b < 6; b++) {
+      const bAng = (Math.PI * 2 / 6) * b + this.tick * 0.015;
+      const bDist = 72;
+      const bob = Math.sin(this.tick * 0.06 + b * 1.5) * 8;
+      const bx = Math.cos(bAng) * bDist;
+      const by = Math.sin(bAng) * bDist + bob;
+
+      ctx.fillStyle = '#44403c';
+      ctx.strokeStyle = '#1c1917';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.rect(bx - 9, by - 9, 18, 18);
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // Name Banner
+    ctx.font = 'bold 11px Nunito, sans-serif';
+    ctx.fillStyle = 'rgba(252, 165, 165, 0.95)';
+    ctx.textAlign = 'center';
+    ctx.fillText('🕳️ HỐ TRỌNG LỰC LUCIFERO', 0, 92);
+
+    ctx.restore();
   }
 
   drawCinematicVignette(ctx) {
@@ -3333,59 +4142,171 @@ class Game {
     ctx.fillRect(0, 0, w, h);
   }
 
+  // ==========================================
+  // MINIMAP RADAR CENTERING ON PLAYER (1400PX RANGE)
+  // ==========================================
   drawMinimap(ctx) {
     if (!this.player) return;
+    const p = this.player;
 
-    const size = 110;
+    const size = 120;
     const margin = 18;
     const rx = this.canvas.width - size - margin;
-    const ry = 68; // Positioned cleanly below top HUD buttons so it never overlaps them!
+    const ry = 68; // Positioned cleanly below top HUD buttons
+    const radius = size / 2;
+    const cx = rx + radius;
+    const cy = ry + radius;
+    const radarRange = 1400; // 1400px radar view around the player
 
     ctx.save();
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-    ctx.strokeStyle = '#f59e0b';
-    ctx.lineWidth = 2;
-    ctx.fillRect(rx, ry, size, size);
-    ctx.strokeRect(rx, ry, size, size);
 
-    const px = rx + (this.player.x / this.worldWidth) * size;
-    const py = ry + (this.player.y / this.worldHeight) * size;
-    ctx.fillStyle = '#4ade80';
+    // Radar Circular Glass Backdrop
+    ctx.fillStyle = 'rgba(10, 15, 29, 0.88)';
     ctx.beginPath();
-    ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
     ctx.fill();
 
-    if (this.currentTarget && this.currentTarget.hp > 0) {
-      const tx = rx + (this.currentTarget.x / this.worldWidth) * size;
-      const ty = ry + (this.currentTarget.y / this.worldHeight) * size;
+    // Outer Gold/Amber Runic Ring
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Concentric Radar Range Rings
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.22)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius * 0.5, 0, Math.PI * 2); // 700px circle
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.15)';
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius * 0.85, 0, Math.PI * 2); // 1200px circle
+    ctx.stroke();
+
+    // Subtle Crosshairs
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.18)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.moveTo(cx - radius * 0.9, cy);
+    ctx.lineTo(cx + radius * 0.9, cy);
+    ctx.moveTo(cx, cy - radius * 0.9);
+    ctx.lineTo(cx, cy + radius * 0.9);
+    ctx.stroke();
+
+    // Rotating Radar Sweep Cone
+    const scanAngle = (this.tick * 0.035) % (Math.PI * 2);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius - 2, scanAngle - 0.35, scanAngle);
+    ctx.lineTo(cx, cy);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.12)';
+    ctx.fill();
+
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(scanAngle) * (radius - 2), cy + Math.sin(scanAngle) * (radius - 2));
+    ctx.stroke();
+    ctx.restore();
+
+    // 1. Pinned Target (Golden circle / Reticle)
+    if (this.currentTarget && this.currentTarget.hp > 0 && !this.currentTarget.isDead) {
+      const tdx = this.currentTarget.x - p.x;
+      const tdy = this.currentTarget.y - p.y;
+      const tDist = Math.hypot(tdx, tdy);
+      const tAng = Math.atan2(tdy, tdx);
+      const clampedR = Math.min(radius - 8, (tDist / radarRange) * (radius - 8));
+      const tx = cx + Math.cos(tAng) * clampedR;
+      const ty = cy + Math.sin(tAng) * clampedR;
+
       ctx.strokeStyle = '#facc15';
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(tx, ty, 5, 0, Math.PI * 2);
+      ctx.arc(tx, ty, 5.5, 0, Math.PI * 2);
       ctx.stroke();
     }
 
+    // 2. Active Boss (Red Marker / Danger Arrow if off-radar)
     const boss = this.enemyManager.bossActive;
     if (boss && boss.hp > 0 && !boss.isDead) {
-      const bx = rx + (boss.x / this.worldWidth) * size;
-      const by = ry + (boss.y / this.worldHeight) * size;
-      ctx.fillStyle = '#ef4444';
-      ctx.beginPath();
-      ctx.arc(bx, by, 5, 0, Math.PI * 2);
-      ctx.fill();
-    }
+      const bdx = boss.x - p.x;
+      const bdy = boss.y - p.y;
+      const bDist = Math.hypot(bdx, bdy);
+      const bAng = Math.atan2(bdy, bdx);
+      const clampedR = Math.min(radius - 10, (bDist / radarRange) * (radius - 10));
+      const bx = cx + Math.cos(bAng) * clampedR;
+      const by = cy + Math.sin(bAng) * clampedR;
 
-    // Mystery Chests on minimap
-    for (const d of this.drops) {
-      if (d.type === 'chest') {
-        const cx = rx + (d.x / this.worldWidth) * size;
-        const cy = ry + (d.y / this.worldHeight) * size;
-        ctx.fillStyle = '#fef08a';
+      // Pulse effect
+      const bPulse = 0.5 + 0.5 * Math.sin(this.tick * 0.12);
+      ctx.fillStyle = `rgba(239, 68, 68, ${0.4 + bPulse * 0.6})`;
+      ctx.beginPath();
+      ctx.arc(bx, by, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(bx, by, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // If off radar range, draw direction pointer
+      if (bDist > radarRange) {
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.moveTo(bx, by);
+        ctx.lineTo(bx - Math.cos(bAng) * 8 - Math.sin(bAng) * 4, by - Math.sin(bAng) * 8 + Math.cos(bAng) * 4);
+        ctx.moveTo(bx, by);
+        ctx.lineTo(bx - Math.cos(bAng) * 8 + Math.sin(bAng) * 4, by - Math.sin(bAng) * 8 - Math.cos(bAng) * 4);
+        ctx.stroke();
       }
     }
+
+    // 3. Mystery Chests (Golden Diamonds)
+    for (const d of this.drops) {
+      if (d.type === 'chest') {
+        const cdx = d.x - p.x;
+        const cdy = d.y - p.y;
+        const cDist = Math.hypot(cdx, cdy);
+        if (cDist <= radarRange * 1.25) {
+          const cAng = Math.atan2(cdy, cdx);
+          const clampedR = Math.min(radius - 7, (cDist / radarRange) * (radius - 7));
+          const chX = cx + Math.cos(cAng) * clampedR;
+          const chY = cy + Math.sin(cAng) * clampedR;
+
+          ctx.fillStyle = '#fef08a';
+          ctx.beginPath();
+          ctx.moveTo(chX, chY - 4);
+          ctx.lineTo(chX + 4, chY);
+          ctx.lineTo(chX, chY + 4);
+          ctx.lineTo(chX - 4, chY);
+          ctx.closePath();
+          ctx.fill();
+        }
+      }
+    }
+
+    // 4. Center Player Dot (Green with Facing Pointer)
+    ctx.fillStyle = '#4ade80';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Facing direction
+    ctx.strokeStyle = '#22c55e';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + (p.facing >= 0 ? 8 : -8), cy);
+    ctx.stroke();
+
+    // Radar Header Label
+    ctx.font = 'bold 9px Nunito, sans-serif';
+    ctx.fillStyle = 'rgba(245, 158, 11, 0.85)';
+    ctx.textAlign = 'center';
+    ctx.fillText('RADAR 1400M', cx, ry + size + 14);
 
     ctx.restore();
   }
