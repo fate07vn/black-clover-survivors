@@ -794,7 +794,7 @@ class Game {
 
     let canAfford = false;
     const ticketCost = count;
-    const coinCost = count === 1 ? 2500 : (count === 10 ? 22500 : (count === 100 ? 200000 : count * 2250));
+    const coinCost = count === 1 ? 200 : (count === 10 ? 2000 : (count === 100 ? 20000 : count * 200));
 
     if (this.currency.tickets >= ticketCost) {
       this.currency.tickets -= ticketCost;
@@ -875,7 +875,7 @@ class Game {
         }
         starAfter = coll[pickedId].star;
 
-        const dupBonus = rTier === 'legendary' ? 1500 : (rTier === 'epic' ? 600 : 250);
+        const dupBonus = rTier === 'legendary' ? 100 : (rTier === 'epic' ? 50 : 20);
         this.currency.coins += dupBonus;
         totalDupCoins += dupBonus;
       }
@@ -972,6 +972,16 @@ class Game {
     if (typeof window !== 'undefined' && window.authManager && window.authManager.isLoggedIn() && window.authManager.currentUser) {
       return 'BC_USER_DATA_' + window.authManager.currentUser.username.toLowerCase();
     }
+    // Fallback directly from localStorage so that reloading the page never loses user key
+    try {
+      const savedUser = localStorage.getItem('BC_AUTH_USER');
+      if (savedUser) {
+        const u = JSON.parse(savedUser);
+        if (u && u.username) return 'BC_USER_DATA_' + u.username.toLowerCase();
+      }
+      const lastUser = localStorage.getItem('BC_LAST_USER');
+      if (lastUser) return 'BC_USER_DATA_' + lastUser.toLowerCase();
+    } catch (e) {}
     return 'BC_GUEST_DATA';
   }
 
@@ -1011,9 +1021,21 @@ class Game {
           purpleTickets: 0,
           diamonds: 0
         };
+        let defaultName = 'Khách (Tập Sự)';
+        try {
+          const su = localStorage.getItem('BC_AUTH_USER');
+          if (su) {
+            const u = JSON.parse(su);
+            if (u && u.username) defaultName = u.username;
+          }
+          if (defaultName === 'Khách (Tập Sự)') {
+            const lu = localStorage.getItem('BC_LAST_USER');
+            if (lu) defaultName = lu;
+          }
+        } catch (e) {}
         this.playerName = (typeof window !== 'undefined' && window.authManager && window.authManager.isLoggedIn() && window.authManager.currentUser)
           ? window.authManager.currentUser.username
-          : 'Khách (Tập Sự)';
+          : defaultName;
         this.unlockedCharacters = new Set(['asta']);
         Object.keys(CHARACTERS).forEach(id => {
           CHARACTERS[id].unlocked = (id === 'asta');
@@ -1575,7 +1597,7 @@ class Game {
       y: this.worldHeight / 2,
       vx: 0,
       vy: 0,
-      radius: 11,
+      radius: 13,
       facing: 1,
       isMoving: false,
 
@@ -4391,7 +4413,7 @@ class Game {
 
     let canAfford = false;
     const ticketCost = count;
-    const coinCost = count === 1 ? 2500 : (count === 10 ? 22500 : 200000);
+    const coinCost = count === 1 ? 200 : (count === 10 ? 2000 : (count === 100 ? 20000 : count * 200));
 
     if (this.currency.tickets >= ticketCost) {
       this.currency.tickets -= ticketCost;
@@ -4452,9 +4474,9 @@ class Game {
           highestRarity = rTier;
           is1000PityTrigger = true;
         } else {
-          // Nếu đã mở khóa toàn bộ 39 tướng, thưởng lớn Jackpot +50,000 Coins (không tặng vé)!
-          this.currency.coins += 50000;
-          totalDupCoins += 50000;
+          // Nếu đã mở khóa toàn bộ 39 tướng, thưởng lớn Jackpot +5,000 Coins (không tặng vé)!
+          this.currency.coins += 5000;
+          totalDupCoins += 5000;
         }
       }
 
@@ -4499,7 +4521,7 @@ class Game {
         this.unlockedCharacters.add(pickedId);
         CHARACTERS[pickedId].unlocked = true;
       } else {
-        const dupBonus = rTier === 'legendary' ? 2500 : (rTier === 'epic' ? 800 : (rTier === 'rare' ? 300 : 100));
+        const dupBonus = rTier === 'legendary' ? 100 : (rTier === 'epic' ? 50 : (rTier === 'rare' ? 25 : 10));
         this.currency.coins += dupBonus;
         totalDupCoins += dupBonus;
         // Bỏ nhận vé khi trùng lặp
@@ -4908,3 +4930,30 @@ window.CHARACTERS = CHARACTERS;
 window.MAPS = MAPS;
 window.CHAR_EMOJIS = CHAR_EMOJIS;
 window.GACHA_BANNERS = GACHA_BANNERS;
+
+// Auto flush save data when closing or navigating away from web
+if (typeof window !== 'undefined') {
+  const flushSave = () => {
+    try {
+      if (window.gameInstance) {
+        window.gameInstance.saveGameData();
+      }
+      if (window.authManager && window.authManager.isLoggedIn() && window.gameInstance) {
+        const g = window.gameInstance;
+        const payload = JSON.stringify({
+          saveData: g.exportSaveData(),
+          token: window.authManager.token,
+          username: window.authManager.currentUser ? window.authManager.currentUser.username : undefined
+        });
+        const url = `${window.authManager.apiBase}/api/save?token=${encodeURIComponent(window.authManager.token || '')}`;
+        if (navigator && navigator.sendBeacon) {
+          const blob = new Blob([payload], { type: 'application/json' });
+          navigator.sendBeacon(url, blob);
+        }
+      }
+    } catch (e) {}
+  };
+
+  window.addEventListener('beforeunload', flushSave);
+  window.addEventListener('pagehide', flushSave);
+}

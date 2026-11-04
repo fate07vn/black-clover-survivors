@@ -180,7 +180,7 @@ const Sprites = {
   drawPlayerSprite(ctx, p, tick) {
     if (!p) return;
     const cid = p.charId || 'asta';
-    const scale = p.isPreview ? 1.0 : (p.spriteScale || 0.74);
+    const scale = p.isPreview ? 1.0 : (p.spriteScale || 0.88); // Adjusted to optimal anime hero proportion
 
     ctx.save();
     ctx.translate(p.x, p.y);
@@ -3193,31 +3193,37 @@ const Sprites = {
 
     if (drop.type === 'mana') {
       const colors = {
-        1: { fill: '#38bdf8', glow: 'rgba(56, 189, 248, 0.45)', r: 3.2 },
-        5: { fill: '#34d399', glow: 'rgba(52, 211, 153, 0.55)', r: 4.2 },
-        20: { fill: '#c084fc', glow: 'rgba(192, 132, 252, 0.65)', r: 5.5 },
-        50: { fill: '#fbbf24', glow: 'rgba(251, 191, 36, 0.75)', r: 7.0 }
+        1: { fill: '#38bdf8', glow: 'rgba(56, 189, 248, 0.55)', r: 5.5 },
+        5: { fill: '#34d399', glow: 'rgba(52, 211, 153, 0.65)', r: 7.2 },
+        20: { fill: '#c084fc', glow: 'rgba(192, 132, 252, 0.75)', r: 9.0 },
+        50: { fill: '#fbbf24', glow: 'rgba(251, 191, 36, 0.85)', r: 11.5 }
       };
       const tier = colors[drop.val] || (drop.val >= 50 ? colors[50] : (drop.val >= 20 ? colors[20] : (drop.val >= 5 ? colors[5] : colors[1])));
-      this.drawAura(ctx, 0, bob, tier.r + 2, tier.glow, 8);
+      this.drawAura(ctx, 0, bob, tier.r + 4, tier.glow, 10);
       ctx.fillStyle = tier.fill;
       // Diamond crystal shape
       ctx.beginPath();
-      ctx.moveTo(0, bob - tier.r * 1.25);
-      ctx.lineTo(tier.r * 0.75, bob);
-      ctx.lineTo(0, bob + tier.r * 1.25);
-      ctx.lineTo(-tier.r * 0.75, bob);
+      ctx.moveTo(0, bob - tier.r * 1.3);
+      ctx.lineTo(tier.r * 0.8, bob);
+      ctx.lineTo(0, bob + tier.r * 1.3);
+      ctx.lineTo(-tier.r * 0.8, bob);
       ctx.closePath();
       ctx.fill();
 
       // White crystal facet highlight
       ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
       ctx.beginPath();
-      ctx.moveTo(0, bob - tier.r * 0.6);
-      ctx.lineTo(tier.r * 0.35, bob);
-      ctx.lineTo(0, bob + tier.r * 0.6);
-      ctx.lineTo(-tier.r * 0.35, bob);
+      ctx.moveTo(0, bob - tier.r * 0.65);
+      ctx.lineTo(tier.r * 0.4, bob);
+      ctx.lineTo(0, bob + tier.r * 0.65);
+      ctx.lineTo(-tier.r * 0.4, bob);
       ctx.closePath();
+      ctx.fill();
+
+      // Inner white shining core
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(0, bob, Math.max(1.5, tier.r * 0.22), 0, Math.PI * 2);
       ctx.fill();
     } else if (drop.type === 'food') {
       this.drawAura(ctx, 0, bob, 14, 'rgba(249, 115, 22, 0.55)', 12);

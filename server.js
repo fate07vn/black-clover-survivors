@@ -67,7 +67,17 @@ function extractToken(req) {
   if (authHeader && authHeader.startsWith('Bearer ')) {
     return authHeader.substring(7).trim();
   }
-  return req.headers['x-auth-token'] || null;
+  if (req.headers['x-auth-token']) {
+    return req.headers['x-auth-token'];
+  }
+  if (req.url && req.url.includes('?')) {
+    try {
+      const q = new URL(req.url, 'http://localhost').searchParams;
+      const t = q.get('token');
+      if (t) return t.trim();
+    } catch (e) {}
+  }
+  return null;
 }
 
 const MIME_TYPES = {
@@ -268,8 +278,16 @@ async function handleApiRequest(req, res, pathname) {
 
   // 4. SAVE PROGRESS: POST /api/save
   if (pathname === '/api/save' && req.method === 'POST') {
-    const token = extractToken(req);
-    const user = resolveUserFromToken(token);
+    const body = await parseJsonBody(req);
+    const token = extractToken(req) || (body && body.token);
+    let user = resolveUserFromToken(token);
+
+    if (!user && body && body.username) {
+      const lower = body.username.toLowerCase();
+      if (db.users[lower]) {
+        user = db.users[lower];
+      }
+    }
 
     if (!user) {
       res.writeHead(401);
@@ -277,7 +295,6 @@ async function handleApiRequest(req, res, pathname) {
       return;
     }
 
-    const body = await parseJsonBody(req);
     if (body.saveData) {
       user.saveData = body.saveData;
       user.lastSaved = new Date().toISOString();
