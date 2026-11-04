@@ -4388,13 +4388,13 @@ html, body {
 
 
   <!-- Core Scripts with Cache-Buster Queries -->
-  <script src="src/audio.js?v=bc150"></script>
-  <script src="src/sprites.js?v=bc150"></script>
-  <script src="src/spells.js?v=bc150"></script>
-  <script src="src/enemies.js?v=bc150"></script>
-  <script src="src/artifacts.js?v=bc150"></script>
-  <script src="src/auth.js?v=bc150"></script>
-  <script src="src/game.js?v=bc150"></script>
+  <script src="src/audio.js?v=bc152"></script>
+  <script src="src/sprites.js?v=bc152"></script>
+  <script src="src/spells.js?v=bc152"></script>
+  <script src="src/enemies.js?v=bc152"></script>
+  <script src="src/artifacts.js?v=bc152"></script>
+  <script src="src/auth.js?v=bc152"></script>
+  <script src="src/game.js?v=bc152"></script>
 
   <!-- Global App Controller & Event Handlers -->
   <script>
@@ -4792,7 +4792,7 @@ html, body {
           // Format stats pills
           const statLines = [];
           const s = def.stats;
-          const starMult = 1.0 + (star - 1) * 0.25;
+          const starMult = 1.0 + (star - 1) * 0.15;
           if (s.maxHp) statLines.push(`💚 +${Math.round(s.maxHp * starMult)} HP`);
           if (s.damageBonus) statLines.push(`⚔️ +${Math.round(s.damageBonus * 100 * starMult)}% ST`);
           if (s.armor) statLines.push(`🛡️ +${Math.round(s.armor * 100 * starMult)}% Giáp`);
@@ -4800,6 +4800,7 @@ html, body {
           if (s.cooldownReduction) statLines.push(`⏱️ -${Math.round(s.cooldownReduction * 100 * starMult)}% Hồi Chiêu`);
           if (s.areaBonus) statLines.push(`💥 +${Math.round(s.areaBonus * 100 * starMult)}% Lan`);
           if (s.critChance) statLines.push(`🎯 +${Math.round(s.critChance * 100 * starMult)}% Crit`);
+          if (s.critDmgBonus) statLines.push(`💥 +${Math.round(s.critDmgBonus * 100 * starMult)}% ST Bạo`);
           if (s.hpRegen) statLines.push(`💖 +${(s.hpRegen * starMult).toFixed(1)} HP/s`);
           if (s.expBonus) statLines.push(`📘 +${Math.round(s.expBonus * 100 * starMult)}% EXP`);
           if (s.coinBonus) statLines.push(`🪙 +${Math.round(s.coinBonus * 100 * starMult)}% Vàng`);
