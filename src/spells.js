@@ -1657,7 +1657,8 @@ class SpellManager {
     const levelScale = 1 + (p.level - 1) * 0.025;
     const dmgMult = (1 + p.damageBonus) * (1 + (level - 1) * 0.18) * levelScale;
     const areaMult = (1 + p.areaBonus) * (1 + (level - 1) * 0.12);
-    const isCrit = Math.random() < Math.min(1.0, Math.max(0, p.critChance || 0));
+    const pCrit = Math.min(1.0, Math.max(0, p.critChance || 0));
+    const isCrit = pCrit > 0 && Math.random() < pCrit;
     const critMult = isCrit ? Math.min(2.0, Math.max(1.0, 1.0 + (p.critDmgBonus || 0) * 0.5)) : 1.0;
     const damage = Math.round(def.baseDamage * dmgMult * critMult);
     const targetAngle = this.getTargetAngle();
@@ -2143,7 +2144,7 @@ class SpellManager {
           arc: Math.PI * 2,
           facingAngle: 0,
           damage: damage,
-          isCrit: true,
+          isCrit: isCrit,
           color: '#dc2626',
           knockback: 100,
           life: 0.4,
@@ -2166,7 +2167,7 @@ class SpellManager {
           arc: Math.PI * 0.22,
           facingAngle: targetAngle,
           damage: damage,
-          isCrit: true,
+          isCrit: isCrit,
           color: '#a855f7',
           knockback: 120,
           life: 0.55,
@@ -2223,7 +2224,7 @@ class SpellManager {
             vy: Math.sin(a) * 460,
             radius: 20,
             damage: damage,
-            isCrit: true,
+            isCrit: isCrit,
             pierce: 99,
             hitTargets: new Set(),
             life: 1.3,
@@ -2314,7 +2315,7 @@ class SpellManager {
             vy: Math.sin(a) * 600,
             radius: 20 * areaMult,
             damage: damage,
-            isCrit: true,
+            isCrit: isCrit,
             color: '#10b981',
             pierce: 99,
             hitTargets: new Set(),
@@ -2352,7 +2353,7 @@ class SpellManager {
             radius: 35 * areaMult,
             angle: 0,
             damage: damage,
-            isCrit: true,
+            isCrit: isCrit,
             color: '#0ea5e9',
             pierce: 999,
             hitTargets: new Set(),
@@ -2496,7 +2497,7 @@ class SpellManager {
             vy: Math.sin(a) * 450,
             radius: 20 * areaMult,
             damage: damage,
-            isCrit: true,
+            isCrit: isCrit,
             color: '#dc2626',
             pierce: 99,
             hitTargets: new Set(),
@@ -2562,7 +2563,7 @@ class SpellManager {
             vy: Math.sin(a) * 620,
             radius: 18,
             damage: damage,
-            isCrit: true,
+            isCrit: isCrit,
             pierce: 99,
             hitTargets: new Set(),
             life: 2.2,
@@ -2684,7 +2685,7 @@ class SpellManager {
             vy: Math.sin(a) * 480,
             radius: 20 * areaMult,
             damage: damage,
-            isCrit: true,
+            isCrit: isCrit,
             color: colors[i],
             pierce: 99,
             hitTargets: new Set(),
@@ -2731,7 +2732,7 @@ class SpellManager {
             vy: Math.sin(a) * 550,
             radius: 22 * areaMult,
             damage: damage,
-            isCrit: true,
+            isCrit: isCrit,
             color: '#f97316',
             pierce: 99,
             hitTargets: new Set(),
@@ -2778,7 +2779,7 @@ class SpellManager {
             vy: Math.sin(a) * 540,
             radius: 16,
             damage: damage,
-            isCrit: true,
+            isCrit: isCrit,
             color: '#67e8f9',
             pierce: 99,
             hitTargets: new Set(),
@@ -2805,7 +2806,7 @@ class SpellManager {
             vy: Math.sin(a) * 650,
             radius: 18,
             damage: damage,
-            isCrit: true,
+            isCrit: isCrit,
             color: '#1e293b',
             pierce: 99,
             hitTargets: new Set(),
@@ -2936,7 +2937,7 @@ class SpellManager {
           arc: Math.PI * 2,
           facingAngle: 0,
           damage: damage,
-          isCrit: true,
+          isCrit: isCrit,
           color: '#e879f9',
           knockback: 75,
           life: 0.35,
@@ -2999,7 +3000,7 @@ class SpellManager {
           arc: Math.PI * 2,
           facingAngle: 0,
           damage: damage,
-          isCrit: true,
+          isCrit: isCrit,
           color: '#d97706',
           knockback: 90,
           life: 0.4,
@@ -3066,7 +3067,7 @@ class SpellManager {
             vy: Math.sin(a) * 520,
             radius: 12 * areaMult,
             damage: damage,
-            isCrit: true,
+            isCrit: isCrit,
             color: '#fda4af',
             pierce: 99,
             hitTargets: new Set(),
@@ -3131,7 +3132,7 @@ class SpellManager {
           arc: Math.PI * 2,
           facingAngle: 0,
           damage: damage,
-          isCrit: true,
+          isCrit: isCrit,
           color: '#94a3b8',
           knockback: 85,
           life: 0.35,
@@ -3196,7 +3197,7 @@ class SpellManager {
           arc: Math.PI * 2,
           facingAngle: 0,
           damage: damage,
-          isCrit: true,
+          isCrit: isCrit,
           color: '#92400e',
           knockback: 95,
           life: 0.45,
@@ -3532,6 +3533,10 @@ class SpellManager {
   }
 
   applyDamage(enemy, amount, isCrit, color) {
+    const playerCrit = this.game.player ? (this.game.player.critChance || 0) : 0;
+    if (playerCrit <= 0) {
+      isCrit = false;
+    }
     if (enemy.isShielding) {
       amount = Math.max(1, Math.round(amount * 0.25));
     }

@@ -1873,6 +1873,7 @@ class Game {
       } else {
         for (const [pId, lv] of passEntries) {
           const def = spellDefs[pId] || {};
+          const isCoreStat = ['reinforcement', 'mana_skin', 'crit_damage'].includes(pId);
           const evolvesList = [];
           for (const [wKey, wVal] of Object.entries(spellDefs)) {
             if (wVal.type === 'weapon' && wVal.requires === pId) {
@@ -1893,7 +1894,7 @@ class Game {
             <div class="stat-gear-icon">${def.icon || '📘'}</div>
             <div class="stat-gear-info" style="flex: 1;">
               <div class="stat-gear-name" style="display:flex; justify-content:space-between; align-items:center;">
-                <span>${def.name || pId}</span>
+                <span>${def.name || pId} ${isCoreStat ? '<span style="color:#f59e0b; font-size:11px; font-weight:700;">(⭐ Không tốn ô chiêu)</span>' : ''}</span>
                 <span style="color:#34d399; font-weight:700;">[Cấp ${lv}/${def.maxLevel || 5}]</span>
               </div>
               <div class="stat-gear-desc">${def.description || def.desc || ''}</div>
@@ -2095,7 +2096,7 @@ class Game {
 
     choices.forEach((choice) => {
       const card = document.createElement('div');
-      card.className = `level-card ${choice.isEvolution ? 'evolution' : ''} ${choice.isSuperEvolution ? 'super-evolution' : ''} ${choice.isInfinite ? 'infinite-card' : ''}`;
+      card.className = `level-card ${choice.isEvolution ? 'evolution' : ''} ${choice.isSuperEvolution ? 'super-evolution' : ''} ${choice.isInfinite ? 'infinite-card' : ''} ${choice.isCoreStat ? 'core-stat-card' : ''}`;
 
       let evoReqHtml = '';
       if (choice.evolutionInfo && choice.evolutionInfo.evoName) {
@@ -2316,10 +2317,12 @@ class Game {
       }
     }
 
-    // 4. Passive upgrades
+    // 4. Passive upgrades (Core Stat Passives do NOT count towards slot limit)
+    const CORE_STAT_PASSIVES = ['reinforcement', 'mana_skin', 'crit_damage'];
     for (const [pasId, level] of Object.entries(p.passives)) {
       const def = window.SPELL_DEFS[pasId];
       if (def && level < def.maxLevel) {
+        const isCoreStat = CORE_STAT_PASSIVES.includes(pasId);
         const evolvesList = [];
         for (const [wKey, wVal] of Object.entries(window.SPELL_DEFS)) {
           if (wVal.type === 'weapon' && wVal.requires === pasId) {
@@ -2338,40 +2341,47 @@ class Game {
           type: 'passive_upgrade',
           name: def.name,
           icon: def.icon,
-          badge: `Cấp ${level} ➔ Cấp ${level + 1}`,
-          description: def.description,
-          passiveEvolutionInfo: evolvesList
+          badge: isCoreStat ? `⭐ CỐT LÕI (Cấp ${level} ➔ ${level + 1})` : `Cấp ${level} ➔ Cấp ${level + 1}`,
+          description: def.description + (isCoreStat ? ' (⚡ Không tốn ô chiêu)' : ''),
+          passiveEvolutionInfo: evolvesList,
+          isCoreStat: isCoreStat
         });
       }
     }
 
-    // 5. New passive (max 4)
-    if (Object.keys(p.passives).length < 4) {
-      for (const [pasId, def] of Object.entries(window.SPELL_DEFS)) {
-        if (def.type === 'passive' && !p.passives[pasId]) {
-          const evolvesList = [];
-          for (const [wKey, wVal] of Object.entries(window.SPELL_DEFS)) {
-            if (wVal.type === 'weapon' && wVal.requires === pasId) {
-              const eVal = window.SPELL_DEFS[wVal.evolution];
-              evolvesList.push({
-                weaponName: wVal.name.split('(')[0],
-                weaponIcon: wVal.icon || '⚔️',
-                evoName: eVal ? eVal.name.split('(')[0] : '',
-                hasWeapon: !!p.weapons[wKey],
-                weaponLv: p.weapons[wKey] ? p.weapons[wKey].level : 0
-              });
-            }
+    // 5. New passive: 4 regular slots, PLUS 3 core stat passives that do NOT consume slots
+    const regularPassivesCount = Object.keys(p.passives).filter(id => !CORE_STAT_PASSIVES.includes(id)).length;
+    const canTakeRegularPassive = regularPassivesCount < 4;
+
+    for (const [pasId, def] of Object.entries(window.SPELL_DEFS)) {
+      if (def.type === 'passive' && !p.passives[pasId]) {
+        const isCoreStat = CORE_STAT_PASSIVES.includes(pasId);
+        // Only allow regular passives if under 4 regular slots; core stat passives are ALWAYS allowed!
+        if (!isCoreStat && !canTakeRegularPassive) continue;
+
+        const evolvesList = [];
+        for (const [wKey, wVal] of Object.entries(window.SPELL_DEFS)) {
+          if (wVal.type === 'weapon' && wVal.requires === pasId) {
+            const eVal = window.SPELL_DEFS[wVal.evolution];
+            evolvesList.push({
+              weaponName: wVal.name.split('(')[0],
+              weaponIcon: wVal.icon || '⚔️',
+              evoName: eVal ? eVal.name.split('(')[0] : '',
+              hasWeapon: !!p.weapons[wKey],
+              weaponLv: p.weapons[wKey] ? p.weapons[wKey].level : 0
+            });
           }
-          pool.push({
-            id: pasId,
-            type: 'new_passive',
-            name: def.name,
-            icon: def.icon,
-            badge: 'SÁCH PHÉP MỚI',
-            description: def.description,
-            passiveEvolutionInfo: evolvesList
-          });
         }
+        pool.push({
+          id: pasId,
+          type: 'new_passive',
+          name: def.name,
+          icon: def.icon,
+          badge: isCoreStat ? '⭐ NỘI TẠI CỐT LÕI (KHÔNG TỐN Ô)' : 'SÁCH PHÉP MỚI',
+          description: def.description + (isCoreStat ? ' (⚡ Không chiếm ô chiêu thức)' : ''),
+          passiveEvolutionInfo: evolvesList,
+          isCoreStat: isCoreStat
+        });
       }
     }
 
@@ -2785,10 +2795,11 @@ class Game {
       for (const [pId, lv] of Object.entries(p.passives)) {
         const def = window.SPELL_DEFS[pId];
         if (def) {
+          const isCoreStat = ['reinforcement', 'mana_skin', 'crit_damage'].includes(pId);
           const icon = document.createElement('div');
-          icon.className = 'slot-icon passive';
-          icon.title = `${def.name} (Lv.${lv})`;
-          icon.innerHTML = `${def.icon}<span class="slot-lv">${lv}</span>`;
+          icon.className = `slot-icon passive ${isCoreStat ? 'core-stat' : ''}`;
+          icon.title = `${def.name} (Lv.${lv})${isCoreStat ? ' [Nội Tại Cốt Lõi - Không Tốn Ô]' : ''}`;
+          icon.innerHTML = `${def.icon}<span class="slot-lv ${isCoreStat ? 'core' : ''}">${lv}</span>`;
           pContainer.appendChild(icon);
         }
       }
@@ -3131,9 +3142,9 @@ class Game {
     for (const enemy of enemiesCopy) {
       if (!enemy || enemy.isDead || enemy.hp <= 0) continue;
       if (enemy.isBoss) {
-        this.spells.applyDamage(enemy, 2500, true, '#ef4444');
+        this.spells.applyDamage(enemy, 2500, false, '#ef4444');
       } else {
-        this.spells.applyDamage(enemy, 9999, true, '#f59e0b');
+        this.spells.applyDamage(enemy, 9999, false, '#f59e0b');
       }
     }
   }

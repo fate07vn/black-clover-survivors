@@ -374,7 +374,7 @@ class ArtifactSystem {
       if (dist < 320 && dist > 10) {
         e.x += (dx / dist) * 140;
         e.y += (dy / dist) * 140;
-        this.game.spells.applyDamage(e, 85, true, '#10b981');
+        this.game.spells.applyDamage(e, 85, false, '#10b981');
       }
     }
     this.game.spells.floatingTexts.push({ x: p.x, y: p.y - 25, text: '🌪️ BÃO CUỘN SYLPH!', color: '#34d399', size: 16, life: 0.7 });
@@ -484,7 +484,7 @@ class ArtifactSystem {
 
     for (const e of enemies) {
       if (Math.hypot(e.x - target.x, e.y - target.y) < 220) {
-        this.game.spells.applyDamage(e, 450, true, '#a855f7');
+        this.game.spells.applyDamage(e, 450, false, '#a855f7');
         e.speedMod = 0.4;
         e.speedModTimer = 3.0;
       }
@@ -519,7 +519,7 @@ class ArtifactSystem {
 
     for (const e of this.game.enemies) {
       if (Math.hypot(e.x - p.x, e.y - p.y) < 260) {
-        this.game.spells.applyDamage(e, 320, true, '#ea580c');
+        this.game.spells.applyDamage(e, 320, false, '#ea580c');
       }
     }
   }
@@ -536,7 +536,7 @@ class ArtifactSystem {
     this.game.spells.floatingTexts.push({ x: p.x, y: p.y - 25, text: '⚡ LÔI THẦN TRẢO KÍCH!', color: '#fde047', size: 16, life: 0.8 });
 
     for (const e of enemies) {
-      this.game.spells.applyDamage(e, 220, true, '#eab308');
+      this.game.spells.applyDamage(e, 220, false, '#eab308');
       e.speedMod = 0;
       e.speedModTimer = 1.5;
       this.game.spells.spawnImpactParticles(e.x, e.y, '#facc15', 8);
