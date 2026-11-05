@@ -3760,7 +3760,7 @@ const Sprites = {
   },
 
   // =========================================================================
-  // DROPS & REWARDS
+  // DROPS & REWARDS (HỆ THỐNG HẠT MANA ĐA DẠNG 6 BẬC & MANA ĐẶC BIỆT)
   // =========================================================================
   drawDrop(ctx, drop, tick) {
     ctx.save();
@@ -3768,56 +3768,393 @@ const Sprites = {
 
     const bob = Math.sin(tick * 0.16 + drop.x) * 3.5;
 
+    // 1. STANDARD MANA DROPS (6 BẬC MANA HÌNH DÁNG & MÀU SẮC ĐỘC BẢN)
     if (drop.type === 'mana') {
-      const colors = {
-        1: { fill: '#38bdf8', glow: 'rgba(56, 189, 248, 0.55)', r: 5.5 },
-        5: { fill: '#34d399', glow: 'rgba(52, 211, 153, 0.65)', r: 7.2 },
-        20: { fill: '#c084fc', glow: 'rgba(192, 132, 252, 0.75)', r: 9.0 },
-        50: { fill: '#fbbf24', glow: 'rgba(251, 191, 36, 0.85)', r: 11.5 }
-      };
-      const tier = colors[drop.val] || (drop.val >= 50 ? colors[50] : (drop.val >= 20 ? colors[20] : (drop.val >= 5 ? colors[5] : colors[1])));
-      this.drawAura(ctx, 0, bob, tier.r + 4, tier.glow, 10);
-      ctx.fillStyle = tier.fill;
-      // Diamond crystal shape
-      ctx.beginPath();
-      ctx.moveTo(0, bob - tier.r * 1.3);
-      ctx.lineTo(tier.r * 0.8, bob);
-      ctx.lineTo(0, bob + tier.r * 1.3);
-      ctx.lineTo(-tier.r * 0.8, bob);
-      ctx.closePath();
-      ctx.fill();
+      const val = drop.val || 1;
 
-      // White crystal facet highlight
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-      ctx.beginPath();
-      ctx.moveTo(0, bob - tier.r * 0.65);
-      ctx.lineTo(tier.r * 0.4, bob);
-      ctx.lineTo(0, bob + tier.r * 0.65);
-      ctx.lineTo(-tier.r * 0.4, bob);
-      ctx.closePath();
-      ctx.fill();
+      // --- TIER 6: CELESTIAL RAINBOW PRISMATIC CORE (val >= 150) ---
+      if (val >= 150) {
+        const hue = (tick * 4) % 360;
+        const rainbowColor = `hsl(${hue}, 100%, 65%)`;
+        const rainbowGlow = `hsla(${hue}, 100%, 65%, 0.85)`;
+        this.drawAura(ctx, 0, bob, 22, rainbowGlow, 24);
 
-      // Inner white shining core
+        // Rotating outer sacred rings
+        ctx.save();
+        ctx.strokeStyle = rainbowColor;
+        ctx.lineWidth = 1.6;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.arc(0, bob, 16 + Math.sin(tick * 0.25) * 2, tick * 0.1, tick * 0.1 + Math.PI * 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = `hsl(${(hue + 180) % 360}, 100%, 75%)`;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(0, bob, 12, -tick * 0.15, -tick * 0.15 + Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.restore();
+
+        // 8-Point Diamond Core
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = rainbowColor;
+        ctx.shadowBlur = 14;
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+          const ang = (i * Math.PI) / 4 + tick * 0.08;
+          const r = (i % 2 === 0) ? 11 : 5.5;
+          const px = Math.cos(ang) * r;
+          const py = bob + Math.sin(ang) * r;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+      // --- TIER 5: GOLDEN SOLAR MANA STAR (61 <= val < 150) ---
+      else if (val >= 61) {
+        this.drawAura(ctx, 0, bob, 18, 'rgba(251, 191, 36, 0.85)', 18);
+        ctx.save();
+        ctx.translate(0, bob);
+        ctx.rotate(tick * 0.05);
+
+        // 8-Point Radiant Star
+        ctx.fillStyle = '#fbbf24';
+        ctx.strokeStyle = '#fef08a';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+          const ang = (i * Math.PI) / 4;
+          const r = (i % 2 === 0) ? 13.5 : 6.5;
+          const px = Math.cos(ang) * r;
+          const py = Math.sin(ang) * r;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Shimmering White Center Diamond
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(0, -6.5);
+        ctx.lineTo(4.5, 0);
+        ctx.lineTo(0, 6.5);
+        ctx.lineTo(-4.5, 0);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+      // --- TIER 4: CRIMSON RUBY CORE (25 <= val <= 60) ---
+      else if (val >= 25) {
+        const pulse = Math.sin(tick * 0.3) * 1.5;
+        const r = 10.5 + pulse;
+        this.drawAura(ctx, 0, bob, r + 5, 'rgba(244, 63, 94, 0.75)', 16);
+
+        // Dual Rhombus Ruby Gem
+        ctx.fillStyle = '#f43f5e';
+        ctx.strokeStyle = '#fecdd3';
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(0, bob - r * 1.35);
+        ctx.lineTo(r * 0.9, bob);
+        ctx.lineTo(0, bob + r * 1.35);
+        ctx.lineTo(-r * 0.9, bob);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Facets Shading
+        ctx.fillStyle = '#be123c';
+        ctx.beginPath();
+        ctx.moveTo(0, bob - r * 1.35);
+        ctx.lineTo(r * 0.9, bob);
+        ctx.lineTo(0, bob);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#fda4af';
+        ctx.beginPath();
+        ctx.moveTo(0, bob - r * 1.35);
+        ctx.lineTo(-r * 0.9, bob);
+        ctx.lineTo(0, bob);
+        ctx.closePath();
+        ctx.fill();
+
+        // White core glint
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(0, bob - 2, 2.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // --- TIER 3: AMETHYST OCTAHEDRAL SHARD (10 <= val <= 24) ---
+      else if (val >= 10) {
+        const r = 8.8;
+        this.drawAura(ctx, 0, bob, r + 4, 'rgba(192, 132, 252, 0.7)', 14);
+
+        // 8-Sided Octagonal Crystal
+        ctx.fillStyle = '#c084fc';
+        ctx.strokeStyle = '#f3e8ff';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+          const ang = (i * Math.PI) / 4 + Math.PI / 8;
+          const px = Math.cos(ang) * (r * (i % 2 === 0 ? 1.15 : 0.85));
+          const py = bob + Math.sin(ang) * (r * (i % 2 === 0 ? 1.15 : 0.85));
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Inner Shaded Facets
+        ctx.fillStyle = '#7e22ce';
+        ctx.beginPath();
+        ctx.moveTo(0, bob);
+        ctx.lineTo(r * 0.7, bob);
+        ctx.lineTo(0, bob + r);
+        ctx.lineTo(-r * 0.7, bob);
+        ctx.closePath();
+        ctx.fill();
+
+        // Electric Purple Core
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(0, bob, 2.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // --- TIER 2: EMERALD HEXAGON PRISM (4 <= val <= 9) ---
+      else if (val >= 4) {
+        const r = 7.0;
+        this.drawAura(ctx, 0, bob, r + 3.5, 'rgba(52, 211, 153, 0.65)', 12);
+
+        // Regular Hexagon
+        ctx.fillStyle = '#34d399';
+        ctx.strokeStyle = '#ecfdf5';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        for (let i = 0; i < 6; i++) {
+          const ang = (i * Math.PI) / 3;
+          const px = Math.cos(ang) * r;
+          const py = bob + Math.sin(ang) * r;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Facet Cut lines
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.lineWidth = 1.0;
+        ctx.beginPath();
+        ctx.moveTo(0, bob - r);
+        ctx.lineTo(0, bob + r);
+        ctx.moveTo(-r * 0.86, bob - r * 0.5);
+        ctx.lineTo(r * 0.86, bob + r * 0.5);
+        ctx.stroke();
+
+        // Core Glint
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(0, bob, 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // --- TIER 1: LESSER CYAN TEARDROP (val <= 3) ---
+      else {
+        const r = 5.2;
+        this.drawAura(ctx, 0, bob, r + 3, 'rgba(56, 189, 248, 0.55)', 10);
+
+        // Teardrop / Droplet shape
+        ctx.fillStyle = '#38bdf8';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.0;
+        ctx.beginPath();
+        ctx.moveTo(0, bob - r * 1.45); // Pointed tip
+        ctx.bezierCurveTo(r * 1.1, bob - r * 0.4, r * 1.1, bob + r * 0.9, 0, bob + r * 1.1);
+        ctx.bezierCurveTo(-r * 1.1, bob + r * 0.9, -r * 1.1, bob - r * 0.4, 0, bob - r * 1.45);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Crescent Highlight
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.beginPath();
+        ctx.ellipse(-r * 0.25, bob - r * 0.2, r * 0.35, r * 0.55, -0.3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    // 2. SPECIAL MANA DROP: VACUUM / MAGNET
+    else if (drop.type === 'mana_vacuum') {
+      this.drawAura(ctx, 0, bob, 18, 'rgba(56, 189, 248, 0.85)', 20);
+
+      // Inward Suction Rings
+      const ringR = 14 + Math.sin(tick * 0.4) * 3;
+      ctx.save();
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(0, bob, ringR, tick * 0.2, tick * 0.2 + Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+
+      // Cyan Core Orb
+      ctx.fillStyle = '#0284c7';
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, bob, 8.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Magnet Icon
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       ctx.fillStyle = '#ffffff';
+      ctx.fillText('🧲', 0, bob);
+    }
+    // 3. SPECIAL MANA DROP: FURY / LIGHTNING SPEED
+    else if (drop.type === 'mana_fury') {
+      this.drawAura(ctx, 0, bob, 18, 'rgba(245, 158, 11, 0.85)', 22);
+
+      // Rotating Electric Star
+      ctx.save();
+      ctx.translate(0, bob);
+      ctx.rotate(tick * 0.1);
+      ctx.fillStyle = '#f59e0b';
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 1.6;
       ctx.beginPath();
-      ctx.arc(0, bob, Math.max(1.5, tier.r * 0.22), 0, Math.PI * 2);
+      for (let i = 0; i < 4; i++) {
+        const ang = (i * Math.PI) / 2;
+        const px = Math.cos(ang) * 11;
+        const py = Math.sin(ang) * 11;
+        const mx = Math.cos(ang + Math.PI / 4) * 4.5;
+        const my = Math.sin(ang + Math.PI / 4) * 4.5;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+        ctx.lineTo(mx, my);
+      }
+      ctx.closePath();
       ctx.fill();
-    } else if (drop.type === 'food') {
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText('⚡', 0, bob);
+    }
+    // 4. SPECIAL MANA DROP: BLOOM / HEAL
+    else if (drop.type === 'mana_bloom') {
+      this.drawAura(ctx, 0, bob, 16, 'rgba(52, 211, 153, 0.85)', 18);
+
+      // Lotus Petals (6 petals)
+      ctx.save();
+      ctx.translate(0, bob);
+      for (let p = 0; p < 6; p++) {
+        const ang = (p * Math.PI) / 3 + tick * 0.03;
+        ctx.fillStyle = p % 2 === 0 ? '#34d399' : '#a7f3d0';
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.0;
+        ctx.beginPath();
+        ctx.ellipse(Math.cos(ang) * 5.5, Math.sin(ang) * 5.5, 5, 2.8, ang, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+      // Golden Pollen Core
+      ctx.fillStyle = '#fef08a';
+      ctx.beginPath();
+      ctx.arc(0, 0, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+    // 5. SPECIAL MANA DROP: SURGE (X3 EXP)
+    else if (drop.type === 'mana_surge') {
+      this.drawAura(ctx, 0, bob, 18, 'rgba(251, 191, 36, 0.85)', 20);
+
+      ctx.fillStyle = '#fbbf24';
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(0, bob - 10);
+      ctx.lineTo(9, bob);
+      ctx.lineTo(0, bob + 10);
+      ctx.lineTo(-9, bob);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = 'bold 9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#78350f';
+      ctx.fillText('x3', 0, bob);
+    }
+    // 6. COIN (Clover Gold Coins)
+    else if (drop.type === 'coin') {
+      this.drawAura(ctx, 0, bob, 10, 'rgba(251, 191, 36, 0.55)', 10);
+      ctx.fillStyle = '#f59e0b';
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, bob, 6.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Inner Clover stamp
+      ctx.fillStyle = '#78350f';
+      ctx.beginPath();
+      ctx.arc(0, bob, 2.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // 7. DIAMOND
+    else if (drop.type === 'diamond') {
+      this.drawAura(ctx, 0, bob, 14, 'rgba(56, 189, 248, 0.75)', 16);
+      ctx.fillStyle = '#38bdf8';
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(0, bob - 9);
+      ctx.lineTo(7, bob - 2);
+      ctx.lineTo(0, bob + 9);
+      ctx.lineTo(-7, bob - 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+    // 8. TICKETS
+    else if (drop.type === 'ticket' || drop.type === 'purple_ticket') {
+      const isPurple = drop.type === 'purple_ticket';
+      this.drawAura(ctx, 0, bob, 14, isPurple ? 'rgba(192, 132, 252, 0.8)' : 'rgba(245, 158, 11, 0.8)', 16);
+      ctx.font = '16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(isPurple ? '🎟️' : '🎫', 0, bob);
+    }
+    // 9. FOOD / MEAT
+    else if (drop.type === 'food') {
       this.drawAura(ctx, 0, bob, 14, 'rgba(249, 115, 22, 0.55)', 12);
-      // Anime Roast Meat with Bone
       ctx.fillStyle = '#b45309';
       ctx.beginPath();
       ctx.ellipse(0, bob, 10, 7, 0, 0, Math.PI * 2);
       ctx.fill();
-      // Bone ends
       ctx.fillStyle = '#fde68a';
       ctx.beginPath();
       ctx.rect(-14, bob - 2, 5, 4);
       ctx.rect(9, bob - 2, 5, 4);
       ctx.fill();
-    } else if (drop.type === 'chest') {
+    }
+    // 10. CHEST
+    else if (drop.type === 'chest') {
       this.drawAura(ctx, 0, bob, 22, 'rgba(234, 179, 8, 0.85)', 24);
-      // Treasure Chest with Domed Lid
       ctx.fillStyle = '#78350f';
       ctx.strokeStyle = '#fbbf24';
       ctx.lineWidth = 2;
@@ -3826,7 +4163,6 @@ const Sprites = {
       ctx.fill();
       ctx.stroke();
 
-      // Domed curved lid
       ctx.beginPath();
       ctx.moveTo(-12, bob - 4);
       ctx.bezierCurveTo(-12, bob - 14, 12, bob - 14, 12, bob - 4);
@@ -3834,7 +4170,6 @@ const Sprites = {
       ctx.fill();
       ctx.stroke();
 
-      // Gold Lock
       ctx.fillStyle = '#ef4444';
       ctx.shadowColor = '#fbbf24';
       ctx.shadowBlur = 8;
@@ -3842,14 +4177,15 @@ const Sprites = {
       ctx.arc(0, bob - 1, 3, 0, Math.PI * 2);
       ctx.fill();
       ctx.shadowBlur = 0;
-    } else if (drop.type === 'artifact_relic') {
+    }
+    // 11. ARTIFACT RELIC
+    else if (drop.type === 'artifact_relic') {
       const hue = (tick * 4) % 360;
       this.drawAura(ctx, 0, bob, 24, `hsla(${hue}, 95%, 65%, 0.85)`, 28);
       ctx.font = '22px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('🏺', 0, bob);
-      // Sacred glowing ring
       ctx.strokeStyle = `hsl(${(hue + 60) % 360}, 100%, 75%)`;
       ctx.lineWidth = 2;
       ctx.beginPath();

@@ -1677,6 +1677,7 @@ class Game {
       dashDuration: 0.24,
       dashDurationTimer: 0,
       gravitySlowTimer: 0,
+      furySpeedTimer: 0,
 
       isDevilMode: char.id === 'black_asta',
       isSpiritMode: false,
@@ -2285,43 +2286,47 @@ class Game {
     // 1. Check Evolutions (Tier 2 and Tier 3 Super Evolution!)
     for (const [wId, item] of Object.entries(p.weapons)) {
       const def = window.SPELL_DEFS[wId];
-      if (def && def.evolution) {
-        const evoDef = window.SPELL_DEFS[def.evolution];
-        const isSuper = (def.type === 'evolution');
+      if (def && (def.evolution || def.evolutions)) {
+        const evoIds = Array.isArray(def.evolutions) ? def.evolutions : (def.evolution ? [def.evolution] : []);
+        for (const evoId of evoIds) {
+          const evoDef = window.SPELL_DEFS[evoId];
+          if (!evoDef) continue;
+          const isSuper = (def.type === 'evolution');
 
-        if (isSuper) {
-          // Tier 3 Super Evolution: Yêu cầu đạt Cấp 25+ và thời gian trận đấu >= 10 phút (600s)!
-          const isMain = item.isStartingWeapon || wId === p.startingWeaponId || def.id === p.startingWeaponId;
-          if (isMain && p.level >= 25 && this.gameTime >= 600 && evoDef && !p.weapons[evoDef.id]) {
-            pool.push({
-              id: evoDef.id,
-              type: 'evolution',
-              replaces: wId,
-              name: evoDef.name,
-              icon: evoDef.icon,
-              badge: '🌟 SIÊU TIẾN HÓA LẦN 2 (TIER 3) - THỨC TỈNH TỐI THƯỢNG 🌟',
-              description: evoDef.description,
-              isEvolution: true,
-              isSuperEvolution: true,
-              isStartingWeapon: true
-            });
-          }
-        } else {
-          // Tier 2: Mọi vũ khí đạt Cấp 5 kèm sách yêu cầu có thể tiến hóa
-          const hasReqPassive = !def.requires || p.passives[def.requires];
-          if (item.level >= 5 && hasReqPassive && evoDef && !p.weapons[evoDef.id]) {
-            pool.push({
-              id: evoDef.id,
-              type: 'evolution',
-              replaces: wId,
-              name: evoDef.name,
-              icon: evoDef.icon,
-              badge: 'TIẾN HÓA HUYỀN THOẠI ⭐⭐⭐',
-              description: evoDef.description,
-              isEvolution: true,
-              isSuperEvolution: false,
-              isStartingWeapon: !!item.isStartingWeapon
-            });
+          if (isSuper) {
+            // Tier 3 Super Evolution: Yêu cầu đạt Cấp 25+ và thời gian trận đấu >= 10 phút (600s)!
+            const isMain = item.isStartingWeapon || wId === p.startingWeaponId || def.id === p.startingWeaponId;
+            if (isMain && p.level >= 25 && this.gameTime >= 600 && !p.weapons[evoDef.id]) {
+              pool.push({
+                id: evoDef.id,
+                type: 'evolution',
+                replaces: wId,
+                name: evoDef.name,
+                icon: evoDef.icon,
+                badge: '🌟 SIÊU TIẾN HÓA LẦN 2 (TIER 3) - THỨC TỈNH TỐI THƯỢNG 🌟',
+                description: evoDef.description,
+                isEvolution: true,
+                isSuperEvolution: true,
+                isStartingWeapon: true
+              });
+            }
+          } else {
+            // Tier 2: Mọi vũ khí đạt Cấp 5 kèm sách yêu cầu có thể tiến hóa
+            const hasReqPassive = !def.requires || p.passives[def.requires];
+            if (item.level >= 5 && hasReqPassive && !p.weapons[evoDef.id]) {
+              pool.push({
+                id: evoDef.id,
+                type: 'evolution',
+                replaces: wId,
+                name: evoDef.name,
+                icon: evoDef.icon,
+                badge: evoDef.badge || 'TIẾN HÓA HUYỀN THOẠI ⭐⭐⭐',
+                description: evoDef.description,
+                isEvolution: true,
+                isSuperEvolution: false,
+                isStartingWeapon: !!item.isStartingWeapon
+              });
+            }
           }
         }
       }
@@ -2332,7 +2337,8 @@ class Game {
       const def = window.SPELL_DEFS[wId];
       if (def && item.level < def.maxLevel) {
         const nextLv = item.level + 1;
-        const evoDef = def.evolution ? window.SPELL_DEFS[def.evolution] : null;
+        const evoIds = Array.isArray(def.evolutions) ? def.evolutions : (def.evolution ? [def.evolution] : []);
+        const evoDef = evoIds.length > 0 ? window.SPELL_DEFS[evoIds[0]] : null;
         const reqDef = def.requires ? window.SPELL_DEFS[def.requires] : null;
         const superDef = evoDef && evoDef.evolution ? window.SPELL_DEFS[evoDef.evolution] : null;
         const isMain = item.isStartingWeapon || wId === p.startingWeaponId;
@@ -2346,7 +2352,7 @@ class Game {
           badge: `Cấp ${item.level} ➔ Cấp ${nextLv}`,
           description: (def.levelDescriptions && def.levelDescriptions[nextLv]) ? def.levelDescriptions[nextLv] : def.description,
           evolutionInfo: evoDef ? {
-            evoName: evoDef.name,
+            evoName: (def.evolutions && def.evolutions.length > 1) ? '3 Nhánh Spirit (Missile / Blade / Familiar)' : evoDef.name,
             evoIcon: evoDef.icon,
             reqBookName: reqDef ? reqDef.name : 'Không cần',
             reqBookIcon: reqDef ? (reqDef.icon || '📘') : '📘',
@@ -2682,6 +2688,35 @@ class Game {
     });
   }
 
+  // Hút toàn bộ vật phẩm trên bản đồ
+  magnetizeAllDrops() {
+    for (const d of this.drops) {
+      d.isMagnetized = true;
+      d.magnetSpeed = 820;
+    }
+  }
+
+  // Tự động gộp các hạt mana ở xa để chống tụt FPS và nâng cấp thành Hạt Mana Bậc Cao
+  consolidateDrops() {
+    const p = this.player;
+    if (!p) return;
+    for (let i = 0; i < this.drops.length - 1; i++) {
+      const a = this.drops[i];
+      if (a.type !== 'mana' || a.isMagnetized) continue;
+      if (Math.hypot(a.x - p.x, a.y - p.y) < 220) continue;
+
+      for (let j = i + 1; j < this.drops.length; j++) {
+        const b = this.drops[j];
+        if (b.type !== 'mana' || b.isMagnetized) continue;
+        if (Math.hypot(a.x - b.x, a.y - b.y) < 160) {
+          a.val += b.val;
+          this.drops.splice(j, 1);
+          return;
+        }
+      }
+    }
+  }
+
   triggerComboBanner(text) {
     this.comboBanner.text = text;
     this.comboBanner.alpha = 1.0;
@@ -2705,8 +2740,24 @@ class Game {
       this.currentTarget = null;
     }
 
-    // Drops
-    this.spawnDrop(enemy.x, enemy.y, 'mana', enemy.expValue);
+    // Drops (Hệ thống Hạt Mana đa dạng 6 bậc + Tỷ lệ rơi Hạt Mana Đặc Biệt)
+    const rSpecial = Math.random();
+    if (!enemy.isBoss && rSpecial < 0.012) {
+      // 1.2% chance: Hạt Mana Chân Không (Hút toàn bộ mana và vàng trên map)
+      this.spawnDrop(enemy.x, enemy.y, 'mana_vacuum', enemy.expValue);
+    } else if (!enemy.isBoss && rSpecial < 0.026) {
+      // 1.4% chance: Hạt Mana Cuồng Nộ (Sấm sét quét quái + Tăng 35% tốc chạy)
+      this.spawnDrop(enemy.x, enemy.y, 'mana_fury', enemy.expValue);
+    } else if (!enemy.isBoss && rSpecial < 0.044) {
+      // 1.8% chance: Hạt Mana Đột Biến (Nhân 3 lần EXP)
+      this.spawnDrop(enemy.x, enemy.y, 'mana_surge', enemy.expValue);
+    } else if (!enemy.isBoss && rSpecial < 0.065) {
+      // 2.1% chance: Hoa Tinh Hoa Ma Pháp Trị Liệu (+20 HP & EXP)
+      this.spawnDrop(enemy.x, enemy.y, 'mana_bloom', enemy.expValue);
+    } else {
+      // Hạt Mana thường (tự động đổi hình dáng và màu sắc theo 6 bậc EXP)
+      this.spawnDrop(enemy.x, enemy.y, 'mana', enemy.expValue);
+    }
 
     // Artifact kill hook (Lucifero Demon Heart)
     if (this.artifacts) {
@@ -3062,6 +3113,7 @@ class Game {
 
       if (p.isDashing) spd *= 2.8;
       if (p.gravitySlowTimer > 0) spd *= 0.8;
+      if (p.furySpeedTimer > 0) spd *= 1.35;
 
       p.x += normX * spd * dt;
       p.y += normY * spd * dt;
@@ -3079,6 +3131,9 @@ class Game {
     }
     if (p.gravitySlowTimer > 0) {
       p.gravitySlowTimer -= dt;
+    }
+    if (p.furySpeedTimer > 0) {
+      p.furySpeedTimer -= dt;
     }
 
     this.rebuildSpatialGrid();
@@ -3114,6 +3169,11 @@ class Game {
       }
     }
 
+    // Smart Mana Consolidation (Gộp hạt mana khi > 100 trên sân)
+    if (this.drops.length > 100 && Math.random() < 0.2) {
+      this.consolidateDrops();
+    }
+
     // Drops & Magnetism
     const pX = p.x;
     const pY = p.y;
@@ -3137,6 +3197,35 @@ class Game {
         if (drop.type === 'mana') {
           this.addExp(drop.val);
           window.soundEngine.pickup();
+        } else if (drop.type === 'mana_vacuum') {
+          this.addExp(drop.val);
+          this.magnetizeAllDrops();
+          this.spells.floatingTexts.push({ x: p.x, y: p.y - 30, text: '🧲 HÚT MANA TOÀN BẢN ĐỒ!', color: '#38bdf8', size: 16, life: 1.0 });
+          this.spells.spawnShockwave(p.x, p.y, '#38bdf8', 350, 0.4);
+          window.soundEngine.evolution();
+        } else if (drop.type === 'mana_fury') {
+          this.addExp(drop.val);
+          p.furySpeedTimer = 4.0;
+          this.spells.floatingTexts.push({ x: p.x, y: p.y - 30, text: '⚡ MANA CUỒNG NỘ! (+35% TỐC CHẠY & SẤM SÉT)', color: '#f59e0b', size: 15, life: 1.0 });
+          this.spells.spawnShockwave(p.x, p.y, '#f59e0b', 260, 0.35);
+          const nearbyEnemies = this.getEnemiesNear(p.x, p.y, 250);
+          for (const ne of nearbyEnemies) {
+            if (!ne || ne.isDead || ne.hp <= 0) continue;
+            this.spells.applyDamage(ne, 150, true, '#f59e0b');
+          }
+          window.soundEngine.dash();
+        } else if (drop.type === 'mana_bloom') {
+          this.addExp(drop.val);
+          this.healPlayer(20);
+          this.spells.floatingTexts.push({ x: p.x, y: p.y - 25, text: '💖 +20 HP TRỊ LIỆU!', color: '#34d399', size: 16, life: 0.8 });
+          this.spells.spawnImpactParticles(p.x, p.y, '#34d399', 8);
+          window.soundEngine.pickup();
+        } else if (drop.type === 'mana_surge') {
+          const surgeVal = drop.val * 3;
+          this.addExp(surgeVal);
+          this.spells.floatingTexts.push({ x: p.x, y: p.y - 30, text: `🌟 +${surgeVal} EXP (x3 MANA SURGE)!`, color: '#fbbf24', size: 17, life: 1.0 });
+          this.spells.spawnImpactParticles(p.x, p.y, '#fbbf24', 12);
+          window.soundEngine.evolution();
         } else if (drop.type === 'coin') {
           this.currency.coins += drop.val;
           this.spells.floatingTexts.push({ x: p.x, y: p.y - 15, text: `+${drop.val} COINS`, color: '#fbbf24', size: 14, life: 0.6 });

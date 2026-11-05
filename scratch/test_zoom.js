@@ -20,7 +20,7 @@ assert(html.includes('id="btnZoomToggle"'), 'HTML must have btnZoomToggle in HUD
 assert(html.includes('function setMapZoomPreset'), 'HTML must have setMapZoomPreset');
 assert(html.includes('function cycleZoomToggle'), 'HTML must have cycleZoomToggle');
 assert(html.includes('function updateMapZoomUI'), 'HTML must have updateMapZoomUI');
-assert(html.includes('v=bc180'), 'HTML must have cache buster v=bc180');
+assert(html.includes('v=bc182'), 'HTML must have cache buster v=bc182');
 console.log('HTML UI elements & JS handlers: PASSED!');
 
 // 2. Check game.js
