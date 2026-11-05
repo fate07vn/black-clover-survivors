@@ -1063,16 +1063,6 @@ class EnemyManager {
         ctx.lineWidth = 2.5;
         ctx.globalAlpha = 0.85;
         ctx.stroke();
-
-        // Danger Label / Alert Icon
-        if (t.label) {
-          ctx.font = '900 11px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = '#ffffff';
-          ctx.globalAlpha = 0.9;
-          ctx.fillText(`⚠️ ${t.label}`, t.x, t.y);
-        }
       } else if (t.type === 'laser') {
         // Rectangular line / laser beam telegraph
         ctx.save();
@@ -1097,15 +1087,6 @@ class EnemyManager {
           ctx.lineTo(ax, 0);
           ctx.lineTo(ax - 9, t.width * 0.3);
           ctx.stroke();
-        }
-
-        if (t.label) {
-          ctx.font = '900 11px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = '#ffffff';
-          ctx.globalAlpha = 0.95;
-          ctx.fillText(`⚠️ ${t.label}`, t.length * 0.45, 0);
         }
         ctx.restore();
       } else if (t.type === 'shockwave_ring') {
@@ -1143,18 +1124,6 @@ class EnemyManager {
         ctx.lineWidth = 2.5;
         ctx.globalAlpha = 0.85;
         ctx.stroke();
-
-        // Melee slash label
-        if (t.label) {
-          ctx.font = '900 10px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = '#ffffff';
-          ctx.globalAlpha = 0.95;
-          const lx = Math.cos(t.angle) * (t.radius * 0.55);
-          const ly = Math.sin(t.angle) * (t.radius * 0.55);
-          ctx.fillText(`⚔️ ${t.label}`, lx, ly);
-        }
         ctx.restore();
       }
     }

@@ -79,142 +79,141 @@ const SPELL_DEFS = {
     maxLevel: 1
   },
 
-  sylph_spirits: {
+    sylph_spirits: {
     id: 'sylph_spirits',
-    name: 'Tinh Linh (Spirit)',
+    name: 'Tinh Linh (Spirit: Magic Missile)',
     type: 'weapon',
-    icon: '⭕✨',
-    badge: 'MAGIC SURVIVAL SPIRIT',
-    description: 'Chiêu Tinh Linh (Spirit - Magic Survival): Triệu hồi các Vòng Tinh Linh (Spirit Ring) xoay quanh người, liên tục phóng Tiễn Ma Pháp truy sát kẻ địch gần nhất!',
+    icon: '⭕⚡',
+    badge: 'CHIÊU BAN ĐẦU (MAGIC SURVIVAL)',
+    description: 'CHIÊU BAN ĐẦU (Magic Survival): Triệu hồi các Vòng Tinh Linh (Spirit Ring) xoay quanh người. Giảm hồi chiêu theo số lượng Tinh Linh (-20% Hồi chiêu). Tinh Linh phóng tiễn ma pháp liên tục đều đặn theo chu kỳ hồi chiêu (bắn liên thanh như súng máy)!',
     levelDescriptions: {
       2: 'CẤP 2: +1 Vòng Tinh Linh (Tổng 2, Sylph 3), +20% Sát thương.',
       3: 'CẤP 3: +1 Vòng Tinh Linh (Tổng 3, Sylph 4), -15% Hồi chiêu.',
       4: 'CẤP 4: +1 Vòng Tinh Linh (Tổng 4, Sylph 5), đạn nhận thêm khả năng Xuyên Thấu (+1 Pierce).',
-      5: 'CẤP 5 [Spirit Mastery]: +1 Vòng Tinh Linh (Tổng 5, Sylph 6). Khai mở 3 Nhánh Thức Tỉnh: Magic Missile (Bắn Liên Thanh), Magic Blade (Kiếm Trảm Tức Thời), Familiar (Đại Tinh Linh 360°)'
+      5: 'CẤP 5 [Spirit Mastery]: +1 Vòng Tinh Linh (Tổng 5, Sylph 6). Khai mở TIẾN HÓA CẤP 1: Magic Blade (Lưỡi Kiếm Ma Pháp) khi có Tinh Linh Chi Vũ!'
     },
-    baseCooldown: 0.85,
+    baseCooldown: 0.58, // Giảm 20% hồi chiêu theo Hình 1 (Magic Missile)
     baseDamage: 28,
-    baseSpeed: 640,
-    baseArea: 22,
+    baseSpeed: 750,
+    baseArea: 24,
     pierce: 1,
     maxLevel: 5,
-    evolution: 'spirit_magic_missile',
-    evolutions: ['spirit_magic_missile', 'spirit_magic_blade', 'spirit_familiar'],
+    evolution: 'spirit_magic_blade',
     requires: 'wind_glide'
   },
 
-  // 1. BRANCH 1: MAGIC MISSILE (Image 1 - Tên Lửa Ma Pháp)
-  spirit_magic_missile: {
-    id: 'spirit_magic_missile',
-    name: 'Tinh Linh - Magic Missile (Tên Lửa Ma Pháp)',
-    type: 'evolution',
-    icon: '⭕⚡',
-    badge: 'TIẾN HÓA: MAGIC MISSILE (MAGIC SURVIVAL)',
-    description: 'TIẾN HÓA CẤP 1 (Magic Survival): Giảm 20% hồi chiêu. Các Tinh Linh phóng đạn liên tục cách đều nhau theo hồi chiêu, bắn liên thanh như súng máy không ngừng nghỉ!',
-    baseCooldown: 0.58,
-    baseDamage: 85,
-    baseSpeed: 800,
-    baseArea: 26,
-    pierce: 2,
-    maxLevel: 1,
-    evolution: 'spirit_storm_empress',
-    requires: 'reinforcement'
-  },
-
-  // 2. BRANCH 2: MAGIC BLADE (Image 2 - Lưỡi Kiếm Ma Pháp)
+  // HÌNH 2: TIẾN HÓA CẤP 1 (TIER 2) - MAGIC BLADE (LƯỠI KIẾM MA PHÁP)
   spirit_magic_blade: {
     id: 'spirit_magic_blade',
     name: 'Tinh Linh - Magic Blade (Lưỡi Kiếm Ma Pháp)',
     type: 'evolution',
     icon: '⭕🗡️',
-    badge: 'TIẾN HÓA: MAGIC BLADE (MAGIC SURVIVAL)',
-    description: 'TIẾN HÓA CẤP 1 (Magic Survival): Đạn Tinh Linh chuyển hóa thành Kiếm Ma Pháp tạo ra tức thời ngay trên mục tiêu! Sát thương tăng x2.5 lần, trảm sát lập tức không có độ trễ bay!',
-    baseCooldown: 0.95,
-    baseDamage: 125,
+    badge: 'TIẾN HÓA CẤP 1 (TIER 2): MAGIC BLADE',
+    description: 'TIẾN HÓA CẤP 1 (Magic Survival): Lưỡi Kiếm Ma Pháp (Magic Blade) được tạo ra TỨC THỜI ngay trên mục tiêu kẻ địch! Tăng 2.5X sát thương, trảm sát lập tức không có độ trễ bay! (Cần Level 25+ & Phút 10+ để mở Siêu Tiến Hóa Lần 2: Familiar)',
+    baseCooldown: 0.88,
+    baseDamage: 115, // Tăng ~2.5X từ chiêu cơ bản (chuẩn Tier 2: 75-125)
     baseSpeed: 9999,
-    baseArea: 65,
+    baseArea: 68,
     pierce: 4,
     maxLevel: 1,
-    evolution: 'spirit_blade_sovereign',
+    evolution: 'spirit_familiar',
     requires: 'reinforcement'
   },
 
-  // 3. BRANCH 3: FAMILIAR (Image 3 - Đại Tinh Linh Hợp Nhất)
+  // HÌNH 3: SIÊU TIẾN HÓA LẦN 2 (TIER 3) - FAMILIAR (ĐẠI TINH LINH HỢP NHẤT)
   spirit_familiar: {
     id: 'spirit_familiar',
     name: 'Tinh Linh - Familiar (Đại Tinh Linh Hợp Nhất)',
-    type: 'evolution',
-    icon: '⭕👑',
-    badge: 'TIẾN HÓA: FAMILIAR (MAGIC SURVIVAL)',
-    description: 'TIẾN HÓA CẤP 1 (Magic Survival): Tất cả Tinh Linh dung hợp thành 1 Đại Tinh Linh Thú to lớn! Bão đạn 360 độ cực khủng (+15 đạn mỗi Tinh Linh), khoảng cách phóng đạn cực ngắn (xả cực nhanh), hồi chiêu tăng 5x!',
-    baseCooldown: 3.8,
-    baseDamage: 78,
-    baseSpeed: 640,
-    baseArea: 32,
-    pierce: 2,
+    type: 'super_evolution',
+    icon: '👑⭕',
+    badge: '🌟 SIÊU TIẾN HÓA LẦN 2 (TIER 3): FAMILIAR 🌟',
+    description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3 - Magic Survival): Tất cả Vòng Tinh Linh HỢP NHẤT THÀNH MỘT ĐẠI TINH LINH KHỔNG LỒ! Đại Tinh Linh phóng bão tiễn ma pháp 360 độ ra mọi hướng (+15 đạn cho mỗi Tinh Linh = 90 đạn xoáy liên hoàn), khoảng cách phóng đạn cực ngắn (xả cực nhanh), hồi chiêu tăng 5x!',
+    baseCooldown: 3.8, // Hồi chiêu tăng 5X theo Hình 3 (Familiar)
+    baseDamage: 210, // Chuẩn sát thương Tier 3 cân bằng: 165 - 240
+    baseSpeed: 750,
+    baseArea: 36,
+    pierce: 5,
     maxLevel: 1,
-    evolution: 'spirit_familiar_overlord',
-    requires: 'reinforcement'
+    evolution: null
   },
 
-  // Backward compatibility alias
+  // Backward compatibility alias for Magic Blade
   sylph_tempest_domain: {
     id: 'sylph_tempest_domain',
-    name: 'Tinh Linh - Magic Blade (Ngự Kiếm Linh Hồn)',
+    name: 'Tinh Linh - Magic Blade (Lưỡi Kiếm Ma Pháp)',
     type: 'evolution',
     icon: '⭕🗡️',
-    badge: 'TIẾN HÓA: MAGIC BLADE (MAGIC SURVIVAL)',
-    description: 'TIẾN HÓA CẤP 1 (Magic Survival): Đạn Tinh Linh chuyển hóa thành Kiếm Ma Pháp tạo ra tức thời ngay trên mục tiêu! Sát thương tăng x2.5 lần, trảm sát lập tức không có độ trễ bay!',
-    baseCooldown: 0.95,
-    baseDamage: 125,
+    badge: 'TIẾN HÓA CẤP 1 (TIER 2): MAGIC BLADE',
+    description: 'TIẾN HÓA CẤP 1 (Magic Survival): Lưỡi Kiếm Ma Pháp (Magic Blade) được tạo ra TỨC THỜI ngay trên mục tiêu kẻ địch! Tăng 2.5X sát thương, trảm sát lập tức không có độ trễ bay!',
+    baseCooldown: 0.88,
+    baseDamage: 115,
     baseSpeed: 9999,
-    baseArea: 65,
+    baseArea: 68,
     pierce: 4,
     maxLevel: 1,
-    evolution: 'spirit_blade_sovereign',
+    evolution: 'spirit_familiar',
     requires: 'reinforcement'
   },
 
-  // TIER 3 SUPER EVOLUTIONS (SIÊU TIẾN HÓA LẦN 2)
-  spirit_storm_empress: {
-    id: 'spirit_storm_empress',
-    name: 'Bão Đạn Tinh Linh Thần Thánh (Empress Gatling Storm)',
-    type: 'super_evolution',
-    icon: '👑⚡',
-    description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): 12 Vòng Tinh Linh súng máy xả bão đạn liên hồi + cuồng phong chân không hút quái toàn màn hình kèm sóng xung kích chấn động!',
-    baseCooldown: 0.38,
-    baseDamage: 195,
-    baseSpeed: 880,
-    baseArea: 40,
+  spirit_magic_missile: {
+    id: 'spirit_magic_missile',
+    name: 'Tinh Linh - Magic Blade (Lưỡi Kiếm Ma Pháp)',
+    type: 'evolution',
+    icon: '⭕🗡️',
+    badge: 'TIẾN HÓA CẤP 1 (TIER 2): MAGIC BLADE',
+    description: 'TIẾN HÓA CẤP 1 (Magic Survival): Lưỡi Kiếm Ma Pháp (Magic Blade) được tạo ra TỨC THỜI ngay trên mục tiêu kẻ địch! Tăng 2.5X sát thương, trảm sát lập tức không có độ trễ bay!',
+    baseCooldown: 0.88,
+    baseDamage: 115,
+    baseSpeed: 9999,
+    baseArea: 68,
     pierce: 4,
-    maxLevel: 1
+    maxLevel: 1,
+    evolution: 'spirit_familiar',
+    requires: 'reinforcement'
   },
 
   spirit_blade_sovereign: {
     id: 'spirit_blade_sovereign',
-    name: 'Vạn Kiếm Trảm Không (Infinite Spirit Blade Sovereign)',
+    name: 'Tinh Linh - Familiar (Đại Tinh Linh Hợp Nhất)',
     type: 'super_evolution',
-    icon: '👑🗡️',
-    description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Khai mở Vạn Kiếm Trận với 16 Thần Kiếm Linh Hồn trảm sát tức thời liên hoàn toàn bản đồ kèm kiếm áp chấn động rung chuyển chiến trường!',
-    baseCooldown: 0.70,
-    baseDamage: 240,
-    baseSpeed: 9999,
-    baseArea: 90,
-    pierce: 8,
+    icon: '👑⭕',
+    badge: '🌟 SIÊU TIẾN HÓA LẦN 2 (TIER 3): FAMILIAR 🌟',
+    description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3 - Magic Survival): Tất cả Vòng Tinh Linh HỢP NHẤT THÀNH MỘT ĐẠI TINH LINH KHỔNG LỒ! Đại Tinh Linh phóng bão tiễn ma pháp 360 độ ra mọi hướng (+15 đạn cho mỗi Tinh Linh = 90 đạn xoáy liên hoàn), khoảng cách phóng đạn cực ngắn (xả cực nhanh), hồi chiêu tăng 5x!',
+    baseCooldown: 3.8,
+    baseDamage: 210,
+    baseSpeed: 750,
+    baseArea: 36,
+    pierce: 5,
     maxLevel: 1
   },
 
   spirit_familiar_overlord: {
     id: 'spirit_familiar_overlord',
-    name: 'Thái Cổ Tinh Linh Vương (Primordial Spirit Familiar Overlord)',
+    name: 'Tinh Linh - Familiar (Đại Tinh Linh Hợp Nhất)',
     type: 'super_evolution',
-    icon: '👑🌀',
-    description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3): Đại Tinh Linh Thần Khởi triệu hồi bão đạn 360 độ 120 tia đạn + 3 vòng sóng xung kích bão tố tàn phá mọi quái vật xung quanh!',
-    baseCooldown: 3.2,
-    baseDamage: 185,
-    baseSpeed: 720,
-    baseArea: 50,
-    pierce: 3,
+    icon: '👑⭕',
+    badge: '🌟 SIÊU TIẾN HÓA LẦN 2 (TIER 3): FAMILIAR 🌟',
+    description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3 - Magic Survival): Tất cả Vòng Tinh Linh HỢP NHẤT THÀNH MỘT ĐẠI TINH LINH KHỔNG LỒ! Đại Tinh Linh phóng bão tiễn ma pháp 360 độ ra mọi hướng (+15 đạn cho mỗi Tinh Linh = 90 đạn xoáy liên hoàn), khoảng cách phóng đạn cực ngắn (xả cực nhanh), hồi chiêu tăng 5x!',
+    baseCooldown: 3.8,
+    baseDamage: 210,
+    baseSpeed: 750,
+    baseArea: 36,
+    pierce: 5,
+    maxLevel: 1
+  },
+
+  spirit_storm_empress: {
+    id: 'spirit_storm_empress',
+    name: 'Tinh Linh - Familiar (Đại Tinh Linh Hợp Nhất)',
+    type: 'super_evolution',
+    icon: '👑⭕',
+    badge: '🌟 SIÊU TIẾN HÓA LẦN 2 (TIER 3): FAMILIAR 🌟',
+    description: 'SIÊU TIẾN HÓA LẦN 2 (TIER 3 - Magic Survival): Tất cả Vòng Tinh Linh HỢP NHẤT THÀNH MỘT ĐẠI TINH LINH KHỔNG LỒ! Đại Tinh Linh phóng bão tiễn ma pháp 360 độ ra mọi hướng (+15 đạn cho mỗi Tinh Linh = 90 đạn xoáy liên hoàn), khoảng cách phóng đạn cực ngắn (xả cực nhanh), hồi chiêu tăng 5x!',
+    baseCooldown: 3.8,
+    baseDamage: 210,
+    baseSpeed: 750,
+    baseArea: 36,
+    pierce: 5,
     maxLevel: 1
   },
 
@@ -1918,98 +1917,60 @@ class SpellManager {
         break;
       }
 
+            // -----------------------------------------------------------------------
+      // HÌNH 1: CHIÊU BAN ĐẦU (TIER 1) - MAGIC MISSILE (TÊN LỬA MA PHÁP)
+      // Spirits launch projectiles sequentially over interval equal to cooldown.
+      // -----------------------------------------------------------------------
       case 'sylph_spirits': {
         const spiritCount = 1 + level + (p.charId === 'sylph' ? 1 : 0);
         const orbitR = 50 + level * 2.8;
         const scaledSpeed = def.baseSpeed * (1 + (level >= 3 ? 0.15 : 0));
         const scaledDamage = Math.round(damage * (1 + (level - 1) * 0.18));
         const pierce = level >= 4 ? 2 : 1;
-        const nearestEnemies = this.getNearestEnemies(p.x, p.y, spiritCount);
-
-        for (let i = 0; i < spiritCount; i++) {
-          const orbitAngle = (this.game.tick * 3.0) + (i * Math.PI * 2) / spiritCount;
-          const sx = p.x + Math.cos(orbitAngle) * orbitR;
-          const sy = p.y + Math.sin(orbitAngle) * orbitR;
-
-          let aimAngle = targetAngle;
-          let target = null;
-          if (nearestEnemies.length > 0) {
-            target = nearestEnemies[i % nearestEnemies.length];
-            aimAngle = Math.atan2(target.y - sy, target.x - sx);
-          } else {
-            aimAngle = targetAngle + (i - (spiritCount - 1) / 2) * 0.22;
-          }
-
-          setTimeout(() => {
-            if (!this.game || this.game.state !== 'PLAYING') return;
-            this.projectiles.push({
-              type: 'sylph_spirit_bolt',
-              x: sx,
-              y: sy,
-              vx: Math.cos(aimAngle) * scaledSpeed,
-              vy: Math.sin(aimAngle) * scaledSpeed,
-              radius: 13 * areaMult,
-              damage: scaledDamage,
-              isCrit: isCrit,
-              color: '#34d399',
-              pierce: pierce,
-              life: 1.8,
-              isHoming: true,
-              turnSpeed: 12,
-              targetEnemy: target
-            });
-            this.spawnImpactParticles(sx, sy, '#ffffff', 3);
-          }, i * 36);
-        }
-        this.playSound('windBlade');
-        break;
-      }
-
-      // BRANCH 1: MAGIC MISSILE (Image 1 from Magic Survival)
-      case 'spirit_magic_missile': {
-        const spiritCount = 6 + (p.charId === 'sylph' ? 1 : 0);
-        const orbitR = 68;
         const actualCd = (def.baseCooldown * (1 - (p.cooldownReduction || 0))) || 0.45;
         const stepDelay = Math.max(25, Math.round((actualCd * 1000) / spiritCount));
 
         for (let i = 0; i < spiritCount; i++) {
           setTimeout(() => {
             if (!this.game || this.game.state !== 'PLAYING') return;
-            const orbitAngle = (this.game.tick * 4.0) + (i * Math.PI * 2) / spiritCount;
+            const orbitAngle = (this.game.tick * 3.6) + (i * Math.PI * 2) / spiritCount;
             const sx = p.x + Math.cos(orbitAngle) * orbitR;
-            const sy = p.y + Math.sin(orbitAngle) * orbitR;
+            const sy = p.y + Math.sin(orbitAngle) * (orbitR * 0.72);
 
             const targets = this.getNearestEnemies(sx, sy, 3);
             const target = targets.length > 0 ? targets[Math.floor(Math.random() * targets.length)] : null;
-            const aimAngle = target ? Math.atan2(target.y - sy, target.x - sx) : (targetAngle + (Math.random() - 0.5) * 0.4);
+            const aimAngle = target ? Math.atan2(target.y - sy, target.x - sx) : (targetAngle + (i - (spiritCount - 1) / 2) * 0.22);
 
             this.projectiles.push({
               type: 'sylph_spirit_bolt',
               x: sx,
               y: sy,
-              vx: Math.cos(aimAngle) * def.baseSpeed,
-              vy: Math.sin(aimAngle) * def.baseSpeed,
-              radius: 14 * areaMult,
-              damage: damage,
+              vx: Math.cos(aimAngle) * scaledSpeed,
+              vy: Math.sin(aimAngle) * scaledSpeed,
+              radius: (13 + level) * areaMult,
+              damage: scaledDamage,
               isCrit: isCrit,
-              color: '#38bdf8',
-              pierce: def.pierce || 2,
-              life: 2.0,
+              color: '#34d399',
+              pierce: pierce,
+              life: 1.8,
               isHoming: true,
-              turnSpeed: 18,
-              isMissile: true,
+              turnSpeed: 14,
               targetEnemy: target
             });
-            this.spawnImpactParticles(sx, sy, '#7dd3fc', 3);
+            this.spawnImpactParticles(sx, sy, '#ffffff', 3);
             this.playSound('windBlade');
           }, i * stepDelay);
         }
         break;
       }
 
-      // BRANCH 2: MAGIC BLADE (Image 2 from Magic Survival - Instant blade on target, 2.5X damage)
+      // -----------------------------------------------------------------------
+      // HÌNH 2: TIẾN HÓA CẤP 1 (TIER 2) - MAGIC BLADE (LƯỠI KIẾM MA PHÁP)
+      // Blade-shaped projectiles created IMMEDIATELY on target. Increase damage 2.5X.
+      // -----------------------------------------------------------------------
       case 'spirit_magic_blade':
-      case 'sylph_tempest_domain': {
+      case 'sylph_tempest_domain':
+      case 'spirit_magic_missile': {
         const spiritCount = 6 + (p.charId === 'sylph' ? 1 : 0);
         const enemies = this.getNearestEnemies(p.x, p.y, spiritCount);
         const slashDmg = damage;
@@ -2022,7 +1983,7 @@ class SpellManager {
             this.slashes.push({
               x: bx,
               y: by,
-              radius: 55 * areaMult,
+              radius: 58 * areaMult,
               facingAngle: targetAngle + (i % 2 === 0 ? 0.35 : -0.35),
               arc: Math.PI * 0.9,
               damage: slashDmg,
@@ -2047,7 +2008,7 @@ class SpellManager {
             const ty = target.y + (Math.random() - 0.5) * 16;
             const slashAngle = Math.random() * Math.PI * 2;
 
-            const splashEnemies = this.game.getEnemiesNear(tx, ty, 65 * areaMult);
+            const splashEnemies = this.game.getEnemiesNear(tx, ty, 68 * areaMult);
             for (const e of splashEnemies) {
               if (!e || e.isDead || e.hp <= 0) continue;
               this.applyDamage(e, slashDmg, isCrit, '#fef08a');
@@ -2056,7 +2017,7 @@ class SpellManager {
             this.slashes.push({
               x: tx,
               y: ty,
-              radius: 48 * areaMult,
+              radius: 52 * areaMult,
               facingAngle: slashAngle,
               arc: Math.PI * 1.2,
               damage: 0,
@@ -2075,21 +2036,29 @@ class SpellManager {
         break;
       }
 
-      // BRANCH 3: FAMILIAR (Image 3 from Magic Survival - All spirits combined into one, 360° barrage, 5x CD)
-      case 'spirit_familiar': {
-        const baseSpirits = 5 + (p.charId === 'sylph' ? 1 : 0);
-        const totalProjectiles = baseSpirits * 15; // 75 - 90 projectiles!
+      // -----------------------------------------------------------------------
+      // HÌNH 3: SIÊU TIẾN HÓA LẦN 2 (TIER 3) - FAMILIAR (ĐẠI TINH LINH HỢP NHẤT)
+      // All spirits combined into ONE. 360° barrage (+15 proj/spirit = 90-105 proj).
+      // Decreased launch interval (rapid burst). Cooldown increased 5X.
+      // -----------------------------------------------------------------------
+      case 'spirit_familiar':
+      case 'spirit_familiar_overlord':
+      case 'spirit_storm_empress':
+      case 'spirit_blade_sovereign': {
+        const baseSpirits = 6 + (p.charId === 'sylph' ? 1 : 0);
+        const totalProjectiles = baseSpirits * 15; // 90 to 105 projectiles!
         const waves = 15;
         const projPerWave = Math.round(totalProjectiles / waves);
-        const intervalDelay = 38;
+        const intervalDelay = 28; // Decreased launch interval by 5X (super-fast burst)
 
-        this.game.shakeScreen(7, 0.25);
-        this.spawnShockwave(p.x, p.y, '#f472b6', 220 * areaMult, 0.35);
+        this.game.shakeScreen(12, 0.4);
+        this.spawnShockwave(p.x, p.y, '#f472b6', 320 * areaMult, 0.45);
+        this.spawnShockwave(p.x, p.y, '#ffffff', 200 * areaMult, 0.3);
 
         for (let w = 0; w < waves; w++) {
           setTimeout(() => {
             if (!this.game || this.game.state !== 'PLAYING') return;
-            const waveOffset = (w * 0.32) + targetAngle;
+            const waveOffset = (w * 0.35) + (this.game.tick * 2);
             for (let j = 0; j < projPerWave; j++) {
               const ang = waveOffset + (j * Math.PI * 2) / projPerWave;
               this.projectiles.push({
@@ -2098,154 +2067,21 @@ class SpellManager {
                 y: p.y,
                 vx: Math.cos(ang) * def.baseSpeed,
                 vy: Math.sin(ang) * def.baseSpeed,
-                radius: 15 * areaMult,
+                radius: 18 * areaMult,
                 damage: damage,
                 isCrit: isCrit,
                 color: '#f472b6',
-                pierce: def.pierce || 2,
-                life: 1.8,
+                pierce: def.pierce || 5,
+                life: 2.2,
                 isHoming: true,
-                turnSpeed: 10,
-                isFamiliar: true
+                turnSpeed: 12,
+                isFamiliar: true,
+                isSuperEvo: true
               });
             }
             this.spawnImpactParticles(p.x, p.y, '#fbcfe8', 4);
             if (w % 3 === 0) this.playSound('windBlade');
           }, w * intervalDelay);
-        }
-        break;
-      }
-
-      // TIER 3 SUPER EVOLUTIONS
-      case 'spirit_storm_empress': {
-        this.game.shakeScreen(15, 0.45);
-        this.spawnShockwave(p.x, p.y, '#38bdf8', 560, 0.5);
-        this.spawnShockwave(p.x, p.y, '#fef08a', 400, 0.4);
-
-        this.aoeZones.push({
-          x: p.x,
-          y: p.y,
-          radius: 250 * areaMult,
-          damage: Math.round(damage * 0.4),
-          interval: 0.10,
-          tickTimer: 0,
-          life: 3.2,
-          color: '#38bdf8',
-          pull: true,
-          isEmpressStorm: true
-        });
-
-        const spiritCount = 12;
-        for (let i = 0; i < spiritCount; i++) {
-          const orbitAngle = (this.game.tick * 5.0) + (i * Math.PI * 2) / spiritCount;
-          const sx = p.x + Math.cos(orbitAngle) * 88;
-          const sy = p.y + Math.sin(orbitAngle) * 88;
-          const targets = this.getNearestEnemies(sx, sy, 3);
-          const target = targets[i % (targets.length || 1)] || null;
-          const aimAngle = target ? Math.atan2(target.y - sy, target.x - sx) : targetAngle + (i - 5.5) * 0.2;
-
-          setTimeout(() => {
-            if (!this.game || this.game.state !== 'PLAYING') return;
-            this.projectiles.push({
-              type: 'sylph_spirit_bolt',
-              x: sx,
-              y: sy,
-              vx: Math.cos(aimAngle) * def.baseSpeed,
-              vy: Math.sin(aimAngle) * def.baseSpeed,
-              radius: 20 * areaMult,
-              damage: damage,
-              isCrit: isCrit,
-              color: '#38bdf8',
-              pierce: 99,
-              life: 2.2,
-              isHoming: true,
-              isSuperEvo: true,
-              turnSpeed: 22,
-              targetEnemy: target
-            });
-            this.spawnImpactParticles(sx, sy, '#ffffff', 4);
-          }, i * 20);
-        }
-        this.playSound('windBlade');
-        break;
-      }
-
-      case 'spirit_blade_sovereign': {
-        this.game.shakeScreen(16, 0.5);
-        this.spawnShockwave(p.x, p.y, '#fef08a', 620, 0.5);
-
-        const enemies = this.getNearestEnemies(p.x, p.y, 16);
-        for (let i = 0; i < 16; i++) {
-          const target = enemies.length > 0 ? enemies[i % enemies.length] : null;
-          setTimeout(() => {
-            if (!this.game || this.game.state !== 'PLAYING') return;
-            const tx = target ? target.x + (Math.random() - 0.5) * 20 : p.x + Math.cos(targetAngle + (i - 8) * 0.25) * (100 + i * 30);
-            const ty = target ? target.y + (Math.random() - 0.5) * 20 : p.y + Math.sin(targetAngle + (i - 8) * 0.25) * (100 + i * 30);
-
-            const splashEnemies = this.game.getEnemiesNear(tx, ty, 90 * areaMult);
-            for (const e of splashEnemies) {
-              if (!e || e.isDead || e.hp <= 0) continue;
-              this.applyDamage(e, damage, isCrit, '#fef08a');
-            }
-
-            this.slashes.push({
-              x: tx,
-              y: ty,
-              radius: 65 * areaMult,
-              facingAngle: Math.random() * Math.PI * 2,
-              arc: Math.PI * 1.5,
-              damage: 0,
-              isCrit: isCrit,
-              color: '#fef08a',
-              life: 0.25,
-              maxLife: 0.25,
-              knockback: 15,
-              hasHit: true
-            });
-            this.spawnImpactParticles(tx, ty, '#facc15', 8);
-            this.spawnImpactParticles(tx, ty, '#ffffff', 6);
-          }, i * 28);
-        }
-        this.playSound('slash');
-        break;
-      }
-
-      case 'spirit_familiar_overlord': {
-        this.game.shakeScreen(18, 0.55);
-        this.spawnShockwave(p.x, p.y, '#f472b6', 500, 0.45);
-        this.spawnShockwave(p.x, p.y, '#a855f7', 350, 0.35);
-
-        const totalProjectiles = 120;
-        const waves = 20;
-        const projPerWave = 6;
-
-        for (let w = 0; w < waves; w++) {
-          setTimeout(() => {
-            if (!this.game || this.game.state !== 'PLAYING') return;
-            const waveOffset = (w * 0.45) + targetAngle;
-            for (let j = 0; j < projPerWave; j++) {
-              const ang = waveOffset + (j * Math.PI * 2) / projPerWave;
-              this.projectiles.push({
-                type: 'sylph_spirit_bolt',
-                x: p.x,
-                y: p.y,
-                vx: Math.cos(ang) * def.baseSpeed,
-                vy: Math.sin(ang) * def.baseSpeed,
-                radius: 20 * areaMult,
-                damage: damage,
-                isCrit: isCrit,
-                color: '#f472b6',
-                pierce: 5,
-                life: 2.2,
-                isHoming: true,
-                turnSpeed: 15,
-                isSuperEvo: true,
-                isFamiliar: true
-              });
-            }
-            this.spawnImpactParticles(p.x, p.y, '#fbcfe8', 5);
-            if (w % 3 === 0) this.playSound('windBlade');
-          }, w * 32);
         }
         break;
       }
@@ -4478,7 +4314,7 @@ class SpellManager {
     ctx.restore();
   }
 
-  drawSylphOrbitingSpirits(ctx, tick) {
+    drawSylphOrbitingSpirits(ctx, tick) {
     const p = this.game.player;
     if (!p || p.hp <= 0) return;
 
@@ -4487,57 +4323,40 @@ class SpellManager {
     let style = 'base';
     let isFamiliar = false;
 
-    // 1. Tier 3 Super Evolutions
-    if (p.weapons && p.weapons['spirit_familiar_overlord']) {
+    // 1. HÌNH 3: Siêu Tiến Hóa Lần 2 (Tier 3) - Familiar: All spirits combined into ONE Giant Spirit!
+    if (p.weapons && (p.weapons['spirit_familiar'] || p.weapons['spirit_familiar_overlord'] || p.weapons['spirit_storm_empress'] || p.weapons['spirit_blade_sovereign'])) {
       isFamiliar = true;
       spiritCount = 1;
-      orbitR = 60;
+      orbitR = 64;
       style = 'familiar';
-    } else if (p.weapons && p.weapons['spirit_blade_sovereign']) {
-      spiritCount = 10;
-      orbitR = 84;
-      style = 'blade';
-    } else if (p.weapons && p.weapons['spirit_storm_empress']) {
-      spiritCount = 10;
-      orbitR = 84;
-      style = 'missile';
     }
-    // 2. Tier 2 Evolutions
-    else if (p.weapons && p.weapons['spirit_familiar']) {
-      isFamiliar = true;
-      spiritCount = 1;
-      orbitR = 56;
-      style = 'familiar';
-    } else if (p.weapons && (p.weapons['spirit_magic_blade'] || p.weapons['sylph_tempest_domain'])) {
-      spiritCount = 6;
+    // 2. HÌNH 2: Tiến Hóa Cấp 1 (Tier 2) - Magic Blade: 6-7 spirits with floating spectral blades!
+    else if (p.weapons && (p.weapons['spirit_magic_blade'] || p.weapons['sylph_tempest_domain'] || p.weapons['spirit_magic_missile'])) {
+      spiritCount = 6 + (p.charId === 'sylph' ? 1 : 0);
       orbitR = 72;
       style = 'blade';
-    } else if (p.weapons && p.weapons['spirit_magic_missile']) {
-      spiritCount = 6;
-      orbitR = 72;
-      style = 'missile';
     }
-    // 3. Base weapon
+    // 3. HÌNH 1: Chiêu Ban Đầu (Tier 1) - Magic Missile: Orbiting spirits launching sequential missiles!
     else if (p.weapons && p.weapons['sylph_spirits']) {
       const item = p.weapons['sylph_spirits'];
       const lv = item.level || 1;
       spiritCount = 1 + lv + (p.charId === 'sylph' ? 1 : 0);
       orbitR = 50 + lv * 2.8;
-      style = 'base';
+      style = 'missile';
     } else if (p.charId === 'sylph') {
       spiritCount = 2;
       orbitR = 48;
-      style = 'base';
+      style = 'missile';
     }
 
     if (spiritCount <= 0) return;
 
-    const rotSpeed = isFamiliar ? 1.8 : (style === 'missile' ? 3.6 : (style === 'blade' ? 3.2 : 2.5));
+    const rotSpeed = isFamiliar ? 1.8 : (style === 'blade' ? 3.2 : 3.6);
 
     // Orbital faint boundary circle
     ctx.save();
     ctx.globalAlpha = 0.22;
-    ctx.strokeStyle = isFamiliar ? '#f472b6' : (style === 'blade' ? '#fef08a' : (style === 'missile' ? '#38bdf8' : '#6ee7b7'));
+    ctx.strokeStyle = isFamiliar ? '#f472b6' : (style === 'blade' ? '#fef08a' : '#38bdf8');
     ctx.lineWidth = 1.4;
     ctx.setLineDash([6, 6]);
     ctx.beginPath();
@@ -4551,8 +4370,8 @@ class SpellManager {
       const sx = p.x + Math.cos(angle) * orbitR;
       const sy = p.y + Math.sin(angle) * (orbitR * 0.72) + Math.sin(tick * 5 + i * 2) * 2.5;
 
-      const r = isFamiliar ? 20 : 9;
-      const innerR = isFamiliar ? 9.5 : 4.2;
+      const r = isFamiliar ? 22 : 9.5;
+      const innerR = isFamiliar ? 10.5 : 4.4;
 
       this.drawSpiritRing(ctx, sx, sy, r, innerR, style, tick, angle + Math.PI / 2);
     }

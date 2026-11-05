@@ -1925,7 +1925,7 @@ class Game {
               <span style="color:#fbbf24; font-weight:700;">✨ Yêu cầu Tiến Hóa ➔ ${evoDef.name}:</span>
               <br>&bull; Cấp vũ khí: <b>Lv.${item.level}/5</b> ${isLv5 ? '<span style="color:#34d399;">✅ (Đạt Cực Hạn)</span>' : '<span style="color:#f87171;">⚠️ (Cần đạt Lv.5)</span>'}
               <br>&bull; Sách bổ trợ: <b>${reqDef ? reqDef.name : 'Không cần'}</b> ${hasReqBook ? '<span style="color:#34d399;">✅ (Đã sở hữu)</span>' : '<span style="color:#f87171;">❌ (Chưa có - Cần chọn khi lên cấp)</span>'}
-              ${isMain ? '<br>&bull; <span style="color:#c084fc;">🌟 Kỹ năng chính của Pháp sư: Cho phép Siêu Tiến Hóa Lần 2 ở Cấp 10+!</span>' : ''}
+              ${isMain ? '<br>&bull; <span style="color:#c084fc;">🌟 Kỹ năng chính của Pháp sư: Cho phép Siêu Tiến Hóa Lần 2 ở Cấp 25+ & Phút 10+!</span>' : ''}
             </div>
           `;
         }
@@ -2191,7 +2191,7 @@ class Game {
             </div>
             ${ei.superEvoName ? `
               <div style="font-size: 9.5px; color: #c084fc; margin-top: 1px; font-weight: 700;">
-                🌟 Siêu Cấp 2: ${(ei.superEvoName || '').split('(')[0].trim()} (Cấp 10+)
+                🌟 Siêu Cấp 2: ${(ei.superEvoName || '').split('(')[0].trim()} (Cấp 25+ & Phút 10+)
               </div>
             ` : ''}
           </div>
@@ -2352,7 +2352,7 @@ class Game {
           badge: `Cấp ${item.level} ➔ Cấp ${nextLv}`,
           description: (def.levelDescriptions && def.levelDescriptions[nextLv]) ? def.levelDescriptions[nextLv] : def.description,
           evolutionInfo: evoDef ? {
-            evoName: (def.evolutions && def.evolutions.length > 1) ? '3 Nhánh Spirit (Missile / Blade / Familiar)' : evoDef.name,
+            evoName: evoDef.name,
             evoIcon: evoDef.icon,
             reqBookName: reqDef ? reqDef.name : 'Không cần',
             reqBookIcon: reqDef ? (reqDef.icon || '📘') : '📘',
