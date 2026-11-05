@@ -673,6 +673,8 @@ class Game {
   constructor() {
     this.canvas = document.getElementById('gameCanvas');
     this.ctx = this.canvas.getContext('2d');
+    window.game = this;
+    window.gameInstance = this;
 
     this.state = 'MENU';
     this.selectedCharId = 'asta';
@@ -686,7 +688,7 @@ class Game {
     this.shake = { intensity: 0, duration: 0 };
     this.screenShakeEnabled = true;
     this.gameSpeed = 1.0;
-    this.chestSpawnTimer = 35;
+    this.chestSpawnTimer = 120; // 2 minutes before first periodic chest
     this.whiteFlash = 0;
 
     this.spells = new SpellManager(this);
@@ -1464,7 +1466,7 @@ class Game {
         return;
       }
 
-      if (this.matchesAction(e, 'pause')) {
+      if (e.key === 'Escape' || this.matchesAction(e, 'pause')) {
         const evoModal = document.getElementById('evolutionModal');
         if (evoModal && !evoModal.classList.contains('hidden')) {
           if (typeof closeEvolutionModal === 'function') closeEvolutionModal();
@@ -1487,9 +1489,23 @@ class Game {
         }
       }
 
+      // Toggle Evolution Guide Modal on key B
+      if (e.key === 'b' || e.key === 'B') {
+        if (!e.ctrlKey && !e.altKey && !e.metaKey) {
+          if (typeof toggleEvolutionModal === 'function') toggleEvolutionModal();
+        }
+      }
+
       if (this.matchesAction(e, 'dash')) {
         e.preventDefault();
         this.playerDash();
+      }
+
+      // Hotkey R to ping nearest chest
+      if (e.key === 'r' || e.key === 'R') {
+        if (!e.ctrlKey && !e.altKey && !e.metaKey && this.state === 'PLAYING') {
+          this.pingNearestChest();
+        }
       }
 
       // Quick Zoom Hotkeys: [ or - to zoom out, ] or + to zoom in
@@ -1656,6 +1672,7 @@ class Game {
       radius: 13,
       facing: 1,
       isMoving: false,
+      walkDistance: 0,
 
       maxHp: char.baseHp + bonusHp,
       hp: char.baseHp + bonusHp,
@@ -1712,12 +1729,7 @@ class Game {
       }
     }
 
-    // Spawn 3 initial mystery chests on the battlefield!
-    for (let c = 0; c < 3; c++) {
-      const angle = Math.random() * Math.PI * 2;
-      const dist = 320 + Math.random() * 450;
-      this.spawnDrop(this.player.x + Math.cos(angle) * dist, this.player.y + Math.sin(angle) * dist, 'chest', 100);
-    }
+    // Lâu lâu mới có 1 rương: Không spawn rương ban đầu, rương xuất hiện theo chu kỳ hoặc khi hạ Boss
 
     this.state = 'PLAYING';
     document.querySelectorAll('.overlay').forEach(el => el.classList.add('hidden'));
@@ -2148,19 +2160,179 @@ class Game {
     if (overlay) overlay.classList.remove('hidden');
   }
 
+  // =========================================================================
+  // MAGIC SURVIVAL SKILL SILHOUETTE GRAPHICS (WHITE LINE-ART SVG)
+  // =========================================================================
+  getSkillSilhouetteSvg(choice) {
+    const id = (choice.id || '').toLowerCase();
+    const name = (choice.name || '').toLowerCase();
+
+    // 1. ELECTRIC SHOCK / THUNDER (Like image 1 in photo)
+    if (id.includes('thunder') || id.includes('electric') || id.includes('lightning') || id.includes('luck') || name.includes('sấm') || name.includes('sét')) {
+      return `<svg viewBox="0 0 64 64" width="44" height="44" style="display:block;margin:auto;">
+        <path d="M 38 4 L 20 28 L 32 30 L 14 58 L 44 26 L 30 24 Z" fill="#ffffff" filter="drop-shadow(0 0 2px #ffffff)"/>
+        <path d="M 24 20 L 12 28 L 20 32 L 8 44" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 34 32 L 48 38 L 42 44 L 56 50" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+      </svg>`;
+    }
+
+    // 2. TSUNAMI / OCEAN TIDAL WAVE (Like image 2 in photo)
+    if (id.includes('sea') || id.includes('water') || id.includes('tsunami') || id.includes('noelle') || name.includes('sóng') || name.includes('thủy')) {
+      return `<svg viewBox="0 0 64 64" width="44" height="44" style="display:block;margin:auto;">
+        <path d="M 6 56 C 14 56 18 50 22 42 C 28 30 38 12 52 14 C 58 15 58 24 50 26 C 42 28 36 34 34 42 C 32 50 26 56 6 56 Z" fill="#ffffff"/>
+        <path d="M 24 56 C 28 50 34 40 44 32 C 48 29 48 25 44 25 C 38 25 32 32 30 40 C 28 48 24 54 18 56 Z" fill="#ffffff"/>
+        <circle cx="56" cy="18" r="2" fill="#ffffff"/>
+        <circle cx="58" cy="24" r="1.5" fill="#ffffff"/>
+      </svg>`;
+    }
+
+    // 3. METEOR / FALLING COMET (Like image 3 in photo)
+    if (id.includes('fire') || id.includes('flame') || id.includes('meteor') || id.includes('fuegoleon') || id.includes('calidus') || name.includes('hỏa') || name.includes('lửa')) {
+      return `<svg viewBox="0 0 64 64" width="44" height="44" style="display:block;margin:auto;">
+        <path d="M 12 48 C 8 42 12 34 20 28 L 52 6 C 54 8 50 16 44 22 L 32 38 C 26 46 18 52 12 48 Z" fill="#ffffff"/>
+        <ellipse cx="20" cy="42" rx="7" ry="5" transform="rotate(-35 20 42)" fill="#ffffff"/>
+        <path d="M 46 8 L 36 24 M 52 16 L 42 30 M 56 22 L 48 34" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="14" cy="50" r="2" fill="#ffffff"/>
+        <circle cx="24" cy="48" r="2.5" fill="#ffffff"/>
+      </svg>`;
+    }
+
+    // 4. SPIRIT / SYLPH (Rough white spirit ring)
+    if (id.includes('spirit') || id.includes('sylph') || name.includes('tinh linh')) {
+      return `<svg viewBox="0 0 64 64" width="44" height="44" style="display:block;margin:auto;">
+        <circle cx="32" cy="32" r="18" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-dasharray="14 3 8 4"/>
+        <circle cx="32" cy="32" r="11" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="6 4"/>
+        <circle cx="32" cy="14" r="2.5" fill="#ffffff"/>
+        <circle cx="48" cy="36" r="2" fill="#ffffff"/>
+      </svg>`;
+    }
+
+    // 5. SWORD / SLASH / ANTI-MAGIC
+    if (id.includes('slash') || id.includes('sword') || id.includes('blade') || id.includes('anti_magic') || id.includes('asta') || id.includes('licht') || name.includes('kiếm') || name.includes('trảm')) {
+      return `<svg viewBox="0 0 64 64" width="44" height="44" style="display:block;margin:auto;">
+        <path d="M 10 54 L 50 14 L 54 18 L 14 58 Z" fill="#ffffff"/>
+        <path d="M 8 18 C 24 10 46 16 56 36 C 42 26 24 26 8 18 Z" fill="#ffffff"/>
+        <rect x="14" y="46" width="6" height="6" transform="rotate(45 17 49)" fill="#ffffff"/>
+      </svg>`;
+    }
+
+    // 6. DARK / SHADOW / DIMENSION
+    if (id.includes('dark') || id.includes('black') || id.includes('yami') || id.includes('nacht') || name.includes('hắc') || name.includes('bóng')) {
+      return `<svg viewBox="0 0 64 64" width="44" height="44" style="display:block;margin:auto;">
+        <path d="M 16 12 C 34 8 52 24 50 48 C 40 28 26 22 16 12 Z" fill="#ffffff"/>
+        <circle cx="34" cy="34" r="6" fill="#ffffff"/>
+        <circle cx="34" cy="34" r="2.5" fill="#000000"/>
+        <path d="M 28 48 C 36 46 44 40 48 32" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>`;
+    }
+
+    // 7. SHIELD / ARMOR / MANA SKIN
+    if (id.includes('armor') || id.includes('mana_skin') || id.includes('vitality') || name.includes('giáp') || name.includes('máu')) {
+      return `<svg viewBox="0 0 64 64" width="44" height="44" style="display:block;margin:auto;">
+        <path d="M 32 8 L 52 16 L 46 44 C 42 52 32 58 32 58 C 32 58 22 52 18 44 L 12 16 Z" fill="#ffffff"/>
+        <path d="M 32 14 L 46 20 L 41 42 C 38 48 32 52 32 52 C 32 52 26 48 23 42 L 18 20 Z" fill="#000000"/>
+        <polygon points="32,22 38,34 32,44 26,34" fill="#ffffff"/>
+      </svg>`;
+    }
+
+    // 8. WIND / TORNADO / STORM
+    if (id.includes('wind') || id.includes('tornado') || id.includes('storm') || id.includes('yuno') || name.includes('gió') || name.includes('bão')) {
+      return `<svg viewBox="0 0 64 64" width="44" height="44" style="display:block;margin:auto;">
+        <path d="M 12 18 C 24 14 44 14 52 20 C 44 24 28 22 16 26 Z" fill="#ffffff"/>
+        <path d="M 18 30 C 28 26 44 26 50 32 C 40 36 28 34 22 38 Z" fill="#ffffff"/>
+        <path d="M 24 42 C 30 38 42 38 46 44 C 38 46 28 46 26 50 Z" fill="#ffffff"/>
+      </svg>`;
+    }
+
+    // 9. STRIDE / SPEED
+    if (id.includes('stride') || id.includes('speed') || id.includes('glide') || name.includes('tốc')) {
+      return `<svg viewBox="0 0 64 64" width="44" height="44" style="display:block;margin:auto;">
+        <path d="M 24 14 L 34 14 L 38 34 L 52 38 L 54 48 L 22 48 L 20 28 Z" fill="#ffffff"/>
+        <path d="M 12 18 C 18 20 20 28 14 36 C 22 34 26 26 24 18 Z" fill="#ffffff"/>
+      </svg>`;
+    }
+
+    // 10. CRIT / KI SENSE / TARGET
+    if (id.includes('ki') || id.includes('crit') || id.includes('target') || name.includes('chí mạng')) {
+      return `<svg viewBox="0 0 64 64" width="44" height="44" style="display:block;margin:auto;">
+        <circle cx="32" cy="32" r="20" fill="none" stroke="#ffffff" stroke-width="3"/>
+        <circle cx="32" cy="32" r="8" fill="none" stroke="#ffffff" stroke-width="2"/>
+        <line x1="32" y1="6" x2="32" y2="18" stroke="#ffffff" stroke-width="3"/>
+        <line x1="32" y1="46" x2="32" y2="58" stroke="#ffffff" stroke-width="3"/>
+        <line x1="6" y1="32" x2="18" y2="32" stroke="#ffffff" stroke-width="3"/>
+        <line x1="46" y1="32" x2="58" y2="32" stroke="#ffffff" stroke-width="3"/>
+      </svg>`;
+    }
+
+    // 11. MAGNET
+    if (id.includes('magnet') || name.includes('hút')) {
+      return `<svg viewBox="0 0 64 64" width="44" height="44" style="display:block;margin:auto;">
+        <path d="M 16 12 L 26 12 L 26 34 C 26 38 38 38 38 34 L 38 12 L 48 12 L 48 34 C 48 48 16 48 16 34 Z" fill="#ffffff"/>
+        <rect x="16" y="12" width="10" height="6" fill="#38bdf8"/>
+        <rect x="38" y="12" width="10" height="6" fill="#ef4444"/>
+      </svg>`;
+    }
+
+    return null;
+  }
+
+  // Mana 20% Retrieve Action (Magic Survival style bottom button)
+  retrieveManaBonus() {
+    if (this.state !== 'LEVEL_UP') return;
+    const p = this.player;
+    if (!p) return;
+
+    const manaAmt = Math.max(1, Math.round((p.nextExp || 100) * 0.20));
+    this.addExp(manaAmt);
+    if (window.soundEngine && window.soundEngine.pickup) window.soundEngine.pickup();
+
+    this.spells.floatingTexts.push({
+      x: p.x,
+      y: p.y - 30,
+      text: `✨ THU HỒI +${manaAmt} MANA (20%)!`,
+      color: '#38bdf8',
+      size: 17,
+      life: 1.0
+    });
+    this.spells.spawnImpactParticles(p.x, p.y, '#38bdf8', 12);
+
+    if (this.pendingLevelUps > 0) {
+      this.pendingLevelUps--;
+      this.triggerLevelUp();
+    } else if (p.exp >= p.nextExp) {
+      p.exp -= p.nextExp;
+      p.level++;
+      p.nextExp = this.calculateNextExp(p.level);
+      this.triggerLevelUp();
+    } else {
+      const overlay = document.getElementById('levelUpOverlay');
+      if (overlay) overlay.classList.add('hidden');
+      this.state = 'PLAYING';
+      if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+      }
+      window.focus();
+    }
+  }
+
   renderLevelUpCards() {
     const cardsContainer = document.getElementById('levelUpCards');
+    if (!cardsContainer) return;
     cardsContainer.innerHTML = '';
+
+    // Update Current Level Header Text
+    const curLvEl = document.getElementById('msLevelUpCurrentLevel');
+    if (curLvEl && this.player) {
+      curLvEl.textContent = `Current Level : ${this.player.level}`;
+    }
 
     const choices = this.getAvailableLevelUpChoices();
     if (choices.length === 0) {
-      // Safe fallback so level-up screen NEVER freezes if all skills are maxed out
       choices.push({
         id: 'bonus_heal_coins',
         type: 'bonus_heal_coins',
         name: 'Trị Liệu & Clover Coins',
         icon: '💖',
-        badge: 'HỒI PHỤC TỐI ĐA',
         description: 'Hồi phục 50% HP tối đa và nhận thêm 300 Clover Coins!'
       });
       choices.push({
@@ -2168,68 +2340,69 @@ class Game {
         type: 'bonus_stat_dmg',
         name: 'Chiến Ý Bất Diệt',
         icon: '⚔️',
-        badge: 'BUFF SỨC MẠNH',
         description: 'Tăng vĩnh viễn 8% Sát Thương toàn bộ Ma Pháp trong trận đấu!'
       });
     }
 
     choices.forEach((choice) => {
       const card = document.createElement('div');
-      card.className = `level-card ${choice.isEvolution ? 'evolution' : ''} ${choice.isSuperEvolution ? 'super-evolution' : ''} ${choice.isInfinite ? 'infinite-card' : ''} ${choice.isCoreStat ? 'core-stat-card' : ''}`;
+      card.className = `ms-magic-card ${choice.isEvolution ? 'evolution' : ''} ${choice.isSuperEvolution ? 'super-evolution' : ''}`;
 
-      let evoReqHtml = '';
-      if (choice.evolutionInfo && choice.evolutionInfo.evoName) {
-        const ei = choice.evolutionInfo;
-        const cleanEvoName = (ei.evoName || '').split('(')[0].trim();
-        const cleanBookName = (ei.reqBookName || '').split('(')[0].trim();
-        evoReqHtml = `
-          <div class="evo-req-box">
-            <div class="evo-req-title">✨ ${cleanEvoName}</div>
-            <div class="evo-req-compact-row">
-              <span class="evo-badge-pill ${ei.isWeaponLvReady ? 'done' : 'todo'}">🗡️ Lv.${ei.currentWeaponLv}/5 ${ei.isWeaponLvReady ? '✓' : '🔺'}</span>
-              <span class="evo-badge-pill ${ei.hasReqBook ? 'done' : 'todo'}">${ei.reqBookIcon || '📕'} ${cleanBookName} ${ei.hasReqBook ? '✓' : '✗'}</span>
-            </div>
-            ${ei.superEvoName ? `
-              <div style="font-size: 9.5px; color: #c084fc; margin-top: 1px; font-weight: 700;">
-                🌟 Siêu Cấp 2: ${(ei.superEvoName || '').split('(')[0].trim()} (Cấp 25+ & Phút 10+)
-              </div>
-            ` : ''}
-          </div>
-        `;
-      } else if (choice.passiveEvolutionInfo && choice.passiveEvolutionInfo.length > 0) {
-        const items = choice.passiveEvolutionInfo.map(w => {
-          const wName = (w.weaponName || '').split('(')[0].trim();
-          return `<span class="evo-badge-pill ${w.hasWeapon ? 'done' : 'todo'}">${w.weaponIcon || '⚔️'} ${wName} ${w.hasWeapon ? `(Lv.${w.weaponLv})` : '✗'}</span>`;
-        }).join('');
-        evoReqHtml = `
-          <div class="evo-req-box passive-link">
-            <div class="evo-req-title">⚡ HỖ TRỢ TIẾN HÓA:</div>
-            <div class="evo-req-compact-row">${items}</div>
-          </div>
-        `;
+      // Determine Level String
+      let levelText = 'Lv 1';
+      if (choice.type === 'weapon_upgrade') {
+        const cur = (this.player && this.player.weapons && this.player.weapons[choice.id]) ? this.player.weapons[choice.id].level : 1;
+        levelText = `Lv ${cur + 1}`;
+      } else if (choice.type === 'new_weapon') {
+        levelText = 'Lv 1';
+      } else if (choice.type === 'passive_upgrade') {
+        const cur = (this.player && this.player.passives && this.player.passives[choice.id]) ? this.player.passives[choice.id] : 1;
+        levelText = `Lv ${cur + 1}`;
+      } else if (choice.type === 'new_passive') {
+        levelText = 'Lv 1';
+      } else if (choice.isSuperEvolution) {
+        levelText = 'TIER 3';
       } else if (choice.isEvolution) {
-        if (choice.isSuperEvolution) {
-          evoReqHtml = `
-            <div class="evo-req-box ready-burst super-ready" style="border-color:#fbbf24; background:linear-gradient(135deg, rgba(120,53,15,0.7), rgba(88,28,135,0.7)); padding: 5px 8px; box-shadow: 0 0 15px rgba(245,158,11,0.5);">
-              <div class="evo-req-title" style="color:#fef08a; font-size: 10px; font-weight:900;">👑 SIÊU TIẾN HÓA TỐI THƯỢNG (TIER 3)!</div>
-            </div>
-          `;
-        } else {
-          evoReqHtml = `
-            <div class="evo-req-box ready-burst" style="border-color:#34d399; background:rgba(6,78,59,0.5); padding: 4px 6px;">
-              <div class="evo-req-title" style="color:#34d399; font-size: 10px;">🔥 ĐÃ ĐỦ ĐIỀU KIỆN TIẾN HÓA!</div>
-            </div>
-          `;
-        }
+        levelText = 'EVO';
+      } else if (choice.type === 'infinite_passive') {
+        const inf = (this.player && this.player.infinitePassives && this.player.infinitePassives[choice.id]) || 0;
+        levelText = `Lv ${inf + 1}`;
       }
 
+      // Format description with highlighted keywords/stats (Magic Survival style)
+      let formatted = (choice.description || '');
+      formatted = formatted.replace(/([0-9]+%)/g, '<span style="color:#38bdf8; font-weight:700;">$1</span>');
+      formatted = formatted.replace(/(\+[0-9]+)/g, '<span style="color:#34d399; font-weight:700;">$1</span>');
+      formatted = formatted.replace(/(Tsunamis|Tsunami|Meteor|Sét|Sóng Thần|Tia|Đạn)/gi, '<span style="color:#38bdf8; font-weight:700;">$1</span>');
+      formatted = formatted.replace(/(Sát thương|Damage|Chí mạng|Critical|Hồi chiêu|Tốc độ)/gi, '<span style="color:#fbbf24; font-weight:700;">$1</span>');
+
+      // Evolution Sub-pill
+      let evoTag = '';
+      if (choice.isSuperEvolution) {
+        evoTag = '<div style="font-size:10px; color:#fbbf24; font-weight:800; margin-top:3px;">👑 SIÊU TIẾN HÓA LẦN 2 (TIER 3)</div>';
+      } else if (choice.isEvolution) {
+        evoTag = '<div style="font-size:10px; color:#c084fc; font-weight:800; margin-top:3px;">✨ TIẾN HÓA HUYỀN THOẠI</div>';
+      } else if (choice.evolutionInfo && choice.evolutionInfo.evoName) {
+        const ei = choice.evolutionInfo;
+        const cleanBook = (ei.reqBookName || '').split('(')[0].trim();
+        evoTag = `<div style="font-size:9.5px; color:#38bdf8; margin-top:3px;">⚡ Ghép: ${ei.reqBookIcon || '📘'} ${cleanBook} ${ei.hasReqBook ? '✓' : ''}</div>`;
+      }
+
+      // Generate White Silhouette Icon Art
+      const svgArt = this.getSkillSilhouetteSvg(choice);
+
       card.innerHTML = `
-        <div class="card-icon">${choice.icon}</div>
-        <div class="card-title">${choice.name}</div>
-        <div class="card-badge">${choice.badge}</div>
-        <div class="card-desc">${choice.description}</div>
-        ${evoReqHtml}
+        <div class="ms-card-icon-box">
+          ${svgArt ? svgArt : `<span class="ms-card-icon-fallback">${choice.icon || '✨'}</span>`}
+        </div>
+        <div class="ms-card-content">
+          <div class="ms-card-title">${choice.name}</div>
+          <div class="ms-card-desc">${formatted}</div>
+          ${evoTag}
+        </div>
+        <div class="ms-card-level">${levelText}</div>
       `;
+
       card.addEventListener('click', () => {
         this.applyUpgrade(choice);
         if (this.pendingLevelUps > 0) {
@@ -2253,29 +2426,28 @@ class Game {
     });
 
     // Reroll button (Image 2 - Talent: Card Reroll)
-    let rerollContainer = document.getElementById('levelUpRerollContainer');
-    if (!rerollContainer) {
-      rerollContainer = document.createElement('div');
-      rerollContainer.id = 'levelUpRerollContainer';
-      rerollContainer.style.marginTop = '18px';
-      rerollContainer.style.textAlign = 'center';
-      cardsContainer.parentElement.appendChild(rerollContainer);
-    }
+    const rerollContainer = document.getElementById('levelUpRerollContainer');
     const left = this.player ? (this.player.rerollsLeft || 0) : 0;
-    rerollContainer.innerHTML = `
-      <button id="btnRerollLevelUp" class="btn-reroll-modal" ${left <= 0 ? 'disabled' : ''}>
-        🔄 Đổi Thẻ (Còn lại: ${left} lượt)
-      </button>
-    `;
-    const btn = document.getElementById('btnRerollLevelUp');
-    if (btn && left > 0) {
-      btn.onclick = () => {
-        if (this.player.rerollsLeft > 0) {
-          this.player.rerollsLeft--;
-          window.soundEngine.cardFlip ? window.soundEngine.cardFlip() : null;
-          this.renderLevelUpCards();
+    if (rerollContainer) {
+      if (left > 0) {
+        rerollContainer.innerHTML = `
+          <button id="btnRerollLevelUp" class="ms-btn-reroll">
+            🔄 Đổi Thẻ (Còn lại: ${left} lượt)
+          </button>
+        `;
+        const btn = document.getElementById('btnRerollLevelUp');
+        if (btn) {
+          btn.onclick = () => {
+            if (this.player.rerollsLeft > 0) {
+              this.player.rerollsLeft--;
+              if (window.soundEngine && window.soundEngine.cardFlip) window.soundEngine.cardFlip();
+              this.renderLevelUpCards();
+            }
+          };
         }
-      };
+      } else {
+        rerollContainer.innerHTML = '';
+      }
     }
   }
 
@@ -2787,12 +2959,10 @@ class Game {
         setTimeout(() => this.victory(), 1500);
       } else if (enemy.isMiniBoss10) {
         this.triggerComboBanner('⚔️ ĐÃ HẠ GỤC BOSS NHỎ PHÚT 10! TIẾP TỤC ĐẾN PHÚT 20!');
-        this.spawnDrop(enemy.x + 40, enemy.y, 'chest', 100);
         this.spawnDrop(enemy.x - 40, enemy.y, 'ticket', 5);
         this.spawnDrop(enemy.x, enemy.y + 20, 'coin', 500);
       } else if (enemy.isMiniBoss20) {
         this.triggerComboBanner('💥 ĐÃ HẠ GỤC BOSS NHỎ PHÚT 20! CHUẨN BỊ ĐẠI CHIẾN PHÚT 30!');
-        this.spawnDrop(enemy.x + 40, enemy.y, 'chest', 100);
         this.spawnDrop(enemy.x - 40, enemy.y, 'ticket', 10);
         this.spawnDrop(enemy.x, enemy.y + 20, 'coin', 1000);
       }
@@ -2908,6 +3078,10 @@ class Game {
       }
     }
 
+    const artCountEl = document.getElementById('hudArtifactsCount');
+    if (artCountEl) {
+      artCountEl.innerText = (this.artifacts && this.artifacts.inRunArtifacts) ? this.artifacts.inRunArtifacts.length : 0;
+    }
     const dashCdPct = Math.max(0, 1 - (p.dashTimer / p.dashCooldown)) * 100;
     const dashElem = document.getElementById('dashIndicator');
     if (dashElem) dashElem.style.width = `${dashCdPct}%`;
@@ -3117,6 +3291,7 @@ class Game {
 
       p.x += normX * spd * dt;
       p.y += normY * spd * dt;
+      p.walkDistance = (p.walkDistance || 0) + (spd * dt);
 
       if (mx > 0) p.facing = 1;
       else if (mx < 0) p.facing = -1;
@@ -3154,18 +3329,20 @@ class Game {
       console.error('Artifacts update error:', artErr);
     }
 
-    // Periodic chest spawning across the map (Infinite Procedural Map: spawns around player)
-    this.chestSpawnTimer = (this.chestSpawnTimer || 35) - dt;
+    // Lâu lâu mới có 1 rương: Chu kỳ 110s - 150s (gần 2 đến 2.5 phút một rương) và chỉ tối đa 1 rương trên sân
+    if (this.chestPingTimer > 0) this.chestPingTimer -= dt;
+    this.chestSpawnTimer = (this.chestSpawnTimer || 120) - dt;
     if (this.chestSpawnTimer <= 0) {
-      this.chestSpawnTimer = 35 + Math.random() * 15;
+      this.chestSpawnTimer = 110 + Math.random() * 40;
       const existingChests = this.drops.filter(d => d.type === 'chest').length;
-      if (existingChests < 4) {
+      if (existingChests < 1) {
         const angle = Math.random() * Math.PI * 2;
-        const dist = 360 + Math.random() * 400; // 360 - 760px radius
+        const dist = 450 + Math.random() * 400; // 450 - 850px radius
         const cx = p.x + Math.cos(angle) * dist;
         const cy = p.y + Math.sin(angle) * dist;
         this.spawnDrop(cx, cy, 'chest', 100);
-        this.spells.floatingTexts.push({ x: p.x, y: p.y - 40, text: `🎁 RƯƠNG MA ĐẠO XUẤT HIỆN!`, color: '#fbbf24', size: 16, life: 1.2 });
+        this.spells.floatingTexts.push({ x: p.x, y: p.y - 40, text: '🎁 RƯƠNG CỔ VẬT XUẤT HIỆN!', color: '#fbbf24', size: 16, life: 1.5 });
+        this.triggerComboBanner('👑 RƯƠNG CỔ VẬT ĐÃ XUẤT HIỆN TRÊN BẢN ĐỒ! BẤM [R] HOẶC NHÌN LA BÀN ĐỂ TÌM!');
       }
     }
 
@@ -3282,39 +3459,609 @@ class Game {
   }
 
   openMysteryChest(drop) {
-    window.soundEngine.chestOpen();
-    this.shakeScreen(7, 0.28);
-    this.spells.spawnImpactParticles(this.player.x, this.player.y, '#fbbf24', 25);
+    if (!this.artifacts) this.artifacts = new window.ArtifactSystem(this);
+    if (!this.artifacts.inRunArtifacts) this.artifacts.inRunArtifacts = [];
 
-    const roll = Math.random();
-    if (roll < 0.30) {
-      // 1. Coins (300 - 800)
-      const amt = 300 + Math.floor(Math.random() * 500);
-      this.currency.coins += amt;
-      this.triggerComboBanner(`🪙 RƯƠNG BÁU: NHẬN +${amt} CLOVER COINS!`);
-      this.spells.floatingTexts.push({ x: this.player.x, y: this.player.y - 35, text: `+${amt} 🪙 COINS!`, color: '#fbbf24', size: 22, life: 1.0 });
-    } else if (roll < 0.55) {
-      // 2. Yellow tickets (3 - 8)
-      const amt = 3 + Math.floor(Math.random() * 6);
-      this.currency.tickets += amt;
-      this.triggerComboBanner(`🎫 RƯƠNG MAY MẮN: NHẬN +${amt} VÉ TRIỆU HỒI!`);
-      this.spells.floatingTexts.push({ x: this.player.x, y: this.player.y - 35, text: `+${amt} 🎫 VÉ!`, color: '#fbbf24', size: 22, life: 1.0 });
-    } else if (roll < 0.70) {
-      // 3. Balanced EXP progress (+35% nextExp)
-      const bonusExp = Math.max(1, Math.round((this.player.nextExp || 100) * 0.35));
-      this.triggerComboBanner('🆙 RƯƠNG TRI THỨC: NHẬN +35% KINH NGHIỆM TIẾN TRÌNH!');
-      this.addExp(bonusExp);
-      this.spells.floatingTexts.push({ x: this.player.x, y: this.player.y - 35, text: `+${bonusExp} EXP (+35%)!`, color: '#a855f7', size: 22, life: 1.0 });
-    } else if (roll < 0.85) {
-      // 4. Full Map Magnet
-      this.triggerComboBanner(`🧲 RƯƠNG BÍ THUẬT: KÍCH HOẠT NAM CHÂM TOÀN BẢN ĐỒ!`);
-      this.activateFullMapMagnet();
+    // GIỚI HẠN TỐI ĐA 12 CỔ VẬT TRONG TRẬN
+    if (this.artifacts.inRunArtifacts.length >= 12) {
+      const coinReward = 800;
+      const healAmt = Math.round(this.player.maxHp * 0.40);
+      const expReward = Math.round((this.player.nextExp || 100) * 0.45);
+
+      this.currency.coins += coinReward;
+      this.healPlayer(healAmt);
+      this.addExp(expReward);
+
+      if (window.soundEngine && window.soundEngine.evolution) window.soundEngine.evolution();
+      this.shakeScreen(12, 0.45);
+      this.spells.spawnShockwave(this.player.x, this.player.y, '#fbbf24', 450, 0.45);
+      this.spells.spawnImpactParticles(this.player.x, this.player.y, '#f59e0b', 30);
+
+      this.triggerComboBanner(`👑 ĐÃ ĐẠT TỐI ĐA 12/12 CỔ VẬT! NHẬN THƯỞNG KHO BÁU ĐẶC BIỆT (+800 COINS, +40% MÁU, +EXP)!`);
+      this.spells.floatingTexts.push({
+        x: this.player.x,
+        y: this.player.y - 45,
+        text: `💎 ĐẦY 12/12 CỔ VẬT! +800 COINS & +40% HP!`,
+        color: '#facc15',
+        size: 20,
+        life: 1.8
+      });
+      return;
+    }
+
+    this.openTreasureChest();
+  }
+
+  
+  // =========================================================================
+  // MŨI TÊN & NÚT CHỈ HƯỚNG ĐẾN RƯƠNG CỔ VẬT (CHEST DIRECTION POINTERS)
+  // =========================================================================
+  drawChestDirectionPointers(ctx) {
+    if (!this.player || !this.drops || this.state !== 'PLAYING') return;
+
+    const p = this.player;
+    const chests = this.drops.filter(d => d.type === 'chest');
+    const widget = document.getElementById('chestCompassWidget');
+
+    if (chests.length === 0) {
+      if (widget) widget.classList.add('hidden');
+      return;
+    }
+
+    // Sort to find the nearest chest
+    chests.sort((a, b) => {
+      const distA = (a.x - p.x) * (a.x - p.x) + (a.y - p.y) * (a.y - p.y);
+      const distB = (b.x - p.x) * (b.x - p.x) + (b.y - p.y) * (b.y - p.y);
+      return distA - distB;
+    });
+
+    const nearest = chests[0];
+    const dx = nearest.x - p.x;
+    const dy = nearest.y - p.y;
+    const dist = Math.hypot(dx, dy);
+    const distMeters = Math.max(1, Math.round(dist / 10));
+    const deg = (Math.atan2(dy, dx) * 180 / Math.PI + 360) % 360;
+
+    // Update Top HUD Compass Widget
+    if (widget) {
+      widget.classList.remove('hidden');
+      const distEl = document.getElementById('chestCompassDist');
+      const arrowEl = document.getElementById('chestCompassArrow');
+      if (distEl) distEl.textContent = `${distMeters}m`;
+      if (arrowEl) {
+        const arrows = ['➡️', '↘️', '⬇️', '↙️', '⬅️', '↖️', '⬆️', '↗️'];
+        const arrowIdx = Math.round(deg / 45) % 8;
+        arrowEl.textContent = arrows[arrowIdx];
+        arrowEl.style.transform = `rotate(${deg}deg)`;
+      }
+    }
+
+    const zoom = this.mapZoom || 1.0;
+    const cw = this.canvas.width;
+    const ch = this.canvas.height;
+    const margin = 55;
+
+    const sx = (nearest.x - this.camera.x) * zoom;
+    const sy = (nearest.y - this.camera.y) * zoom;
+    const isOffScreen = (sx < margin || sx > cw - margin || sy < margin || sy > ch - margin);
+
+    // If player pinged the compass (chestPingTimer > 0), draw laser guideline from player
+    if (this.chestPingTimer > 0) {
+      const pScreenX = (p.x - this.camera.x) * zoom;
+      const pScreenY = (p.y - this.camera.y) * zoom;
+      const alpha = Math.min(1.0, this.chestPingTimer / 2.0);
+
+      ctx.save();
+      ctx.strokeStyle = `rgba(251, 191, 36, ${0.75 * alpha})`;
+      ctx.lineWidth = 3.5;
+      ctx.setLineDash([12, 8]);
+      ctx.lineDashOffset = -this.tick * 2.5;
+      ctx.shadowColor = '#fbbf24';
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      ctx.moveTo(pScreenX, pScreenY);
+      ctx.lineTo(sx, sy);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+
+    if (isOffScreen) {
+      const cx = cw / 2;
+      const cy = ch / 2;
+      const ang = Math.atan2(dy, dx);
+
+      const maxHalfW = cx - margin;
+      const maxHalfH = cy - margin;
+      const cos = Math.cos(ang);
+      const sin = Math.sin(ang);
+
+      let scale = 99999;
+      if (cos > 0) scale = Math.min(scale, maxHalfW / cos);
+      if (cos < 0) scale = Math.min(scale, -maxHalfW / cos);
+      if (sin > 0) scale = Math.min(scale, maxHalfH / sin);
+      if (sin < 0) scale = Math.min(scale, -maxHalfH / sin);
+
+      const px = cx + cos * scale;
+      const py = cy + sin * scale;
+
+      ctx.save();
+      ctx.translate(px, py);
+
+      // Pulsing golden aura
+      const pulse = 0.8 + 0.2 * Math.sin(this.tick * 0.25);
+      ctx.fillStyle = `rgba(251, 191, 36, ${0.4 * pulse})`;
+      ctx.beginPath();
+      ctx.arc(0, 0, 28, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Circular Compass Badge (Dark slate with gold border)
+      ctx.fillStyle = '#0f172a';
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 2.6;
+      ctx.beginPath();
+      ctx.arc(0, 0, 22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Golden Crown / Chest Icon in center
+      ctx.font = '16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('👑', 0, -1);
+
+      // Directional Arrow Head pointing towards the chest
+      ctx.save();
+      ctx.rotate(ang);
+      ctx.fillStyle = '#fde047';
+      ctx.strokeStyle = '#78350f';
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(27, 0);
+      ctx.lineTo(17, -8);
+      ctx.lineTo(19, 0);
+      ctx.lineTo(17, 8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // Distance tag pill below
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(-24, 21, 48, 16, 4) : ctx.rect(-24, 21, 48, 16);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = '900 10.5px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#fef08a';
+      ctx.fillText(`${distMeters}m`, 0, 29);
+
+      ctx.restore();
     } else {
-      // 5. Smart Bomb (Nuke map)
-      this.triggerComboBanner(`💣 RƯƠNG HỦY DIỆT: KÍCH HOẠT BOM HẠ GỤC TOÀN MAP!`);
-      this.activateScreenBomb();
+      // Chest is ON-SCREEN! Draw a vertical beacon ray and pointer badge above chest
+      ctx.save();
+      // Ascending Light Beam
+      const beamGrad = ctx.createLinearGradient(sx, sy, sx, sy - 140);
+      beamGrad.addColorStop(0, 'rgba(251, 191, 36, 0.55)');
+      beamGrad.addColorStop(1, 'rgba(251, 191, 36, 0)');
+      ctx.fillStyle = beamGrad;
+      ctx.fillRect(sx - 10, sy - 140, 20, 140);
+
+      // Bouncing Pointer Badge above chest
+      const bounce = Math.sin(this.tick * 0.25) * 6;
+      const ptrY = sy - 42 + bounce;
+
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(sx - 36, ptrY - 14, 72, 22, 6) : ctx.rect(sx - 36, ptrY - 14, 72, 22);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = '900 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#fef08a';
+      ctx.fillText('👑 RƯƠNG ⬇️', sx, ptrY - 2);
+      ctx.restore();
     }
   }
+
+  pingNearestChest() {
+    if (!this.drops) return;
+    const chests = this.drops.filter(d => d.type === 'chest');
+    if (chests.length === 0) {
+      this.triggerComboBanner('ℹ️ HIỆN CHƯA CÓ RƯƠNG TRÊN BẢN ĐỒ. ĐÁNH BẠI BOSS / CHỜ RƯƠNG XUẤT HIỆN!');
+      return;
+    }
+    const p = this.player;
+    chests.sort((a, b) => {
+      const distA = (a.x - p.x) * (a.x - p.x) + (a.y - p.y) * (a.y - p.y);
+      const distB = (b.x - p.x) * (b.x - p.x) + (b.y - p.y) * (b.y - p.y);
+      return distA - distB;
+    });
+    const nearest = chests[0];
+    const distMeters = Math.max(1, Math.round(Math.hypot(nearest.x - p.x, nearest.y - p.y) / 10));
+    this.chestPingTimer = 4.5;
+    if (window.soundEngine && window.soundEngine.evolution) window.soundEngine.evolution();
+    this.triggerComboBanner(`👑 RƯƠNG CỔ VẬT CÁCH ĐÂY ${distMeters}M! ĐÃ BẬT TIA SÁNG CHỈ HƯỚNG!`);
+    this.spells.spawnShockwave(p.x, p.y, '#fde047', 420, 0.35);
+  }
+
+// =========================================================================
+  // MAGIC SURVIVAL TREASURE CHEST SYSTEM (ARTIFACT SELECTION IN MAP)
+  // =========================================================================
+  openTreasureChest() {
+    if (!this.artifacts) this.artifacts = new window.ArtifactSystem(this);
+    if (!this.artifacts.inRunArtifacts) this.artifacts.inRunArtifacts = [];
+
+    if (this.artifacts.inRunArtifacts.length >= 12) {
+      this.currency.coins += 800;
+      this.healPlayer(Math.round(this.player.maxHp * 0.40));
+      this.triggerComboBanner('👑 ĐÃ ĐẠT TỐI ĐA 12/12 CỔ VẬT!');
+      return;
+    }
+    this.state = 'CHEST_SELECTION';
+    window.soundEngine.chestOpen();
+    this.shakeScreen(9, 0.35);
+    this.spells.spawnImpactParticles(this.player.x, this.player.y, '#fbbf24', 35);
+    this.spells.spawnShockwave(this.player.x, this.player.y, '#fbbf24', 360, 0.45);
+
+    // Roll 3 distinct artifact choices ONLY from MAP_ARTIFACT_DEFS (In-Map Chest Artifacts)
+    const allDefs = window.MAP_ARTIFACT_DEFS || window.IN_RUN_ARTIFACT_DEFS || {};
+    const allIds = Object.keys(allDefs);
+    if (allIds.length === 0) {
+      this.state = 'PLAYING';
+      return;
+    }
+
+    const inRun = new Set(this.artifacts.inRunArtifacts || []);
+    const unobtained = allIds.filter(id => !inRun.has(id));
+    const pool = unobtained.length >= 3 ? unobtained : allIds;
+
+    // Weighted roll: prioritize photo artifacts (magitech_module, holy_cross, dimensional_backpack)
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    this.currentChestChoices = shuffled.slice(0, 3);
+    this.selectedChestIndex = 1; // Middle card selected by default (just like the photo!)
+
+    this.renderTreasureChestModal();
+  }
+
+  
+  getArtifactArtSvg(artId, rarityColor = '#38bdf8') {
+    if (artId === 'magitech_module') {
+      return `<svg viewBox="0 0 72 72" width="62" height="62" style="display:block;margin:auto;">
+        <!-- Two vertical silver rails -->
+        <line x1="20" y1="8" x2="20" y2="64" stroke="#cbd5e1" stroke-width="7" stroke-linecap="round"/>
+        <line x1="52" y1="8" x2="52" y2="64" stroke="#cbd5e1" stroke-width="7" stroke-linecap="round"/>
+        <!-- Red coils on rails -->
+        <rect x="15" y="16" width="10" height="6" rx="2" fill="#ef4444"/>
+        <rect x="15" y="32" width="10" height="6" rx="2" fill="#ef4444"/>
+        <rect x="15" y="48" width="10" height="6" rx="2" fill="#ef4444"/>
+        <rect x="47" y="16" width="10" height="6" rx="2" fill="#ef4444"/>
+        <rect x="47" y="32" width="10" height="6" rx="2" fill="#ef4444"/>
+        <rect x="47" y="48" width="10" height="6" rx="2" fill="#ef4444"/>
+        <!-- Electric green zig-zag sparks between rails -->
+        <path d="M 24 19 L 34 23 L 30 28 L 48 19" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 24 35 L 36 38 L 32 43 L 48 35" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 24 51 L 38 53 L 33 58 L 48 51" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>`;
+    }
+    if (artId === 'holy_cross') {
+      return `<svg viewBox="0 0 72 72" width="62" height="62" style="display:block;margin:auto;">
+        <!-- Ornate silver cross body -->
+        <path d="M 31 6 L 41 6 L 41 23 L 58 23 L 58 33 L 41 33 L 41 66 L 31 66 L 31 33 L 14 33 L 14 23 L 31 23 Z" fill="#e2e8f0" stroke="#334155" stroke-width="2"/>
+        <line x1="36" y1="10" x2="36" y2="62" stroke="#94a3b8" stroke-width="1.5"/>
+        <line x1="18" y1="28" x2="54" y2="28" stroke="#94a3b8" stroke-width="1.5"/>
+        <!-- Crimson ruby gems -->
+        <circle cx="36" cy="28" r="4.8" fill="#e11d48" stroke="#ffffff" stroke-width="1.2"/>
+        <circle cx="36" cy="10" r="2.8" fill="#e11d48"/>
+        <circle cx="36" cy="60" r="2.8" fill="#e11d48"/>
+        <circle cx="18" cy="28" r="2.8" fill="#e11d48"/>
+        <circle cx="54" cy="28" r="2.8" fill="#e11d48"/>
+      </svg>`;
+    }
+    if (artId === 'dimensional_backpack') {
+      return `<svg viewBox="0 0 72 72" width="62" height="62" style="display:block;margin:auto;">
+        <!-- Tan leather backpack -->
+        <path d="M 22 20 C 22 13 50 13 50 20 L 54 53 C 54 59 18 59 18 53 Z" fill="#d97706" stroke="#78350f" stroke-width="2"/>
+        <path d="M 20 20 C 20 16 52 16 52 20 L 48 34 C 36 38 36 38 24 34 Z" fill="#b45309" stroke="#78350f" stroke-width="1.5"/>
+        <!-- Center cyclops buckle -->
+        <circle cx="36" cy="30" r="4.5" fill="#38bdf8" stroke="#0369a1" stroke-width="1.5"/>
+        <path d="M 18 32 L 14 36 L 14 48 L 18 46 Z" fill="#92400e"/>
+        <path d="M 54 32 L 58 36 L 58 48 L 54 46 Z" fill="#92400e"/>
+        <rect x="18" y="53" width="36" height="8" rx="4" fill="#ca8a04" stroke="#78350f" stroke-width="1.5"/>
+      </svg>`;
+    }
+    if (artId === 'uranium_core') {
+      return `<svg viewBox="0 0 72 72" width="62" height="62" style="display:block;margin:auto;">
+        <circle cx="36" cy="36" r="23" fill="#064e3b" stroke="#10b981" stroke-width="3"/>
+        <circle cx="36" cy="36" r="13" fill="#10b981" opacity="0.6"/>
+        <circle cx="36" cy="36" r="6" fill="#6ee7b7"/>
+        <path d="M 36 13 L 36 21 M 36 51 L 36 59 M 13 36 L 21 36 M 51 36 L 59 36" stroke="#34d399" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>`;
+    }
+    if (artId === 'blood_grail') {
+      return `<svg viewBox="0 0 72 72" width="62" height="62" style="display:block;margin:auto;">
+        <path d="M 22 15 L 50 15 L 46 39 C 46 47 26 47 26 39 Z" fill="#1e1b4b" stroke="#fbbf24" stroke-width="2"/>
+        <path d="M 26 21 L 46 21 C 44 34 28 34 26 21 Z" fill="#e11d48"/>
+        <line x1="36" y1="42" x2="36" y2="56" stroke="#fbbf24" stroke-width="3"/>
+        <ellipse cx="36" cy="58" rx="14" ry="4" fill="#b45309" stroke="#fbbf24" stroke-width="2"/>
+      </svg>`;
+    }
+    return null;
+  }
+
+  renderTreasureChestModal() {
+    const overlay = document.getElementById('treasureChestOverlay');
+    if (!overlay) return;
+
+    const cardsRow = document.getElementById('chestCardsRow');
+    const allDefs = window.MAP_ARTIFACT_DEFS || window.IN_RUN_ARTIFACT_DEFS || {};
+
+    if (cardsRow) {
+      cardsRow.innerHTML = '';
+      this.currentChestChoices.forEach((artId, idx) => {
+        const def = allDefs[artId] || { name: artId, rarity: 'rare', icon: '🏺', description: '' };
+        const isSelected = (idx === this.selectedChestIndex);
+        const card = document.createElement('div');
+        card.className = `chest-card ${isSelected ? 'selected' : ''}`;
+        card.onclick = () => window.game.selectChestArtifact(idx);
+
+        let rarityColor = '#38bdf8';
+        if (def.rarity === 'common') rarityColor = '#94a3b8';
+        if (def.rarity === 'epic') rarityColor = '#c084fc';
+        if (def.rarity === 'legendary') rarityColor = '#fbbf24';
+
+        card.innerHTML = `
+          ${(() => {
+          const svgArt = this.getArtifactArtSvg(artId, rarityColor);
+          return `<div class="chest-card-art-box" style="filter: drop-shadow(0 0 10px ${rarityColor});">
+            ${svgArt ? svgArt : def.icon}
+          </div>`;
+        })()}
+          <div style="font-size: 11px; font-weight: 800; color: ${rarityColor}; text-align: center; margin-top: 6px; line-height: 1.2;">
+            ${(def.name || '').split('(')[0].trim()}
+          </div>
+          <div class="chest-card-star-tag">
+            ${def.rarity ? def.rarity.toUpperCase() : 'ARTIFACT'}
+          </div>
+        `;
+        cardsRow.appendChild(card);
+      });
+    }
+
+    // Update Details Box for currently selected card
+    this.updateChestDetailsView();
+
+    // Update in-run bag badge
+    const badge = document.getElementById('chestBagBadge');
+    if (badge && this.artifacts) {
+      const curCount = (this.artifacts.inRunArtifacts ? this.artifacts.inRunArtifacts.length : 0);
+      badge.textContent = `${curCount}/12`;
+    }
+
+    overlay.classList.remove('hidden');
+  }
+
+  selectChestArtifact(idx) {
+    if (idx < 0 || idx >= (this.currentChestChoices || []).length) return;
+    this.selectedChestIndex = idx;
+    if (window.soundEngine && window.soundEngine.select) window.soundEngine.select();
+
+    // Update card selection border
+    const cardsRow = document.getElementById('chestCardsRow');
+    if (cardsRow) {
+      const cards = cardsRow.children;
+      for (let i = 0; i < cards.length; i++) {
+        if (i === idx) cards[i].classList.add('selected');
+        else cards[i].classList.remove('selected');
+      }
+    }
+
+    this.updateChestDetailsView();
+  }
+
+  updateChestDetailsView() {
+    const allDefs = window.MAP_ARTIFACT_DEFS || window.IN_RUN_ARTIFACT_DEFS || window.ARTIFACT_DEFS || {};
+    const artId = (this.currentChestChoices && this.currentChestChoices[this.selectedChestIndex]) ? this.currentChestChoices[this.selectedChestIndex] : null;
+    const def = artId ? allDefs[artId] : null;
+    if (!def) return;
+
+    const nameEl = document.getElementById('chestArtName');
+    const rarityEl = document.getElementById('chestArtRarity');
+    const descEl = document.getElementById('chestArtDesc');
+    const crestIconEl = document.getElementById('chestArtCrestIcon');
+
+    if (nameEl) nameEl.textContent = def.name;
+    if (rarityEl) {
+      const rar = def.rarity || 'rare';
+      rarityEl.className = `chest-art-rarity ${rar}`;
+      rarityEl.textContent = `${rar.charAt(0).toUpperCase() + rar.slice(1)} Artifact`;
+    }
+    if (descEl) {
+      // Colorize numbers and keywords like Magic Survival
+      let formatted = def.description || '';
+      formatted = formatted.replace(/([0-9]+%)/g, '<span class="hl-cyan">$1</span>');
+      formatted = formatted.replace(/(\+[0-9]+)/g, '<span class="hl-green">$1</span>');
+      formatted = formatted.replace(/(Sát thương|Damage|Chí mạng|Critical|Hồi chiêu)/gi, '<span class="hl-gold">$1</span>');
+      descEl.innerHTML = formatted;
+    }
+    if (crestIconEl) {
+      const svgArt = this.getArtifactArtSvg(artId, '#38bdf8');
+      if (svgArt) {
+        crestIconEl.innerHTML = svgArt;
+      } else {
+        crestIconEl.textContent = (def.icon ? def.icon.slice(0, 2) : '🏺');
+      }
+    }
+  }
+
+  obtainChestArtifact() {
+    if (!this.currentChestChoices || this.currentChestChoices.length === 0) return;
+    if (!this.artifacts) this.artifacts = new window.ArtifactSystem(this);
+    if (!this.artifacts.inRunArtifacts) this.artifacts.inRunArtifacts = [];
+
+    if (this.artifacts.inRunArtifacts.length >= 12) {
+      this.triggerComboBanner('⚠️ ĐÃ ĐẠT GIỚI HẠN TỐI ĐA 12/12 CỔ VẬT!');
+      const overlay = document.getElementById('treasureChestOverlay');
+      if (overlay) overlay.classList.add('hidden');
+      this.state = 'PLAYING';
+      return;
+    }
+    const chosenId = this.currentChestChoices[this.selectedChestIndex || 0];
+    const def = (window.IN_RUN_ARTIFACT_DEFS && window.IN_RUN_ARTIFACT_DEFS[chosenId]) || window.ARTIFACT_DEFS[chosenId];
+    if (!def) return;
+
+    if (!this.artifacts) this.artifacts = new window.ArtifactSystem(this);
+    if (!this.artifacts.inRunArtifacts) this.artifacts.inRunArtifacts = [];
+
+    // Add to in-run artifacts
+    this.artifacts.inRunArtifacts.push(chosenId);
+
+    // Cổ vật trận đấu (In-Run Artifacts): Hoàn toàn tách biệt với Cổ Vật Sảnh (không ghi đè collection)
+
+    // Immediate rewards
+    this.currency.coins += 250;
+    this.addExp(Math.max(1, Math.round((this.player.nextExp || 100) * 0.20)));
+
+    // Recalculate passives immediately with new artifact stats!
+    this.recalculatePassives();
+
+    // Floating text + banner
+    this.triggerComboBanner(`🏺 NHẬN CỔ VẬT: ${def.name.toUpperCase()}!`);
+    this.spells.floatingTexts.push({
+      x: this.player.x,
+      y: this.player.y - 45,
+      text: `+${def.icon} ${(def.name || '').split('(')[0].trim()}!`,
+      color: '#facc15',
+      size: 22,
+      life: 1.5
+    });
+
+    if (window.soundEngine && window.soundEngine.evolution) window.soundEngine.evolution();
+    this.shakeScreen(10, 0.4);
+    this.spells.spawnShockwave(this.player.x, this.player.y, '#38bdf8', 420, 0.4);
+
+    // Save game data
+    this.saveGameData();
+
+    // Hide modal and resume game
+    const overlay = document.getElementById('treasureChestOverlay');
+    if (overlay) overlay.classList.add('hidden');
+    const drawer = document.getElementById('inRunArtifactsDrawer');
+    if (drawer) drawer.classList.add('hidden');
+
+    this.state = 'PLAYING';
+    this.updateHUD();
+  }
+
+  toggleInRunArtifactsModal() {
+    // If inside Treasure Chest screen, toggle inner drawer
+    const chestOverlay = document.getElementById('treasureChestOverlay');
+    const drawer = document.getElementById('inRunArtifactsDrawer');
+    const standaloneModal = document.getElementById('inGameArtifactsModal');
+
+    if (chestOverlay && !chestOverlay.classList.contains('hidden') && drawer) {
+      if (drawer.classList.contains('hidden')) {
+        this.renderArtifactsListInto('drawerList', 'drawerCount');
+        drawer.classList.remove('hidden');
+      } else {
+        drawer.classList.add('hidden');
+      }
+      return;
+    }
+
+    // Otherwise toggle standalone in-game modal
+    if (standaloneModal) {
+      if (standaloneModal.classList.contains('hidden')) {
+        this.renderArtifactsListInto('inGameArtifactsList', 'inGameArtifactsCountHeader');
+        standaloneModal.classList.remove('hidden');
+      } else {
+        standaloneModal.classList.add('hidden');
+      }
+    }
+  }
+
+  renderArtifactsListInto(listId, countId) {
+    const allDefs = { ...(window.MAP_ARTIFACT_DEFS || {}), ...(window.IN_RUN_ARTIFACT_DEFS || {}), ...(window.ARTIFACT_DEFS || {}) };
+    const list = (this.artifacts && this.artifacts.inRunArtifacts) ? this.artifacts.inRunArtifacts : [];
+    const listEl = document.getElementById(listId);
+    const countEl = document.getElementById(countId);
+
+    if (countEl) countEl.textContent = `${list.length}/12`;
+    if (listEl) {
+      if (list.length === 0) {
+        listEl.innerHTML = '<div style="color:#94a3b8; font-size:13px; text-align:center; padding:20px;">Chưa nhặt được Cổ Vật nào trong trận này.<br>Hãy tìm Rương Báu (Treasure Chest 👑) xuất hiện trên bản đồ hoặc tiêu diệt Boss/Quái Tinh Anh!</div>';
+      } else {
+        listEl.innerHTML = list.map(id => {
+          const def = allDefs[id] || { name: id, icon: '🏺', rarity: 'rare', description: '' };
+          let color = '#38bdf8';
+          if (def.rarity === 'common') color = '#94a3b8';
+          if (def.rarity === 'epic') color = '#c084fc';
+          if (def.rarity === 'legendary') color = '#fbbf24';
+          return `
+            <div style="display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.06); padding:8px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); margin-bottom:6px;">
+              <span style="font-size:26px; filter: drop-shadow(0 0 6px ${color});">${def.icon}</span>
+              <div style="flex:1;">
+                <div style="font-size:13.5px; font-weight:800; color:${color};">${def.name}</div>
+                <div style="font-size:11.5px; color:#cbd5e1; line-height:1.35; margin-top:2px;">${def.description}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+  }
+
+  toggleInRunArtifactsModal_OLD() {
+    const drawer = document.getElementById('inRunArtifactsDrawer');
+    if (!drawer) return;
+
+    if (drawer.classList.contains('hidden')) {
+      const allDefs = window.ARTIFACT_DEFS || {};
+      const list = (this.artifacts && this.artifacts.inRunArtifacts) ? this.artifacts.inRunArtifacts : [];
+      const drawerList = document.getElementById('drawerList');
+      const drawerCount = document.getElementById('drawerCount');
+
+      if (drawerCount) drawerCount.textContent = list.length;
+      if (drawerList) {
+        if (list.length === 0) {
+          drawerList.innerHTML = '<div style="color:#94a3b8; font-size:12px; text-align:center; padding:12px;">Chưa nhặt được Cổ Vật nào trong trận này. Hãy tìm Rương Báu trên bản đồ!</div>';
+        } else {
+          drawerList.innerHTML = list.map(id => {
+            const def = allDefs[id] || { name: id, icon: '🏺', rarity: 'rare', description: '' };
+            let color = '#38bdf8';
+            if (def.rarity === 'epic') color = '#c084fc';
+            if (def.rarity === 'legendary') color = '#fbbf24';
+            return `
+              <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.05); padding:6px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">
+                <span style="font-size:22px;">${def.icon}</span>
+                <div style="flex:1;">
+                  <div style="font-size:12px; font-weight:800; color:${color};">${def.name}</div>
+                  <div style="font-size:10.5px; color:#cbd5e1; line-height:1.2;">${def.description}</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+      drawer.classList.remove('hidden');
+    } else {
+      drawer.classList.add('hidden');
+    }
+  }
+
+  toggleChestInfoModal() {
+    alert('🏺 HỆ THỐNG RƯƠNG CỔ VẬT (TREASURE CHEST - MAGIC SURVIVAL):\n\n• Rương Báu xuất hiện rải rác trên bản đồ và rơi ra khi hạ gục Boss/Quái Tinh Anh!\n• Mở Rương cho phép bạn chọn 1 trong 3 Cổ Vật với sức mạnh độc bản.\n• Cổ Vật thu thập được sẽ gia tăng vĩnh viễn sức mạnh cho nhân vật trong suốt trận đấu!');
+  }
+
 
   activateFullMapMagnet() {
     window.soundEngine.magnetPickup();
@@ -3454,6 +4201,9 @@ class Game {
 
     // 12. Minimap
     this.drawMinimap(ctx);
+
+    // 12.5 Mũi Tên Chỉ Hướng Rương Cổ Vật (Screen-Edge Compass)
+    this.drawChestDirectionPointers(ctx);
 
     // 13. Screen Bomb White Flash
     if (this.whiteFlash > 0) {

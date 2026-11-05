@@ -1645,6 +1645,35 @@ class SpellManager {
             this.applyDamage(enemy, proj.damage, proj.isCrit, proj.color);
             this.spawnImpactParticles(proj.x, proj.y, proj.color, 4);
 
+            // MAGIC SURVIVAL ARTIFACT: Magitech Module (22% chance to split projectile into 2!)
+            if (!proj.isSplit && this.game && this.game.artifacts && this.game.artifacts.hasArtifact('magitech_module') && Math.random() < 0.22) {
+              const nearby = this.getNearestEnemies(proj.x, proj.y, 4);
+              const splitTargets = nearby.filter(e => e !== enemy);
+              const splitDmg = Math.max(1, Math.round(proj.damage * 0.65));
+              for (let s = 0; s < 2; s++) {
+                const sTarget = splitTargets[s % (splitTargets.length || 1)] || null;
+                const sAng = (sTarget ? Math.atan2(sTarget.y - proj.y, sTarget.x - proj.x) : Math.random() * Math.PI * 2) + (s === 0 ? 0.35 : -0.35);
+                this.projectiles.push({
+                  type: 'sylph_spirit_bolt',
+                  x: proj.x,
+                  y: proj.y,
+                  vx: Math.cos(sAng) * 640,
+                  vy: Math.sin(sAng) * 640,
+                  radius: 11,
+                  damage: splitDmg,
+                  isCrit: false,
+                  color: '#38bdf8',
+                  pierce: 1,
+                  life: 1.2,
+                  isHoming: true,
+                  turnSpeed: 16,
+                  isSplit: true,
+                  targetEnemy: sTarget
+                });
+              }
+              this.spawnImpactParticles(proj.x, proj.y, '#38bdf8', 6);
+            }
+
             if (proj.pierce > 0) {
               proj.pierce--;
               if (proj.pierce <= 0) {
@@ -2011,7 +2040,7 @@ class SpellManager {
             const splashEnemies = this.game.getEnemiesNear(tx, ty, 68 * areaMult);
             for (const e of splashEnemies) {
               if (!e || e.isDead || e.hp <= 0) continue;
-              this.applyDamage(e, slashDmg, isCrit, '#fef08a');
+              this.applyDamage(e, slashDmg, isCrit, '#22d3ee');
             }
 
             this.slashes.push({
@@ -2028,7 +2057,7 @@ class SpellManager {
               knockback: 10,
               hasHit: true
             });
-            this.spawnImpactParticles(tx, ty, '#facc15', 6);
+            this.spawnImpactParticles(tx, ty, '#22d3ee', 6);
             this.spawnImpactParticles(tx, ty, '#ffffff', 4);
           }, i * 35);
         }
@@ -3874,6 +3903,25 @@ class SpellManager {
     }
 
     if (actualCrit) {
+      // MAGIC SURVIVAL ARTIFACT: Holy Cross (Sacred light pillar on critical strike)
+      if (this.game && this.game.artifacts && this.game.artifacts.hasArtifact('holy_cross') && Math.random() < 0.40) {
+        this.spawnShockwave(enemy.x, enemy.y, '#fde047', 105, 0.25);
+        this.spawnImpactParticles(enemy.x, enemy.y, '#ffffff', 8);
+        const splashEnemies = this.game.getEnemiesNear(enemy.x, enemy.y, 95);
+        const holyDmg = Math.max(1, Math.round(amount * 0.40));
+        for (const e of splashEnemies) {
+          if (!e || e === enemy || e.isDead || e.hp <= 0) continue;
+          e.hp -= holyDmg;
+          this.floatingTexts.push({
+            x: e.x + (Math.random() - 0.5) * 12,
+            y: e.y - 20,
+            text: `✝️ ${holyDmg}`,
+            color: '#fde047',
+            size: 15,
+            life: 0.6
+          });
+        }
+      }
       const critMult = Math.min(3.0, 1.75 + ((p && p.critDmgBonus) || 0));
       amount = Math.round(amount * critMult);
     }
@@ -4016,51 +4064,63 @@ class SpellManager {
       ctx.save();
       ctx.translate(zone.x, zone.y);
 
-      // A. Ground Mana Floor Gradient Fill
-      ctx.globalAlpha = alpha * 0.22;
-      const floorGrad = ctx.createRadialGradient(0, 0, r * 0.2, 0, 0, r);
-      floorGrad.addColorStop(0, color);
-      floorGrad.addColorStop(0.8, color);
+      // A. Ground Mana Floor Gradient Fill with Pulsing Core
+      ctx.globalAlpha = alpha * 0.28;
+      const floorGrad = ctx.createRadialGradient(0, 0, r * 0.15, 0, 0, r);
+      floorGrad.addColorStop(0, '#ffffff');
+      floorGrad.addColorStop(0.3, color);
+      floorGrad.addColorStop(0.85, color);
       floorGrad.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = floorGrad;
       ctx.beginPath();
       ctx.arc(0, 0, r, 0, Math.PI * 2);
       ctx.fill();
 
-      // B. Outer Rotating Grand Magic Seal (Vành ma trận quay theo chiều kim đồng hồ)
+      // B. Outer Rotating Grand Occult Runic Seal
       ctx.save();
       ctx.rotate(tick * 0.04);
-      ctx.globalAlpha = alpha * 0.75;
+      ctx.globalAlpha = alpha * 0.85;
       ctx.strokeStyle = color;
-      ctx.lineWidth = 2.2;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 12;
+      ctx.lineWidth = 2.4;
       ctx.beginPath();
       ctx.arc(0, 0, r, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Outer Runic Ticks & Clover Leaves
-      ctx.lineWidth = 1.2;
+      // 12 Outer Runic Marks & Clover Insignias
+      ctx.lineWidth = 1.4;
       const ticksCount = 12;
       for (let i = 0; i < ticksCount; i++) {
         const a = (i * Math.PI * 2) / ticksCount;
         const cos = Math.cos(a);
         const sin = Math.sin(a);
         ctx.beginPath();
-        ctx.moveTo(cos * (r - 6), sin * (r - 6));
-        ctx.lineTo(cos * (r + 4), sin * (r + 4));
+        ctx.moveTo(cos * (r - 7), sin * (r - 7));
+        ctx.lineTo(cos * (r + 5), sin * (r + 5));
         ctx.stroke();
+
+        // Clover runic dots on ticks
+        ctx.fillStyle = (i % 3 === 0) ? '#ffffff' : color;
+        ctx.beginPath();
+        ctx.arc(cos * (r - 12), sin * (r - 12), (i % 3 === 0 ? 2.5 : 1.5), 0, Math.PI * 2);
+        ctx.fill();
       }
+      ctx.shadowBlur = 0;
       ctx.restore();
 
-      // C. Inscribed Counter-Rotating Geometric Octagram / Star (Pháp trận hình sao đảo chiều)
+      // C. Inscribed Counter-Rotating Geometric Octagram Star
       ctx.save();
-      ctx.rotate(-tick * 0.06);
-      ctx.globalAlpha = alpha * 0.85;
+      ctx.rotate(-tick * 0.05);
+      ctx.globalAlpha = alpha * 0.9;
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.5;
+      ctx.shadowColor = '#ffffff';
+      ctx.shadowBlur = 8;
+      ctx.lineWidth = 1.6;
 
       const starPoints = 8;
-      const outerR = r * 0.74;
-      const innerR = r * 0.38;
+      const outerR = r * 0.76;
+      const innerR = r * 0.40;
       ctx.beginPath();
       for (let i = 0; i < starPoints * 2; i++) {
         const radius = i % 2 === 0 ? outerR : innerR;
@@ -4073,11 +4133,21 @@ class SpellManager {
       ctx.closePath();
       ctx.stroke();
 
+      // Cardinal Clover Nodes at North, South, East, West
+      ctx.fillStyle = color;
+      for (let c = 0; c < 4; c++) {
+        const ca = (c * Math.PI) / 2;
+        ctx.beginPath();
+        ctx.arc(Math.cos(ca) * outerR, Math.sin(ca) * outerR, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.shadowBlur = 0;
+
       // Inner Concentric Glyph Ring
       ctx.strokeStyle = color;
-      ctx.lineWidth = 1.6;
+      ctx.lineWidth = 1.8;
       ctx.beginPath();
-      ctx.arc(0, 0, r * 0.45, 0, Math.PI * 2);
+      ctx.arc(0, 0, r * 0.46, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
 
@@ -4087,44 +4157,50 @@ class SpellManager {
         ctx.globalAlpha = alpha;
         ctx.fillStyle = '#1e1b4b';
         ctx.strokeStyle = '#c084fc';
-        ctx.lineWidth = 2;
+        ctx.shadowColor = '#9333ea';
+        ctx.shadowBlur = 14;
+        ctx.lineWidth = 2.2;
         for (let c = -1; c <= 1; c++) {
           ctx.save();
-          ctx.translate(c * 14, 0);
-          ctx.rotate(-0.35 + c * 0.2);
+          ctx.translate(c * 15, 0);
+          ctx.rotate(-0.35 + c * 0.22);
           ctx.beginPath();
-          ctx.moveTo(-4, 22);
-          ctx.bezierCurveTo(-8, -4, 0, -28, 6, -34);
-          ctx.bezierCurveTo(2, -18, 0, 4, 4, 22);
+          ctx.moveTo(-5, 24);
+          ctx.bezierCurveTo(-10, -4, 0, -32, 7, -38);
+          ctx.bezierCurveTo(2, -20, 0, 4, 5, 24);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
           ctx.restore();
         }
+        ctx.shadowBlur = 0;
       } else if (zone.isGiantSword) {
         // Licht's Giant Celestial Origin Greatsword plunging into ground
         ctx.globalAlpha = alpha;
         ctx.save();
         const dropProgress = Math.min(1, (zone.maxLife - zone.life) * 5);
-        ctx.translate(0, -60 * (1 - dropProgress));
+        ctx.translate(0, -65 * (1 - dropProgress));
         // Golden Greatsword Blade
         ctx.fillStyle = '#ffffff';
         ctx.strokeStyle = '#fbbf24';
-        ctx.lineWidth = 2.5;
+        ctx.shadowColor = '#f59e0b';
+        ctx.shadowBlur = 16;
+        ctx.lineWidth = 2.8;
         ctx.beginPath();
-        ctx.moveTo(0, 35);
-        ctx.lineTo(12, -45);
-        ctx.lineTo(-12, -45);
+        ctx.moveTo(0, 38);
+        ctx.lineTo(13, -48);
+        ctx.lineTo(-13, -48);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
         // Crossguard & Pommel
         ctx.fillStyle = '#f59e0b';
-        ctx.fillRect(-22, -48, 44, 7);
+        ctx.fillRect(-24, -52, 48, 8);
         ctx.fillStyle = '#38bdf8';
         ctx.beginPath();
-        ctx.arc(0, -56, 4.5, 0, Math.PI * 2);
+        ctx.arc(0, -60, 5, 0, Math.PI * 2);
         ctx.fill();
+        ctx.shadowBlur = 0;
         ctx.restore();
       }
 
@@ -4144,27 +4220,30 @@ class SpellManager {
       ctx.save();
       ctx.translate(sw.x, sw.y);
 
-      // Outer Soft Wave Ring
-      ctx.globalAlpha = alpha * 0.45;
+      // Outer Soft Wave Ring with Intense Neon Glow
+      ctx.globalAlpha = alpha * 0.55;
       ctx.strokeStyle = color;
-      ctx.lineWidth = 7 * alpha;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 16;
+      ctx.lineWidth = 8 * alpha;
       ctx.beginPath();
       ctx.arc(0, 0, r, 0, Math.PI * 2);
       ctx.stroke();
 
       // Sharp Core Brilliant Ring
-      ctx.globalAlpha = alpha * 0.95;
+      ctx.globalAlpha = alpha * 0.98;
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 2.5 * alpha;
+      ctx.lineWidth = 3.0 * alpha;
       ctx.beginPath();
       ctx.arc(0, 0, r * 0.97, 0, Math.PI * 2);
       ctx.stroke();
+      ctx.shadowBlur = 0;
 
-      // 8 Radiating Anime Burst Spikes (Tia xung kích bùng nổ)
-      ctx.globalAlpha = alpha * 0.8;
+      // 8 Radiating Anime Burst Spikes
+      ctx.globalAlpha = alpha * 0.85;
       ctx.strokeStyle = color;
-      ctx.lineWidth = 2 * alpha;
-      const burstLen = 14 * alpha;
+      ctx.lineWidth = 2.4 * alpha;
+      const burstLen = 16 * alpha;
       for (let i = 0; i < 8; i++) {
         const a = (i * Math.PI * 2) / 8 + sw.life * 2;
         const cos = Math.cos(a);
@@ -4173,13 +4252,18 @@ class SpellManager {
         ctx.moveTo(cos * (r - burstLen), sin * (r - burstLen));
         ctx.lineTo(cos * (r + burstLen), sin * (r + burstLen));
         ctx.stroke();
+
+        // Tip diamond spark
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(cos * (r + burstLen), sin * (r + burstLen), 1.8 * alpha, 0, Math.PI * 2);
+        ctx.fill();
       }
 
       ctx.restore();
     }
   }
 
-  // -------------------------------------------------------------------------
   // -------------------------------------------------------------------------
   // 2.5. MAGIC SURVIVAL SPIRIT RING RENDERER (Vòng Tinh Linh Chalk/Brush Ethereal Ring)
   // -------------------------------------------------------------------------
@@ -4195,24 +4279,27 @@ class SpellManager {
     const auraR = radius * 1.85;
     const auraGrad = ctx.createRadialGradient(0, 0, innerRadius * 0.5, 0, 0, auraR);
     if (isFamiliar) {
-      auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.7)');
-      auraGrad.addColorStop(0.35, 'rgba(244, 114, 182, 0.45)');
-      auraGrad.addColorStop(0.75, 'rgba(192, 132, 252, 0.25)');
+      // HÌNH 3 (FAMILIAR - MAGIC SURVIVAL): Vòng Hồng Tím (Pink Ring)
+      auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+      auraGrad.addColorStop(0.35, 'rgba(244, 63, 94, 0.65)');
+      auraGrad.addColorStop(0.75, 'rgba(236, 72, 153, 0.35)');
       auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
     } else if (isBlade) {
-      auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-      auraGrad.addColorStop(0.4, 'rgba(253, 224, 71, 0.45)');
-      auraGrad.addColorStop(0.75, 'rgba(52, 211, 153, 0.25)');
+      // HÌNH 2 (MAGIC BLADE - MAGIC SURVIVAL): Vòng Lam Ngọc / Teal (Cyan Ring)
+      auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+      auraGrad.addColorStop(0.35, 'rgba(34, 211, 238, 0.7)');
+      auraGrad.addColorStop(0.75, 'rgba(6, 182, 212, 0.35)');
       auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
     } else if (isMissile) {
-      auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
-      auraGrad.addColorStop(0.35, 'rgba(56, 189, 248, 0.55)');
-      auraGrad.addColorStop(0.75, 'rgba(16, 185, 129, 0.2)');
+      // HÌNH 1 (MAGIC MISSILE - MAGIC SURVIVAL): Vòng Trắng Tinh Khiết (White Ring)
+      auraGrad.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+      auraGrad.addColorStop(0.4, 'rgba(240, 249, 255, 0.7)');
+      auraGrad.addColorStop(0.8, 'rgba(186, 230, 253, 0.3)');
       auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
     } else {
-      auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.75)');
-      auraGrad.addColorStop(0.4, 'rgba(110, 231, 183, 0.45)');
-      auraGrad.addColorStop(0.8, 'rgba(16, 185, 129, 0.15)');
+      auraGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+      auraGrad.addColorStop(0.4, 'rgba(255, 255, 255, 0.6)');
+      auraGrad.addColorStop(0.8, 'rgba(186, 230, 253, 0.25)');
       auraGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
     }
     ctx.fillStyle = auraGrad;
@@ -4230,7 +4317,7 @@ class SpellManager {
     ctx.lineCap = 'round';
 
     // Base glowing ring band
-    ctx.strokeStyle = isFamiliar ? '#f472b6' : (isBlade ? '#fef08a' : (isMissile ? '#7dd3fc' : '#a7f3d0'));
+    ctx.strokeStyle = isFamiliar ? '#f43f5e' : (isBlade ? '#22d3ee' : '#ffffff');
     ctx.lineWidth = ringThickness * 0.75;
     ctx.globalAlpha = 0.45;
     ctx.beginPath();
@@ -4289,7 +4376,7 @@ class SpellManager {
       // Ethereal mini sword hovering in the center
       ctx.save();
       ctx.fillStyle = '#ffffff';
-      ctx.strokeStyle = '#facc15';
+      ctx.strokeStyle = '#22d3ee';
       ctx.lineWidth = 1.0;
       const bLen = radius * 1.15;
       ctx.beginPath();
@@ -4303,7 +4390,7 @@ class SpellManager {
     } else if (isFamiliar) {
       // Swirling center vortex core
       ctx.save();
-      ctx.strokeStyle = '#f472b6';
+      ctx.strokeStyle = '#fb7185';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       ctx.arc(0, 0, innerRadius * 0.55, tick * 4, tick * 4 + Math.PI * 1.5);
@@ -4388,20 +4475,34 @@ class SpellManager {
       ctx.translate(proj.x, proj.y);
       ctx.rotate(angle);
 
-      // Trailing Light Glow (Đuôi vệt sáng năng lượng)
-      const trailLen = Math.min(36, Math.hypot(proj.vx, proj.vy) * 0.06);
+      // Trailing Light Glow (Đuôi vệt sáng năng lượng rực rỡ có hạt wisp)
+      const speed = Math.hypot(proj.vx, proj.vy);
+      const trailLen = Math.min(42, speed * 0.075);
       if (trailLen > 4) {
         ctx.save();
+        const trailColor = proj.color || '#38bdf8';
         const trailGrad = ctx.createLinearGradient(-trailLen, 0, 0, 0);
         trailGrad.addColorStop(0, 'rgba(255,255,255,0)');
-        trailGrad.addColorStop(1, proj.color || '#38bdf8');
+        trailGrad.addColorStop(0.65, trailColor);
+        trailGrad.addColorStop(1, '#ffffff');
         ctx.fillStyle = trailGrad;
         ctx.beginPath();
-        ctx.moveTo(0, -r * 0.6);
+        ctx.moveTo(0, -r * 0.7);
         ctx.lineTo(-trailLen, 0);
-        ctx.lineTo(0, r * 0.6);
+        ctx.lineTo(0, r * 0.7);
         ctx.closePath();
         ctx.fill();
+
+        // 2 rippling side energy wisps
+        const wispOffset = Math.sin(tick * 8) * (r * 0.35);
+        ctx.strokeStyle = trailColor;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.moveTo(0, -r * 0.5);
+        ctx.quadraticCurveTo(-trailLen * 0.5, -r * 0.8 + wispOffset, -trailLen * 0.8, 0);
+        ctx.moveTo(0, r * 0.5);
+        ctx.quadraticCurveTo(-trailLen * 0.5, r * 0.8 - wispOffset, -trailLen * 0.8, 0);
+        ctx.stroke();
         ctx.restore();
       }
 
@@ -4417,169 +4518,285 @@ class SpellManager {
           const boltColor = proj.color || (isFamiliar ? '#f472b6' : (isMissile ? '#38bdf8' : '#34d399'));
 
           // Ethereal Outer Glow
-          const glowGrad = ctx.createRadialGradient(0, 0, 1, 0, 0, r * 1.6);
-          glowGrad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
-          glowGrad.addColorStop(0.4, boltColor);
+          const glowGrad = ctx.createRadialGradient(0, 0, 1, 0, 0, r * 1.8);
+          glowGrad.addColorStop(0, '#ffffff');
+          glowGrad.addColorStop(0.45, boltColor);
           glowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
           ctx.fillStyle = glowGrad;
           ctx.beginPath();
-          ctx.arc(0, 0, r * 1.6, 0, Math.PI * 2);
+          ctx.arc(0, 0, r * 1.8, 0, Math.PI * 2);
           ctx.fill();
 
           // Rough chalk / brush stroke spirit nucleus
           ctx.save();
           ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 2.0;
+          ctx.lineWidth = 2.2;
           ctx.beginPath();
           ctx.arc(0, 0, coreR, 0, Math.PI * 2);
           ctx.stroke();
 
           // Trailing spiritual brush fibers
           ctx.strokeStyle = boltColor;
-          ctx.lineWidth = 1.5;
-          for (let f = 0; f < 4; f++) {
-            const fAngle = Math.PI + (f - 1.5) * 0.45;
+          ctx.lineWidth = 1.6;
+          for (let f = 0; f < 5; f++) {
+            const fAngle = Math.PI + (f - 2) * 0.38;
             ctx.beginPath();
             ctx.moveTo(Math.cos(fAngle) * coreR, Math.sin(fAngle) * coreR);
-            ctx.lineTo(Math.cos(fAngle) * (r * 1.4), Math.sin(fAngle) * (r * 1.4));
+            ctx.lineTo(Math.cos(fAngle) * (r * 1.5), Math.sin(fAngle) * (r * 1.5));
             ctx.stroke();
           }
           ctx.restore();
 
-          // Brilliant White Spark Center
+          // Brilliant White Spark Center with 4-Point Micro Star
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
           ctx.arc(r * 0.15, 0, coreR * 0.55, 0, Math.PI * 2);
           ctx.fill();
+
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.moveTo(r * 0.15 - 4, 0);
+          ctx.lineTo(r * 0.15 + 4, 0);
+          ctx.moveTo(r * 0.15, -4);
+          ctx.lineTo(r * 0.15, 4);
+          ctx.stroke();
           break;
         }
 
         // A. WIND SCYTHE (Lưỡi Dao Gió Cực Sắc Yuno)
         case 'wind_scythe': {
-          ctx.fillStyle = '#34d399';
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.8;
+          ctx.shadowColor = '#10b981';
+          ctx.shadowBlur = 14;
+
+          // Outer aerodynamic wind envelope
+          ctx.fillStyle = '#10b981';
+          ctx.strokeStyle = '#34d399';
+          ctx.lineWidth = 2.4;
           ctx.beginPath();
-          ctx.moveTo(r * 1.5, 0); // Front sharp tip
-          ctx.bezierCurveTo(r * 0.5, -r * 1.3, -r * 0.6, -r * 1.1, -r * 0.9, -r * 0.4);
-          ctx.bezierCurveTo(-r * 0.2, 0, -r * 0.2, 0, -r * 0.9, r * 0.4);
-          ctx.bezierCurveTo(-r * 0.6, r * 1.1, r * 0.5, r * 1.3, r * 1.5, 0);
+          ctx.moveTo(r * 1.8, 0); // Front sharp tip
+          ctx.bezierCurveTo(r * 0.6, -r * 1.4, -r * 0.8, -r * 1.1, -r * 1.1, -r * 0.4);
+          ctx.bezierCurveTo(-r * 0.3, 0, -r * 0.3, 0, -r * 1.1, r * 0.4);
+          ctx.bezierCurveTo(-r * 0.8, r * 1.1, r * 0.6, r * 1.4, r * 1.8, 0);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
-          // Lõi phát quang trắng
-          ctx.strokeStyle = '#ecfdf5';
-          ctx.lineWidth = 1;
+          // Lõi phát quang trắng sắc lẹm (Ultra-fine cutting core)
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.6;
           ctx.beginPath();
-          ctx.arc(0, 0, r * 0.4, -Math.PI / 2, Math.PI / 2);
+          ctx.moveTo(r * 1.6, 0);
+          ctx.bezierCurveTo(r * 0.4, -r * 0.8, -r * 0.4, -r * 0.6, -r * 0.6, 0);
+          ctx.bezierCurveTo(-r * 0.4, r * 0.6, r * 0.4, r * 0.8, r * 1.6, 0);
           ctx.stroke();
+
+          // 2 Spiral trailing wind vortices
+          ctx.strokeStyle = '#a7f3d0';
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.arc(-r * 0.4, -r * 0.6, 4, 0, Math.PI * 1.5);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(-r * 0.4, r * 0.6, 4, -Math.PI * 0.5, Math.PI);
+          ctx.stroke();
+          ctx.shadowBlur = 0;
           break;
         }
 
-        // B. SEA DRAGON (Thủy Long Gầm Rú Noelle - Serpentine Water Dragon)
+        // B. SEA DRAGON (Thủy Long Gầm Rú Noelle - Majestic Water Dragon)
         case 'sea_dragon': {
-          // Dragon Head Silhouette
-          ctx.fillStyle = '#38bdf8';
-          ctx.strokeStyle = '#e0f2fe';
-          ctx.lineWidth = 2;
+          ctx.shadowColor = '#0284c7';
+          ctx.shadowBlur = 14;
+
+          // Dynamic Dragon Head with Water Crest
+          ctx.fillStyle = '#0284c7';
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 2.2;
           ctx.beginPath();
-          ctx.moveTo(r * 1.6, 0); // Snout
-          ctx.lineTo(r * 0.8, -r * 0.8); // Brow
-          ctx.lineTo(0, -r * 0.9); // Crest horn
-          ctx.lineTo(-r * 1.2, -r * 0.5);
+          ctx.moveTo(r * 1.8, 0); // Snout
+          ctx.lineTo(r * 1.1, -r * 0.7); // Brow
+          ctx.lineTo(r * 0.3, -r * 1.2); // Horn tip
+          ctx.lineTo(-r * 0.2, -r * 0.7);
+          ctx.lineTo(-r * 1.4, -r * 0.6); // Water mane
           ctx.lineTo(-r * 0.6, 0);
-          ctx.lineTo(-r * 1.2, r * 0.5);
-          ctx.lineTo(0, r * 0.9);
-          ctx.lineTo(r * 0.8, r * 0.8);
+          ctx.lineTo(-r * 1.4, r * 0.6);
+          ctx.lineTo(-r * 0.2, r * 0.7);
+          ctx.lineTo(r * 0.3, r * 1.2); // Lower horn
+          ctx.lineTo(r * 1.1, r * 0.7);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
+
+          // Water scales & inner snout
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.moveTo(r * 1.4, 0);
+          ctx.lineTo(r * 0.7, -r * 0.4);
+          ctx.lineTo(0, 0);
+          ctx.lineTo(r * 0.7, r * 0.4);
+          ctx.closePath();
+          ctx.fill();
+
+          // White sharp water fangs
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.moveTo(r * 1.2, -2);
+          ctx.lineTo(r * 1.5, 0);
+          ctx.lineTo(r * 1.2, 2);
+          ctx.fill();
 
           // Glowing Dragon Eye
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
-          ctx.arc(r * 0.4, -r * 0.3, 2.5, 0, Math.PI * 2);
+          ctx.arc(r * 0.6, -r * 0.35, 3, 0, Math.PI * 2);
           ctx.fill();
-          ctx.fillStyle = '#0284c7';
+          ctx.fillStyle = '#0369a1';
           ctx.beginPath();
-          ctx.arc(r * 0.5, -r * 0.3, 1.2, 0, Math.PI * 2);
+          ctx.arc(r * 0.7, -r * 0.35, 1.4, 0, Math.PI * 2);
           ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
         // C. VALKYRIE LANCE (Thương Xoáy Nước Áp Lực Valkyrie)
         case 'valkyrie_lance': {
-          ctx.fillStyle = '#0ea5e9';
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.8;
+          ctx.shadowColor = '#0ea5e9';
+          ctx.shadowBlur = 14;
+
+          // Piercing Crystalline Spearhead
+          ctx.fillStyle = '#0284c7';
+          ctx.strokeStyle = '#e0f2fe';
+          ctx.lineWidth = 2.0;
           ctx.beginPath();
-          ctx.moveTo(r * 2.0, 0); // Lance tip
-          ctx.lineTo(-r * 0.8, -r * 0.7);
+          ctx.moveTo(r * 2.3, 0); // Tip
+          ctx.lineTo(-r * 0.8, -r * 0.75);
           ctx.lineTo(-r * 0.4, 0);
-          ctx.lineTo(-r * 0.8, r * 0.7);
+          ctx.lineTo(-r * 0.8, r * 0.75);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
-          // Spiral Water Ring wrapping around lance
-          ctx.strokeStyle = '#38bdf8';
+          // Inner facet reflection
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.moveTo(r * 2.1, 0);
+          ctx.lineTo(-r * 0.5, -r * 0.4);
+          ctx.lineTo(-r * 0.2, 0);
+          ctx.closePath();
+          ctx.fill();
+
+          // 2 Helical Water Vortex Rings rotating around shaft
+          const spinA = tick * 6;
+          ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 2.2;
           ctx.beginPath();
-          ctx.ellipse(0, 0, r * 0.6, r * 1.1, 0.4, 0, Math.PI * 2);
+          ctx.ellipse(r * 0.2, 0, r * 0.5, r * 1.1, spinA, 0, Math.PI * 2);
           ctx.stroke();
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          ctx.ellipse(-r * 0.5, 0, r * 0.45, r * 0.9, -spinA, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Diamond sparkle at tip
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(r * 2.2, 0, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
         // D. FIRE FIST / CALIDOS BRACHIUM (Hỏa Sư Quyền Mereoleona)
         case 'fire_fist': {
-          // Blazing Fire Aura
-          ctx.fillStyle = '#ea580c';
+          ctx.shadowColor = '#f97316';
+          ctx.shadowBlur = 16;
+
+          // Blazing Lion Claw Plasma Aura
+          ctx.fillStyle = '#dc2626';
+          ctx.strokeStyle = '#f97316';
+          ctx.lineWidth = 2.2;
+          ctx.beginPath();
+          ctx.moveTo(r * 1.8, 0); // Center claw
+          ctx.bezierCurveTo(r * 1.1, -r * 1.3, -r * 0.4, -r * 1.2, -r * 1.3, -r * 0.6);
+          ctx.bezierCurveTo(-r * 0.7, 0, -r * 0.7, 0, -r * 1.3, r * 0.6);
+          ctx.bezierCurveTo(-r * 0.4, r * 1.2, r * 1.1, r * 1.3, r * 1.8, 0);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          // Molten Golden Core
+          ctx.fillStyle = '#f59e0b';
           ctx.beginPath();
           ctx.moveTo(r * 1.4, 0);
-          ctx.bezierCurveTo(r * 0.8, -r * 1.2, -r * 0.5, -r * 1.0, -r * 1.3, -r * 0.6);
-          ctx.bezierCurveTo(-r * 0.7, 0, -r * 0.7, 0, -r * 1.3, r * 0.6);
-          ctx.bezierCurveTo(-r * 0.5, r * 1.0, r * 0.8, r * 1.2, r * 1.4, 0);
+          ctx.lineTo(r * 0.4, -r * 0.7);
+          ctx.lineTo(-r * 0.6, 0);
+          ctx.lineTo(r * 0.4, r * 0.7);
           ctx.closePath();
           ctx.fill();
 
-          // White-hot Molten Core
+          // White-hot Solar Core
           ctx.fillStyle = '#fef08a';
           ctx.beginPath();
-          ctx.arc(r * 0.2, 0, r * 0.55, 0, Math.PI * 2);
+          ctx.arc(r * 0.3, 0, r * 0.45, 0, Math.PI * 2);
           ctx.fill();
+
+          // Fiery claw sparks
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(r * 1.6, 0, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
-        // E. FIREBALL (Hỏa Cầu Bóng Chày Magna)
+        // E. FIREBALL (Hỏa Cầu Bóng Chày Magna - Volcanic Magma Meteor)
         case 'fireball': {
-          ctx.fillStyle = '#dc2626';
+          ctx.shadowColor = '#ef4444';
+          ctx.shadowBlur = 14;
+
+          // Volcanic Outer Mantle
+          ctx.fillStyle = '#7f1d1d';
+          ctx.strokeStyle = '#f97316';
+          ctx.lineWidth = 2.2;
           ctx.beginPath();
           ctx.arc(0, 0, r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Molten Lava Fissures
+          ctx.fillStyle = '#f97316';
+          ctx.beginPath();
+          ctx.arc(0, 0, r * 0.75, 0, Math.PI * 2);
           ctx.fill();
 
           ctx.fillStyle = '#fbbf24';
           ctx.beginPath();
-          ctx.arc(0, 0, r * 0.6, 0, Math.PI * 2);
+          ctx.arc(r * 0.15, 0, r * 0.5, 0, Math.PI * 2);
           ctx.fill();
 
-          // Curved baseball flame stitch
+          // Curved baseball flame stitch with glowing white seam
           ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.4;
+          ctx.lineWidth = 1.8;
           ctx.beginPath();
-          ctx.arc(-r * 0.3, 0, r * 0.7, -Math.PI / 3, Math.PI / 3);
+          ctx.arc(-r * 0.25, 0, r * 0.75, -Math.PI / 2.5, Math.PI / 2.5);
           ctx.stroke();
+          ctx.shadowBlur = 0;
           break;
         }
 
-        // F. LIGHT SWORD (Gươm Quang Ma Pháp Patri)
+        // F. LIGHT SWORD (Gươm Quang Ma Pháp Patri - Holy Divine Light Rapier)
         case 'light_sword': {
-          // Radiant Light Rapier
+          ctx.shadowColor = '#fde047';
+          ctx.shadowBlur = 16;
+
+          // Blinding White Beam Blade
           ctx.fillStyle = '#ffffff';
           ctx.strokeStyle = '#fde047';
-          ctx.lineWidth = 2;
+          ctx.lineWidth = 2.4;
           ctx.beginPath();
-          ctx.moveTo(r * 2.2, 0); // Tip
+          ctx.moveTo(r * 2.4, 0); // Tip
           ctx.lineTo(-r * 1.0, -r * 0.45);
           ctx.lineTo(-r * 0.7, 0);
           ctx.lineTo(-r * 1.0, r * 0.45);
@@ -4587,227 +4804,358 @@ class SpellManager {
           ctx.fill();
           ctx.stroke();
 
-          // Crossguard light star
+          // Golden Crossguard Halo Star
           ctx.fillStyle = '#fbbf24';
           ctx.beginPath();
-          ctx.arc(-r * 0.7, 0, 3, 0, Math.PI * 2);
+          ctx.arc(-r * 0.7, 0, 4.5, 0, Math.PI * 2);
           ctx.fill();
+
+          // 4-Point Holy Starburst at the hilt
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(-r * 0.7 - 7, 0);
+          ctx.lineTo(-r * 0.7 + 7, 0);
+          ctx.moveTo(-r * 0.7, -7);
+          ctx.lineTo(-r * 0.7, 7);
+          ctx.stroke();
+
+          // Diamond spark at tip
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(r * 2.3, 0, 2.8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
-        // G. ORIGIN SWORD (Chân Kiếm Khai Nguyên Licht)
+        // G. ORIGIN SWORD (Chân Kiếm Khai Nguyên Licht - Ancient Elf True Sword)
         case 'origin_sword': {
+          ctx.shadowColor = '#38bdf8';
+          ctx.shadowBlur = 14;
+
+          // Broad True Sword Blade
           ctx.fillStyle = '#f8fafc';
-          ctx.strokeStyle = '#38bdf8';
-          ctx.lineWidth = 1.8;
+          ctx.strokeStyle = '#0284c7';
+          ctx.lineWidth = 2.0;
           ctx.beginPath();
-          ctx.moveTo(r * 2.0, 0);
-          ctx.lineTo(-r * 0.8, -r * 0.5);
-          ctx.lineTo(-r * 1.2, 0);
-          ctx.lineTo(-r * 0.8, r * 0.5);
+          ctx.moveTo(r * 2.2, 0);
+          ctx.lineTo(-r * 0.8, -r * 0.55);
+          ctx.lineTo(-r * 1.3, 0);
+          ctx.lineTo(-r * 0.8, r * 0.55);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
-          // Runic Fuller line
-          ctx.strokeStyle = '#fbbf24';
-          ctx.lineWidth = 1.2;
+          // Gold Runic Fuller Line with Etched Runes
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 1.6;
           ctx.beginPath();
-          ctx.moveTo(r * 1.0, 0);
+          ctx.moveTo(r * 1.4, 0);
           ctx.lineTo(-r * 0.6, 0);
           ctx.stroke();
+
+          // Ancient runic nodes
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.arc(r * 0.6, 0, 2.2, 0, Math.PI * 2);
+          ctx.arc(-r * 0.1, 0, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
-        // H. SHADOW WOLF (Á Ma Canis Nacht)
+        // H. SHADOW WOLF (Á Ma Canis Nacht - Demonic Shadow Wolf)
         case 'shadow_wolf': {
+          ctx.shadowColor = '#9333ea';
+          ctx.shadowBlur = 16;
+
+          // Shadow Wolf Head & Smoky Mane
           ctx.fillStyle = '#09090b';
           ctx.strokeStyle = '#c084fc';
-          ctx.lineWidth = 1.8;
+          ctx.lineWidth = 2.2;
           ctx.beginPath();
-          ctx.moveTo(r * 1.5, 0); // Wolf Snout
-          ctx.lineTo(r * 0.6, -r * 0.7); // Forehead
-          ctx.lineTo(0, -r * 1.1); // Ear
-          ctx.lineTo(-r * 1.0, -r * 0.4);
-          ctx.lineTo(-r * 0.4, 0);
-          ctx.lineTo(-r * 1.0, r * 0.4);
-          ctx.lineTo(0, r * 1.1); // Ear
-          ctx.lineTo(r * 0.6, r * 0.7);
+          ctx.moveTo(r * 1.7, 0); // Snout
+          ctx.lineTo(r * 0.8, -r * 0.7);
+          ctx.lineTo(0, -r * 1.25); // Sharp demon ear
+          ctx.lineTo(-r * 0.8, -r * 0.7);
+          ctx.lineTo(-r * 1.3, -r * 0.3); // Mane plume
+          ctx.lineTo(-r * 0.5, 0);
+          ctx.lineTo(-r * 1.3, r * 0.3);
+          ctx.lineTo(-r * 0.8, r * 0.7);
+          ctx.lineTo(0, r * 1.25); // Lower ear
+          ctx.lineTo(r * 0.8, r * 0.7);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
-          // Amethyst Glowing Eyes
+          // Menacing Glowing Amethyst Eyes
           ctx.fillStyle = '#c084fc';
           ctx.beginPath();
-          ctx.arc(r * 0.4, -r * 0.3, 1.8, 0, Math.PI * 2);
-          ctx.arc(r * 0.4, r * 0.3, 1.8, 0, Math.PI * 2);
+          ctx.ellipse(r * 0.5, -r * 0.35, 2.5, 1.4, 0.3, 0, Math.PI * 2);
+          ctx.ellipse(r * 0.5, r * 0.35, 2.5, 1.4, -0.3, 0, Math.PI * 2);
           ctx.fill();
+
+          // White demon pupils
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(r * 0.6, -r * 0.35, 1, 0, Math.PI * 2);
+          ctx.arc(r * 0.6, r * 0.35, 1, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
         // I. SPATIAL BONE JAVELIN (Cốt Ma Thương Zenon)
         case 'spatial_bone': {
+          ctx.shadowColor = '#9333ea';
+          ctx.shadowBlur = 14;
+
+          // Demonic Bone Spearhead
           ctx.fillStyle = '#f8fafc';
-          ctx.strokeStyle = '#9333ea';
-          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#7c3aed';
+          ctx.lineWidth = 2.2;
           ctx.beginPath();
-          ctx.moveTo(r * 2.2, 0);
-          ctx.lineTo(-r * 1.2, -r * 0.4);
+          ctx.moveTo(r * 2.4, 0);
+          ctx.lineTo(-r * 1.2, -r * 0.45);
           ctx.lineTo(-r * 0.8, 0);
-          ctx.lineTo(-r * 1.2, r * 0.4);
+          ctx.lineTo(-r * 1.2, r * 0.45);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
-          // Spatial void block orbiting
+          // 2 Orbiting 3D Spatial Void Cubes
+          const cubeA = tick * 5;
+          ctx.save();
+          ctx.translate(-r * 0.2, Math.sin(cubeA) * 6);
+          ctx.rotate(cubeA);
           ctx.fillStyle = '#09090b';
           ctx.strokeStyle = '#c084fc';
-          ctx.lineWidth = 1.2;
-          ctx.strokeRect(-4, -4, 8, 8);
+          ctx.lineWidth = 1.4;
           ctx.fillRect(-4, -4, 8, 8);
+          ctx.strokeRect(-4, -4, 8, 8);
+          ctx.restore();
+          ctx.shadowBlur = 0;
           break;
         }
 
         // J. BLOOD BEAST (Huyết Ma Thú Vanica & Megicula)
         case 'blood_beast': {
-          ctx.fillStyle = '#991b1b';
-          ctx.strokeStyle = '#ef4444';
-          ctx.lineWidth = 2;
+          ctx.shadowColor = '#dc2626';
+          ctx.shadowBlur = 16;
+
+          // Cursed Blood Dragon Head
+          ctx.fillStyle = '#881337';
+          ctx.strokeStyle = '#f43f5e';
+          ctx.lineWidth = 2.4;
           ctx.beginPath();
-          ctx.moveTo(r * 1.6, 0);
-          ctx.lineTo(r * 0.5, -r * 0.8);
-          ctx.lineTo(-r * 1.0, -r * 0.5);
-          ctx.lineTo(-r * 0.4, 0);
-          ctx.lineTo(-r * 1.0, r * 0.5);
-          ctx.lineTo(r * 0.5, r * 0.8);
+          ctx.moveTo(r * 1.8, 0);
+          ctx.lineTo(r * 0.6, -r * 0.9);
+          ctx.lineTo(-r * 0.8, -r * 0.6);
+          ctx.lineTo(-r * 0.3, 0);
+          ctx.lineTo(-r * 0.8, r * 0.6);
+          ctx.lineTo(r * 0.6, r * 0.9);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
-          // Crimson Blood Core
-          ctx.fillStyle = '#f87171';
+          // Viscous dripping crimson core
+          ctx.fillStyle = '#f43f5e';
           ctx.beginPath();
-          ctx.arc(r * 0.4, 0, 2.5, 0, Math.PI * 2);
+          ctx.arc(r * 0.5, 0, 3.5, 0, Math.PI * 2);
           ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(r * 0.6, -1, 1.4, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
         // K. PHOENIX FEATHER (Hỏa Điểu Vũ Fuegoleon)
         case 'phoenix_feather': {
+          ctx.shadowColor = '#f59e0b';
+          ctx.shadowBlur = 16;
+
+          // Burning Phoenix Wing Feather
           ctx.fillStyle = '#ea580c';
-          ctx.strokeStyle = '#fbbf24';
-          ctx.lineWidth = 1.8;
+          ctx.strokeStyle = '#fde047';
+          ctx.lineWidth = 2.0;
           ctx.beginPath();
-          ctx.moveTo(r * 1.8, 0);
-          ctx.bezierCurveTo(r * 0.5, -r * 0.9, -r * 0.8, -r * 0.6, -r * 1.2, 0);
-          ctx.bezierCurveTo(-r * 0.8, r * 0.6, r * 0.5, r * 0.9, r * 1.8, 0);
+          ctx.moveTo(r * 2.0, 0);
+          ctx.bezierCurveTo(r * 0.6, -r * 1.0, -r * 0.8, -r * 0.7, -r * 1.3, 0);
+          ctx.bezierCurveTo(-r * 0.8, r * 0.7, r * 0.6, r * 1.0, r * 2.0, 0);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
           // Golden quill spine
           ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.2;
+          ctx.lineWidth = 1.6;
           ctx.beginPath();
-          ctx.moveTo(r * 1.5, 0);
-          ctx.lineTo(-r * 1.0, 0);
+          ctx.moveTo(r * 1.8, 0);
+          ctx.lineTo(-r * 1.1, 0);
           ctx.stroke();
+
+          // Molten flame vanes
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(r * 0.4, 0, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
         // L. STEEL DRILL (Cương Thiết Khoan Klaus)
         case 'steel_drills': {
-          ctx.fillStyle = '#94a3b8';
+          ctx.shadowColor = '#94a3b8';
+          ctx.shadowBlur = 10;
+
+          // Polished Titanium Cone
+          ctx.fillStyle = '#64748b';
           ctx.strokeStyle = '#f8fafc';
-          ctx.lineWidth = 1.8;
+          ctx.lineWidth = 2.0;
           ctx.beginPath();
-          ctx.moveTo(r * 1.8, 0);
-          ctx.lineTo(-r * 1.0, -r * 0.8);
+          ctx.moveTo(r * 2.0, 0); // Drill tip
+          ctx.lineTo(-r * 1.1, -r * 0.85);
           ctx.lineTo(-r * 0.7, 0);
-          ctx.lineTo(-r * 1.0, r * 0.8);
+          ctx.lineTo(-r * 1.1, r * 0.85);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
-          // Spiral steel grooves
+          // Spiral steel helical flutes
           ctx.strokeStyle = '#334155';
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 1.8;
           ctx.beginPath();
-          ctx.moveTo(r * 0.8, -r * 0.4);
-          ctx.lineTo(r * 0.2, r * 0.5);
-          ctx.moveTo(0, -r * 0.6);
-          ctx.lineTo(-r * 0.6, r * 0.6);
+          ctx.moveTo(r * 1.0, -r * 0.4);
+          ctx.lineTo(r * 0.3, r * 0.5);
+          ctx.moveTo(0, -r * 0.65);
+          ctx.lineTo(-r * 0.6, r * 0.7);
           ctx.stroke();
+
+          // Golden friction sparks at the tip
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(r * 1.9, -2, 1.8, 0, Math.PI * 2);
+          ctx.arc(r * 1.9, 2, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
         // M. FLOWER CANNON (Ma Hoa Pháo Mimosa)
         case 'flower_cannon': {
+          ctx.shadowColor = '#f472b6';
+          ctx.shadowBlur = 14;
+
+          // Enchanted Lotus Bloom with 6 Petals
           ctx.fillStyle = '#f472b6';
           ctx.strokeStyle = '#fde047';
-          ctx.lineWidth = 1.5;
-          for (let p = 0; p < 4; p++) {
-            const a = (p * Math.PI) / 2 + tick * 0.1;
+          ctx.lineWidth = 1.8;
+          for (let p = 0; p < 6; p++) {
+            const a = (p * Math.PI) / 3 + tick * 0.12;
             ctx.beginPath();
-            ctx.ellipse(Math.cos(a) * r * 0.6, Math.sin(a) * r * 0.6, r * 0.6, r * 0.35, a, 0, Math.PI * 2);
+            ctx.ellipse(Math.cos(a) * r * 0.65, Math.sin(a) * r * 0.65, r * 0.6, r * 0.32, a, 0, Math.PI * 2);
             ctx.fill();
             ctx.stroke();
           }
+
+          // Golden Pollen Sunburst Core
           ctx.fillStyle = '#fbbf24';
           ctx.beginPath();
-          ctx.arc(0, 0, r * 0.45, 0, Math.PI * 2);
+          ctx.arc(0, 0, r * 0.5, 0, Math.PI * 2);
           ctx.fill();
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(0, 0, r * 0.25, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
-        // N. BULL GOLEM (Thiết Ngưu Henry)
+        // N. BULL GOLEM (Thiết Ngưu Henry - Heavy Iron Ram)
         case 'bull_golem': {
+          ctx.shadowColor = '#f59e0b';
+          ctx.shadowBlur = 14;
+
+          // Heavy Iron Bull Head
           ctx.fillStyle = '#0f172a';
           ctx.strokeStyle = '#f59e0b';
-          ctx.lineWidth = 1.8;
+          ctx.lineWidth = 2.2;
           ctx.beginPath();
-          ctx.ellipse(0, 0, r * 1.2, r * 0.8, 0, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, r * 1.3, r * 0.85, 0, 0, Math.PI * 2);
           ctx.fill();
           ctx.stroke();
-          // Iron horns
-          ctx.fillStyle = '#e2e8f0';
+
+          // Swept-Forward Polished Gold Horns
+          ctx.fillStyle = '#fbbf24';
           ctx.beginPath();
-          ctx.moveTo(r * 0.6, -r * 0.5);
-          ctx.lineTo(r * 1.3, -r * 1.0);
+          ctx.moveTo(r * 0.5, -r * 0.5);
+          ctx.lineTo(r * 1.4, -r * 1.1);
           ctx.lineTo(r * 0.8, -r * 0.2);
-          ctx.moveTo(r * 0.6, r * 0.5);
-          ctx.lineTo(r * 1.3, r * 1.0);
-          ctx.lineTo(r * 0.8, r * 0.2);
+          ctx.closePath();
           ctx.fill();
+          ctx.beginPath();
+          ctx.moveTo(r * 0.5, r * 0.5);
+          ctx.lineTo(r * 1.4, r * 1.1);
+          ctx.lineTo(r * 0.8, r * 0.2);
+          ctx.closePath();
+          ctx.fill();
+
+          // Glowing Demonic Red Bull Eyes
+          ctx.fillStyle = '#ef4444';
+          ctx.beginPath();
+          ctx.arc(r * 0.4, -r * 0.3, 2.2, 0, Math.PI * 2);
+          ctx.arc(r * 0.4, r * 0.3, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
         // O. ALCHEMICAL TRANSMUTATION CRYSTAL (Grey)
         case 'magic_conversion':
         case 'substance_transmute': {
-          ctx.fillStyle = '#c084fc';
+          ctx.shadowColor = '#c084fc';
+          ctx.shadowBlur = 14;
+
+          // Faceted Philosopher Octahedron
+          ctx.fillStyle = '#7c3aed';
           ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 1.8;
           ctx.beginPath();
-          ctx.moveTo(r * 1.4, 0);
-          ctx.lineTo(0, -r * 0.9);
-          ctx.lineTo(-r * 1.2, 0);
-          ctx.lineTo(0, r * 0.9);
+          ctx.moveTo(r * 1.5, 0);
+          ctx.lineTo(0, -r * 1.0);
+          ctx.lineTo(-r * 1.3, 0);
+          ctx.lineTo(0, r * 1.0);
           ctx.closePath();
           ctx.fill();
           ctx.stroke();
 
-          ctx.fillStyle = 'rgba(255,255,255,0.75)';
+          // Shifting iridescent inner facet
+          ctx.fillStyle = '#c084fc';
+          ctx.beginPath();
+          ctx.moveTo(r * 1.2, 0);
+          ctx.lineTo(0, -r * 0.6);
+          ctx.lineTo(-r * 0.8, 0);
+          ctx.closePath();
+          ctx.fill();
+
+          // Luminous white core
+          ctx.fillStyle = '#ffffff';
           ctx.beginPath();
           ctx.arc(0, 0, r * 0.4, 0, Math.PI * 2);
           ctx.fill();
+          ctx.shadowBlur = 0;
           break;
         }
 
-        // P. GENERIC ENERGY COMET ORB (Lõi phát quang trắng)
+        // P. GENERIC ENERGY COMET ORB (Lõi phát quang trắng đa tầng)
         default: {
           const color = proj.color || '#38bdf8';
+          ctx.shadowColor = color;
+          ctx.shadowBlur = 14;
+
           ctx.fillStyle = color;
           ctx.beginPath();
           ctx.arc(0, 0, r, 0, Math.PI * 2);
@@ -4816,12 +5164,13 @@ class SpellManager {
           // White Luminous Core
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
-          ctx.arc(r * 0.2, 0, r * 0.5, 0, Math.PI * 2);
+          ctx.arc(r * 0.2, 0, r * 0.55, 0, Math.PI * 2);
           ctx.fill();
 
           ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.2;
+          ctx.lineWidth = 1.4;
           ctx.stroke();
+          ctx.shadowBlur = 0;
           break;
         }
       }
@@ -4845,48 +5194,74 @@ class SpellManager {
 
       // 360-degree Spin Slash (Black Divider 360 & Dimension Slash Vortex)
       if (slash.arc >= Math.PI * 1.9) {
-        ctx.rotate(slash.progress * 4);
+        ctx.rotate(slash.progress * 4.5);
 
-        // Sweeping Outer Dark Rim
-        ctx.globalAlpha = alpha * 0.6;
+        // A. Sweeping Outer Dark Rim with Intense Chromatic Aura
+        ctx.globalAlpha = alpha * 0.7;
         ctx.strokeStyle = color;
-        ctx.lineWidth = 26 * alpha;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 20;
+        ctx.lineWidth = 28 * alpha;
         ctx.beginPath();
         ctx.arc(0, 0, r, 0, Math.PI * 2);
         ctx.stroke();
 
-        // 4 Spinning Curved Blades
-        ctx.globalAlpha = alpha * 0.9;
+        // B. 4 Spinning Curved Scythe Blades with Speed-Line Blur
+        ctx.globalAlpha = alpha * 0.95;
         ctx.fillStyle = color;
         for (let b = 0; b < 4; b++) {
           const ba = (b * Math.PI) / 2;
           ctx.save();
           ctx.rotate(ba);
           ctx.beginPath();
-          ctx.moveTo(r * 0.3, 0);
-          ctx.bezierCurveTo(r * 0.7, r * 0.4, r * 0.9, -r * 0.1, r * 1.08, 0);
-          ctx.bezierCurveTo(r * 0.8, -r * 0.3, r * 0.5, -r * 0.2, r * 0.3, 0);
+          ctx.moveTo(r * 0.25, 0);
+          ctx.bezierCurveTo(r * 0.65, r * 0.45, r * 0.92, -r * 0.12, r * 1.12, 0);
+          ctx.bezierCurveTo(r * 0.82, -r * 0.35, r * 0.5, -r * 0.22, r * 0.25, 0);
           ctx.closePath();
           ctx.fill();
           ctx.restore();
         }
 
-        // White Blade Gleam Edge
+        // C. Blinding White Blade Gleam Cutting Perimeter
         ctx.globalAlpha = alpha;
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 3.5 * alpha;
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 14;
+        ctx.lineWidth = 4.0 * alpha;
         ctx.beginPath();
         ctx.arc(0, 0, r * 0.98, 0, Math.PI * 2);
         ctx.stroke();
+
+        // D. Crackling Anti-Magic / Void Lightning across Vortex
+        if (Math.random() < 0.6) {
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          const la = Math.random() * Math.PI * 2;
+          ctx.moveTo(Math.cos(la) * r * 0.3, Math.sin(la) * r * 0.3);
+          ctx.lineTo(Math.cos(la + 0.3) * r * 0.95, Math.sin(la + 0.3) * r * 0.95);
+          ctx.stroke();
+        }
+        ctx.shadowBlur = 0;
       } else {
-        // Directional Crescent Anime Arc (Cung trăng có độ dày vát nhọn 2 đầu)
+        // Directional Crescent Anime Arc (Nhát chém hình cung trăng uốn lượn sắc sảo)
         const halfArc = slash.arc / 2;
         const startA = slash.facingAngle - halfArc;
         const endA = slash.facingAngle + halfArc;
-        const thickness = Math.max(6, r * 0.26 * (1 - p * 0.5));
+        const thickness = Math.max(7, r * 0.30 * (1 - p * 0.45));
 
-        // A. Crescent Body Path (Dày ở giữa, nhọn dần ở 2 đầu)
-        ctx.globalAlpha = alpha * 0.85;
+        // A. Outer Radiant Bloom Glow
+        ctx.globalAlpha = alpha * 0.5;
+        ctx.strokeStyle = color;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 22;
+        ctx.lineWidth = thickness * 1.35;
+        ctx.beginPath();
+        ctx.arc(0, 0, r, startA, endA, false);
+        ctx.stroke();
+
+        // B. Crescent Body Path (Dày vồng ở giữa, vát nhọn sắc lẹm ở 2 đầu)
+        ctx.globalAlpha = alpha * 0.92;
         ctx.fillStyle = color;
         ctx.beginPath();
         // Outer arc
@@ -4896,21 +5271,34 @@ class SpellManager {
         ctx.closePath();
         ctx.fill();
 
-        // B. White Sharp Blade Edge (Lưỡi kiếm phát quang trắng sắc lẹm)
-        ctx.globalAlpha = alpha;
+        // C. Inner Concentric Speed-Ribs / Slash Shock Ripples
+        ctx.globalAlpha = alpha * 0.65;
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 3.5 * alpha;
+        ctx.lineWidth = 1.4;
         ctx.beginPath();
-        ctx.arc(0, 0, r, startA + 0.05, endA - 0.05, false);
+        ctx.arc(0, 0, r - thickness * 0.15, startA + 0.15, endA - 0.15, false);
         ctx.stroke();
 
-        // C. Outer Colored Glow Fringe
-        ctx.globalAlpha = alpha * 0.4;
-        ctx.strokeStyle = color;
-        ctx.lineWidth = thickness * 1.2;
+        // D. Ultra-Sharp Razor White Cutting Edge (Lưỡi kiếm phát quang trắng sắc lẹm)
+        ctx.globalAlpha = alpha;
+        ctx.strokeStyle = '#ffffff';
+        ctx.shadowColor = '#ffffff';
+        ctx.shadowBlur = 10;
+        ctx.lineWidth = 4.2 * alpha;
         ctx.beginPath();
-        ctx.arc(0, 0, r, startA, endA, false);
+        ctx.arc(0, 0, r + thickness * 0.35, startA + 0.04, endA - 0.04, false);
         ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // E. Slash Spark Embers scattering off the blade
+        for (let s = 0; s < 3; s++) {
+          const sa = startA + (s / 2) * slash.arc + (Math.random() - 0.5) * 0.1;
+          const sDist = r + (Math.random() - 0.5) * thickness;
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(Math.cos(sa) * sDist, Math.sin(sa) * sDist, 1.6 * alpha, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
 
       ctx.restore();
@@ -4926,25 +5314,44 @@ class SpellManager {
       const color = lc.color || '#38bdf8';
 
       ctx.save();
-      // Outer electric glow
+      // Outer electric bloom glow
       ctx.strokeStyle = color;
-      ctx.lineWidth = 4.5;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 16;
+      ctx.lineWidth = 5.5;
       ctx.beginPath();
       ctx.moveTo(lc.points[0].x, lc.points[0].y);
       for (let i = 1; i < lc.points.length; i++) {
         const p1 = lc.points[i - 1];
         const p2 = lc.points[i];
-        const midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * 16;
-        const midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * 16;
+        const midX = (p1.x + p2.x) / 2 + (Math.random() - 0.5) * 18;
+        const midY = (p1.y + p2.y) / 2 + (Math.random() - 0.5) * 18;
         ctx.lineTo(midX, midY);
         ctx.lineTo(p2.x, p2.y);
       }
       ctx.stroke();
 
-      // Inner white lightning core
+      // Inner blinding white-hot lightning core
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.8;
+      ctx.shadowColor = '#ffffff';
+      ctx.shadowBlur = 8;
+      ctx.lineWidth = 2.0;
       ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Electric spark nodes at each chain vertex
+      for (let i = 0; i < lc.points.length; i++) {
+        const pt = lc.points[i];
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 3.0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 5.0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
       ctx.restore();
     }
   }

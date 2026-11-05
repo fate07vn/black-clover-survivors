@@ -172,6 +172,212 @@ const ARTIFACT_DEFS = {
   }
 };
 
+// =========================================================================
+// CỔ VẬT TRẬN ĐẤU / CHIẾN TRƯỜNG (DEDICATED IN-RUN ARTIFACTS - MAGIC SURVIVAL STYLE)
+// Hoàn toàn tách biệt với Cổ Vật Sảnh (Lobby Meta Relics).
+// Chỉ xuất hiện khi mở Rương Báu (Treasure Chest 👑) trên bản đồ!
+// =========================================================================
+const IN_RUN_ARTIFACT_DEFS = {
+  // 1. HÌNH ẢNH 1: MAGITECH MODULE
+  magitech_module: {
+    id: 'magitech_module',
+    name: 'Mô-đun Ma Thuật Kỹ Nghệ (Magitech Module)',
+    rarity: 'rare',
+    icon: '⚡🔋',
+    tagline: 'Ma Thuật Kỹ Nghệ (Magic Survival)',
+    description: '22% cơ hội cho mỗi tia đạn Ma Pháp phân tách thành 2 tia ma pháp tự truy sát kẻ địch!',
+    stats: { damageBonus: 0.08, areaBonus: 0.12 }
+  },
+
+  // 2. HÌNH ẢNH 2: HOLY CROSS
+  holy_cross: {
+    id: 'holy_cross',
+    name: 'Thánh Giá Quang Minh (Holy Cross)',
+    rarity: 'rare',
+    icon: '✝️✨',
+    tagline: 'Thánh Vật Thanh Tẩy Tà Ma (Magic Survival)',
+    description: 'Tăng +20% Sát thương Chí mạng. Đòn đánh chí mạng giáng một cột sáng thần thánh thanh tẩy quái vật!',
+    stats: { critChance: 0.06, critDmgBonus: 0.20 }
+  },
+
+  // 3. HÌNH ẢNH 3: TRAVELER'S BACKPACK
+  dimensional_backpack: {
+    id: 'dimensional_backpack',
+    name: 'Ba Lô Thám Hiểm (Traveler Backpack)',
+    rarity: 'rare',
+    icon: '🎒📜',
+    tagline: 'Hành Trang Không Gian Vô Tận (Magic Survival)',
+    description: 'Mở rộng không gian chứa đồ: +45 Bán kính nhặt đồ, +35 Máu Tối đa và +15% Clover Coins nhặt được!',
+    stats: { pickupRadius: 45, maxHp: 35, coinBonus: 0.15 }
+  },
+
+  // 4. TARGET FIXATOR (Magic Survival)
+  target_fixator: {
+    id: 'target_fixator',
+    name: 'Kính Ngắm Khóa Mục Tiêu (Target Fixator)',
+    rarity: 'rare',
+    icon: '🎯🔭',
+    tagline: 'Định Vị Điểm Yếu (Magic Survival)',
+    description: 'Tăng +20% Tốc độ bay của đạn và tăng +15% Sát thương tầm xa cho toàn bộ Ma Pháp!',
+    stats: { speed: 0.08, damageBonus: 0.15 }
+  },
+
+  // 5. URANIUM CORE (Magic Survival)
+  uranium_core: {
+    id: 'uranium_core',
+    name: 'Lõi Năng Lượng Uranium (Uranium Core)',
+    rarity: 'epic',
+    icon: '☢️🟢',
+    tagline: 'Năng Lượng Phóng Xạ Cực Hạn (Magic Survival)',
+    description: 'Tăng cực mạnh +30% Toàn Bộ Sát Thương, nhưng tăng thêm +8% Thời gian hồi chiêu!',
+    stats: { damageBonus: 0.30, cooldownReduction: -0.08 }
+  },
+
+  // 6. BLOOD GRAIL (Magic Survival)
+  blood_grail: {
+    id: 'blood_grail',
+    name: 'Chén Thánh Huyết Ma (Blood Grail)',
+    rarity: 'rare',
+    icon: '🍷🩸',
+    tagline: 'Huyết Tế Sinh Mệnh (Magic Survival)',
+    description: 'Hồi phục 1% Máu tối đa mỗi khi tiêu diệt 15 quái vật. Tăng +0.5 HP/s hồi phục tự nhiên!',
+    stats: { hpRegen: 0.5, maxHp: 25 }
+  },
+
+  // 7. ASSASSIN'S DAGGER (Magic Survival)
+  assassin_dagger: {
+    id: 'assassin_dagger',
+    name: 'Dao Găm Bóng Đêm (Assassin Dagger)',
+    rarity: 'rare',
+    icon: '🗡️🌑',
+    tagline: 'Trảm Kích Yếu Điểm (Magic Survival)',
+    description: 'Tăng +10% Tỉ lệ Chí Mạng và tăng +35% Sát thương Chí mạng đối với quái vật!',
+    stats: { critChance: 0.10, critDmgBonus: 0.35 }
+  },
+
+  // 8. FOUR-LEAF CLOVER
+  clover_four_leaf: {
+    id: 'clover_four_leaf',
+    name: 'Bùa Cỏ 4 Lá May Mắn (Four-Leaf Clover)',
+    rarity: 'epic',
+    icon: '🍀✨',
+    tagline: 'Phước Lành Cỏ 4 Lá',
+    description: 'Tăng +15% Kinh nghiệm (EXP) nhận vào và +8% Tỉ lệ Đòn Chí Mạng!',
+    stats: { expBonus: 0.15, critChance: 0.08 }
+  },
+
+  // 9. MANA SHIELD AMULET
+  mana_shield_amulet: {
+    id: 'mana_shield_amulet',
+    name: 'Bùa Hộ Mệnh Khiên Mana (Mana Shield)',
+    rarity: 'epic',
+    icon: '🛡️💠',
+    tagline: 'Hộ Thể Kết Giới',
+    description: 'Tạo một lớp khiên chắn mana hấp thụ hoàn toàn 1 đòn đánh của quái mỗi 25 giây!',
+    stats: { armor: 0.08, maxHp: 30 }
+  },
+
+  // 10. WIND STRIDE BOOTS
+  wind_stride_boots: {
+    id: 'wind_stride_boots',
+    name: 'Giày Lướt Gió Thần Tốc (Wind Stride Boots)',
+    rarity: 'rare',
+    icon: '👢🌪️',
+    tagline: 'Bộ Pháp Thần Tốc',
+    description: 'Tăng +18% Tốc độ di chuyển và giảm -25% Hồi chiêu Lướt Dash (Space)!',
+    stats: { speed: 0.18, cooldownReduction: 0.05 }
+  },
+
+  // 11. SPIRIT PRISM
+  spirit_prism: {
+    id: 'spirit_prism',
+    name: 'Lăng Kính Tinh Linh (Spirit Prism)',
+    rarity: 'epic',
+    icon: '💎🌈',
+    tagline: 'Khúc Xạ Ma Lực',
+    description: 'Khúc xạ ma lực: Mở rộng +18% Diện tích nổ và tăng +10% Sát thương ma pháp!',
+    stats: { areaBonus: 0.18, damageBonus: 0.10 }
+  },
+
+  // 12. FORBIDDEN GRIMOIRE PAGE
+  forbidden_grimoire_page: {
+    id: 'forbidden_grimoire_page',
+    name: 'Trang Sách Đen Cấm Kỵ (Forbidden Page)',
+    rarity: 'epic',
+    icon: '📖🔥',
+    tagline: 'Cấm Thuật Cổ Xưa',
+    description: 'Khai mở cấm thuật: Mở rộng +22% Diện tích nổ của mọi ma pháp (AoE Explosion)!',
+    stats: { areaBonus: 0.22, damageBonus: 0.08 }
+  },
+
+  // 13. ADAMANT HEART
+  adamant_heart: {
+    id: 'adamant_heart',
+    name: 'Trái Tim Kim Cương (Adamant Core)',
+    rarity: 'rare',
+    icon: '💎❤️',
+    tagline: 'Cường Hóa Cơ Thể',
+    description: 'Cường hóa cơ thể: Tăng +50 Máu Tối đa và +10% Giáp phòng ngự giảm sát thương!',
+    stats: { maxHp: 50, armor: 0.10 }
+  },
+
+  // 14. PHOENIX FEATHER
+  phoenix_feather: {
+    id: 'phoenix_feather',
+    name: 'Lông Vũ Phượng Hoàng (Phoenix Feather)',
+    rarity: 'legendary',
+    icon: '🪶🔥',
+    tagline: 'Tái Sinh Từ Tro Tàn',
+    description: 'Ban thêm 1 lần HỒI SINH (50% HP) trong trận đấu! Tăng +15% Tốc chạy khi dưới 30% HP.',
+    stats: { maxHp: 30, hpRegen: 0.6 }
+  },
+
+  // 15. OVERLOAD BATTERY
+  overload_battery: {
+    id: 'overload_battery',
+    name: 'Lõi Quá Tải Ma Lực (Overload Battery)',
+    rarity: 'epic',
+    icon: '🔋⚡',
+    tagline: 'Giải Phóng Cực Hạn',
+    description: 'Xả ma lực cực hạn: Giảm -10% Thời gian hồi chiêu toàn bộ vũ khí và kỹ năng!',
+    stats: { cooldownReduction: 0.10, speed: 0.05 }
+  },
+
+  // 16. DEMON SKULL FRAGMENT
+  demon_skull_fragment: {
+    id: 'demon_skull_fragment',
+    name: 'Mảnh Sọ Ma Thần (Demon Skull Fragment)',
+    rarity: 'legendary',
+    icon: '💀😈',
+    tagline: 'Khí Tức Minh Giới',
+    description: 'Khí tức Minh Giới: Tăng +20% Sát thương lên Boss. Khi máu quái dưới 15%, có 50% cơ hội kết liễu lập tức!',
+    stats: { damageBonus: 0.20, critChance: 0.05 }
+  },
+
+  // 17. GOLDEN CLOVER COIN
+  golden_clover_coin: {
+    id: 'golden_clover_coin',
+    name: 'Đồng Xu Hoàng Kim (Golden Clover Coin)',
+    rarity: 'rare',
+    icon: '🪙✨',
+    tagline: 'Thần Tài Gõ Cửa',
+    description: 'Tăng +25% Clover Coins và +15% EXP nhận được trong suốt trận đấu!',
+    stats: { coinBonus: 0.25, expBonus: 0.15 }
+  },
+
+  // 18. SPIRIT BELL FEATHER
+  spirit_bell_feather: {
+    id: 'spirit_bell_feather',
+    name: 'Lông Vũ Tinh Linh Bell (Spirit Bell Feather)',
+    rarity: 'rare',
+    icon: '🪶🌪️',
+    tagline: 'Phong Linh Tinh Túy',
+    description: 'Tăng +16% Tốc độ di chuyển và giảm -6% Thời gian hồi chiêu toàn bộ ma pháp!',
+    stats: { speed: 0.16, cooldownReduction: 0.06 }
+  }
+};
+
+
 class ArtifactSystem {
   constructor(game) {
     this.game = game;
@@ -179,6 +385,7 @@ class ArtifactSystem {
     this.collection = {};
     // Array of up to 3 equipped artifact IDs
     this.equipped = [null, null, null];
+    this.inRunArtifacts = [];
     // Timers for relic skills in battle
     this.timers = {};
     this.reviveUsed = false;
@@ -189,6 +396,7 @@ class ArtifactSystem {
   reset() {
     this.collection = {};
     this.equipped = [null, null, null];
+    this.inRunArtifacts = [];
     this.timers = {};
     this.reviveUsed = false;
     this.stillTimer = 0;
@@ -259,31 +467,52 @@ class ArtifactSystem {
     return false;
   }
 
-  // Apply all equipped relic stat bonuses to player
+  // Helper to check if player currently has an artifact in run or meta
+  hasArtifact(artId) {
+    if (!artId) return false;
+    if (this.equipped && this.equipped.includes(artId)) return true;
+    if (this.inRunArtifacts && this.inRunArtifacts.includes(artId)) return true;
+    return false;
+  }
+
+  // Apply all equipped relic stat bonuses + in-run Treasure Chest artifacts (Magic Survival style!)
   applyEquippedStats(player) {
     if (!player) return;
 
+    // 1. Pre-run Meta Relics (up to 3 equipped slots)
     for (const artId of this.equipped) {
       if (!artId) continue;
-      const def = ARTIFACT_DEFS[artId];
-      if (!def || !def.stats) continue;
-
-      const star = this.getStar(artId);
-      const starMult = 1.0 + (star - 1) * 0.15; // ★1: 1.0x, ★2: 1.15x, ★3: 1.30x
-
-      if (def.stats.maxHp) player.maxHp += Math.round(def.stats.maxHp * starMult);
-      if (def.stats.damageBonus) player.damageBonus = (player.damageBonus || 0) + def.stats.damageBonus * starMult;
-      if (def.stats.armor) player.armor = Math.min(0.70, (player.armor || 0) + def.stats.armor * starMult);
-      if (def.stats.speed) player.speed *= (1 + def.stats.speed * starMult);
-      if (def.stats.cooldownReduction) player.cooldownReduction = Math.min(0.50, (player.cooldownReduction || 0) + def.stats.cooldownReduction * starMult);
-      if (def.stats.areaBonus) player.areaBonus = (player.areaBonus || 0) + def.stats.areaBonus * starMult;
-      if (def.stats.critChance) player.critChance = (player.critChance || 0) + def.stats.critChance * starMult;
-      if (def.stats.critDmgBonus) player.critDmgBonus = (player.critDmgBonus || 0) + def.stats.critDmgBonus * starMult;
-      if (def.stats.hpRegen) player.hpRegen = (player.hpRegen || 0) + def.stats.hpRegen * starMult;
-      if (def.stats.pickupRadius) player.pickupRadius += Math.round(def.stats.pickupRadius * starMult);
-      if (def.stats.expBonus) player.expBonus = (player.expBonus || 0) + def.stats.expBonus * starMult;
-      if (def.stats.coinBonus && this.game) this.game.coinDropMultiplier = (this.game.coinDropMultiplier || 1.0) + def.stats.coinBonus * starMult;
+      this.applySingleArtifactStats(player, artId, this.getStar(artId));
     }
+
+    // 2. In-Run Artifacts collected from in-map Treasure Chests (Giới hạn tối đa 12 Cổ Vật)
+    if (Array.isArray(this.inRunArtifacts)) {
+      const activeList = this.inRunArtifacts.slice(0, 12);
+      for (const artId of activeList) {
+        if (!artId) continue;
+        this.applySingleArtifactStats(player, artId, 1);
+      }
+    }
+  }
+
+  applySingleArtifactStats(player, artId, star = 1) {
+    const def = (typeof IN_RUN_ARTIFACT_DEFS !== "undefined" && IN_RUN_ARTIFACT_DEFS[artId]) || ARTIFACT_DEFS[artId];
+    if (!def || !def.stats) return;
+
+    const starMult = 1.0 + (star - 1) * 0.15; // ★1: 1.0x, ★2: 1.15x, ★3: 1.30x
+
+    if (def.stats.maxHp) player.maxHp += Math.round(def.stats.maxHp * starMult);
+    if (def.stats.damageBonus) player.damageBonus = (player.damageBonus || 0) + def.stats.damageBonus * starMult;
+    if (def.stats.armor) player.armor = Math.min(0.70, (player.armor || 0) + def.stats.armor * starMult);
+    if (def.stats.speed) player.speed *= (1 + def.stats.speed * starMult);
+    if (def.stats.cooldownReduction) player.cooldownReduction = Math.min(0.50, (player.cooldownReduction || 0) + def.stats.cooldownReduction * starMult);
+    if (def.stats.areaBonus) player.areaBonus = (player.areaBonus || 0) + def.stats.areaBonus * starMult;
+    if (def.stats.critChance) player.critChance = Math.min(1.0, (player.critChance || 0) + def.stats.critChance * starMult);
+    if (def.stats.critDmgBonus) player.critDmgBonus = Math.min(2.0, (player.critDmgBonus || 0) + def.stats.critDmgBonus * starMult);
+    if (def.stats.hpRegen) player.hpRegen = (player.hpRegen || 0) + def.stats.hpRegen * starMult;
+    if (def.stats.pickupRadius) player.pickupRadius = (player.pickupRadius || 80) + Math.round(def.stats.pickupRadius * starMult);
+    if (def.stats.expBonus) player.expBonus = (player.expBonus || 0) + def.stats.expBonus * starMult;
+    if (def.stats.coinBonus && this.game) this.game.coinDropMultiplier = (this.game.coinDropMultiplier || 1.0) + def.stats.coinBonus * starMult;
   }
 
   // Update loop for triggered skills
@@ -708,4 +937,6 @@ class ArtifactSystem {
 }
 
 window.ARTIFACT_DEFS = ARTIFACT_DEFS;
+window.IN_RUN_ARTIFACT_DEFS = IN_RUN_ARTIFACT_DEFS;
+window.MAP_ARTIFACT_DEFS = IN_RUN_ARTIFACT_DEFS;
 window.ArtifactSystem = ArtifactSystem;
