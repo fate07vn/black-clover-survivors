@@ -2719,6 +2719,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // 1. Fiery Mana Skin Aura with Lion Head Phantom
@@ -2869,6 +2870,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Royal Flame Aura
@@ -2954,6 +2956,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Radiant Golden Light Aura
@@ -3045,6 +3048,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Pure Elven Light Aura
@@ -3140,6 +3144,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Shadow Mist Aura
@@ -3236,6 +3241,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Teal Sealing Rune Aura
@@ -3325,6 +3331,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Blue Rose Aura
@@ -3394,6 +3401,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // World Tree Emerald Aura
@@ -3457,6 +3465,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Mercury Silver Aura
@@ -3517,6 +3526,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Emerald Wind Slicing Aura
@@ -3582,6 +3592,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Flame Aura
@@ -3650,6 +3661,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Fluffy Cotton Cloud beneath her
@@ -3733,6 +3745,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Cyan Trap Rune Aura
@@ -3800,6 +3813,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Spatial Portal Rings on Left and Right
@@ -3863,6 +3877,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Pastel Pink Dream Cloud
@@ -3932,6 +3947,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // Rainbow Paint Splatter Aura
@@ -3993,6 +4009,7 @@ const Sprites = {
     const bob = anim.walkBob;
 
     ctx.save();
+    ctx.translate(p.x, p.y);
     ctx.scale(facing, 1);
 
     // 4 Celestial Light Wings
