@@ -1,73 +1,118 @@
-# 🍀 BLACK CLOVER: MA PHÁP SINH TỒN (MAGIC SURVIVOR)
+# 🍀 Black Clover: Magic Survivor (Ma Pháp Sinh Tồn)
 
-> Game Roguelite Bullet-Heaven Sinh Tồn Tự Động lấy cảm hứng từ **PokeSurvivor (pokesurvivor.com)** & **Vampire Survivors**, lấy bối cảnh vũ trụ anime **Black Clover**.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![HTML5 Canvas](https://img.shields.io/badge/Tech-HTML5%20Canvas-orange.svg)](#)
+[![Vanilla JavaScript](https://img.shields.io/badge/Language-Vanilla%20JS-F7DF1E.svg)](#)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933.svg)](https://nodejs.org)
+
+> Game Roguelite Bullet-Heaven Sinh Tồn Ma Pháp đỉnh cao lấy cảm hứng từ **Magic Survival**, **Vampire Survivors** và **PokeSurvivor**, được xây dựng trong vũ trụ anime **Black Clover**. Hoàn toàn bằng Vanilla JavaScript, HTML5 Canvas và Web Audio API tổng hợp âm thanh thực tế mà không cần bất kỳ asset hình ảnh/âm thanh bên ngoài nặng nề nào.
 
 ---
 
-## 🎮 Cách Bắt Đầu Chơi Ngay
+## 🌟 Tính Năng Nổi Bật (Key Features)
 
-### Cách 1: Chạy file Batch (Khuyên dùng trên Windows)
-1. Mở thư mục `black-clover-survivors`.
-2. Nhấp đúp chuột vào file **`start.bat`**. Trình duyệt sẽ tự động mở game tại địa chỉ `http://localhost:3000`.
+- 🧙 **40 Ma Đạo Sĩ Tuyển Chọn**: Đầy đủ các nhân vật kinh điển (Asta, Yuno, Noelle, Yami, Julius, Mereoleona, Fuegoleon, Lumiere, Licht, Nacht, Secre, Charlotte, William, Nozel, Jack, Dorothy, Rill, Zora, Finral, Charmy...). Mỗi nhân vật có tạo hình Anime Canvas độc quyền, vũ khí khởi đầu, chỉ số riêng biệt và hoạt ảnh bước chân/vũ khí linh hoạt.
+- ⚡ **Hệ Thống Tiến Hóa Ma Pháp (Grimoire Evolution)**:
+  - **Tier 1**: Kỹ năng cơ bản cấp 1 - 5.
+  - **Tier 2 (Thần Thoại)**: Nâng kỹ năng lên Cấp 5 kết hợp Sách Bổ Trợ tương ứng.
+  - **Tier 3 (Siêu Tiến Hóa)**: Thăng hoa sức mạnh vô cực khi nhân vật đạt Cấp 10+ với các tuyệt kỹ hủy diệt toàn màn hình.
+- 🔮 **Giao Diện Thăng Cấp Phong Cách Magic Survival**: Gọn gàng, huyền bí, dễ thao tác với thẻ kỹ năng ma đạo, nút nhận lại 20% Mana và biểu tượng Ngôi Sao Ma Pháp tra cứu nhanh công thức tiến hóa.
+- 🏆 **Cổ Vật & La Bàn Chiến Trường (Artifact System)**: Rơi từ rương báu hoặc tìm thấy ngẫu nhiên trên bản đồ với 4 bậc phẩm cấp: *Common (Thường)*, *Rare (Hiếm)*, *Epic (Sử Thi)*, *Legendary (Huyền Thoại)*.
+- 👹 **11 Loại Quái Vật & 8 Đại Boss Đa Giai Đoạn**: Quái vật đa dạng hành vi (áp sát, bắn tỉa, lao húc, quỷ dơi); Boss sở hữu trạng thái Cuồng Nộ (Enraged), kỹ năng đặc biệt và vòng hào quang ác ma hoành tráng.
+- 💾 **Lưu Trữ Bền Vững & Cloud Save**: Lưu trạng thái nhân vật đã chọn, màn chơi, độ khó qua `localStorage` và tài khoản lưu trữ đám mây. Không bao giờ bị mất tiến trình khi F5 hoặc tắt trình duyệt.
+- 🎮 **Hỗ Trợ Mọi Thiết Bị**: Chơi mượt mà 60 FPS trên máy tính (Bàn phím WASD / Mũi tên) và điện thoại di động / tablet (Virtual Touch Joystick).
 
-### Cách 2: Dùng lệnh Node.js
+---
+
+## 🚀 Hướng Dẫn Chạy Game (Quick Start)
+
+### Cách 1: Chạy file Batch (Windows)
+1. Mở thư mục dự án `black-clover-survivors`.
+2. Nhấp đúp chuột vào file **`start.bat`**. Trình duyệt sẽ tự động mở game tại `http://localhost:3000`.
+
+### Cách 2: Dùng Node.js Server
 ```bash
-cd C:\Users\Admin\.gemini\antigravity\scratch\black-clover-survivors
+# Khởi động máy chủ cục bộ
 npm start
 # hoặc: node server.js
 ```
+Mở trình duyệt truy cập: `http://localhost:3000`
 
-### Cách 3: Mở trực tiếp
-Mở file `index.html` trực tiếp bằng bất kỳ trình duyệt web nào (Chrome, Edge, Firefox, Brave, Safari). Game được xây dựng 100% bằng Vanilla HTML5 Canvas + Web Audio API không phụ thuộc server hay internet!
-
----
-
-## ⚔️ Danh Sách Pháp Sư Tuyển Chọn (Playable Characters)
-
-| Pháp Sư | Quân Đoàn | Thuộc Tính | Vũ Khí Khởi Đầu | Đặc Kỹ & Tiến Hóa Đặc Biệt |
-| :--- | :--- | :--- | :--- | :--- |
-| **Asta** 🗡️ | Hắc Bộc Ngưu | Kháng Ma Pháp | **Kiếm Diệt Ma** | +15% Kháng Sát Thương. Nhát chém phá hủy đạn phép địch. Đạt cấp 8+ kích hoạt **Black Asta (Hóa Quỷ)** mọc cánh quỷ và sừng! |
-| **Yuno** 🌪️ | Hoàng Kim Nhật Quang | Phong & Tinh Linh | **Lưỡi Dao Gió** | +25% Tốc độ di chuyển, +1 tia đạn gió cho mọi chiêu thức tầm xa. Kèm theo Tinh Linh Gió Sylph bay lượn! |
-| **Noelle** 🐉 | Hắc Bộc Ngưu | Thủy Sáng Tạo | **Thủy Long Gầm Rú** | +30% Diện tích chiêu thức (AoE) và khiên nước hộ thân. Đạt cấp cao kích hoạt **Áo Giáp Nữ Thần Valkyrie**! |
-| **Yami** 🌑 | Đoàn Trưởng Hắc Bộc Ngưu | Hắc Ma Pháp & Khí | **Hắc Đao Katana** | +15% Tỉ lệ Chí Mạng. Khi HP dưới 40%, sát thương tăng vọt **+80%** (Vượt Qua Giới Hạn)! |
-| **Luck** ⚡ | Hắc Bộc Ngưu | Lôi Ma Pháp | **Lôi Thần Trụy Kích** | +30% Tốc độ ra đòn (Giảm hồi chiêu cực mạnh). Sấm sét giáng liên tục! |
-| **Julius** ⏳ | Ma Pháp Đế (Wizard King) | Thời Gian Ma Pháp | **Ngưng Đọng Thời Gian** | Làm chậm toàn bộ quái vật trên bản đồ 20%, nhận thêm +25% EXP từ mọi nguồn! |
+### Cách 3: Chơi Trực Tiếp Không Cần Cài Đặt
+Mở trực tiếp file `index.html` bằng bất kỳ trình duyệt web nào (Chrome, Edge, Firefox, Brave, Safari). Game hoạt động 100% độc lập với Vanilla Web Canvas.
 
 ---
 
-## 🔮 Hệ Thống Tiến Hóa Phép Thuật (Grimoire Evolution Recipes)
+## 🧪 Kiểm Thử Tự Động (Automated Testing)
 
-Để tiến hóa vũ khí lên cấp Thần Thoại, bạn cần nâng **Vũ Khí lên Cấp 5** kết hợp với **Sách Bổ Trợ (Passive) tương ứng** (Cấp 1 trở lên):
-
-| Vũ Khí Cấp 5 | Sách Bổ Trợ Yêu Cầu | Vũ Khí Tiến Hóa Thần Thoại | Hiệu Ứng Tuyệt Chiêu |
-| :--- | :--- | :--- | :--- |
-| **Kiếm Diệt Ma** | 👿 Giao Ước Quỷ Dữ | **⚔️ Hắc Đại Kiếm Hủy Diệt (Black Divider)** | Xoay kiếm 360 độ cực đại, xé toạc mọi kẻ địch và xóa sổ mọi ma pháp trên đường quét. |
-| **Lưỡi Dao Gió** | 👟 Lướt Gió | **🍃 Kiếm Tinh Linh Zephyr (Spirit of Zephyr)** | Tạo ra 2 cơn lốc xoáy khổng lồ hút chặt kẻ địch và nghiền nát liên tục. |
-| **Thủy Long Gầm Rú** | 🛡️ Vỏ Bọc Mana | **🔱 Thương Thần Valkyrie (Valkyrie Dress)** | Bắn ra 8 ngọn giáo nước thần thánh xuyên thấu toàn màn hình mọi hướng. |
-| **Hắc Đao Katana** | 👁️ Cảm Nhận Khí | **🌌 Hắc Trảm Xuyên Không (Dimension Slash Equinox)** | Nhát chém xé toạc không gian xuyên suốt màn hình, sát thương cực khủng! |
-| **Lôi Thần Trụy Kích** | ⏱️ Cộng Hưởng Ma Đạo | **🌩️ Lôi Thần Khởi Lôi (Raijin Storm)** | Sấm sét thiên lôi liên tục oanh tạc các cụm quái vật, làm choáng diện rộng. |
-
----
-
-## 👹 Dòng Thời Gian Quái Vật & Đại Chiến Boss
-
-- **00:00 - 01:30**: Đạo Tặc Vương Quốc Clover (Luyện cấp, nhặt tinh thể Mana).
-- **01:30 - 03:00**: Giáo Phái Bạch Dạ Ma Nhãn (Eye of Midnight Sun).
-- **03:00 ⚠️ BOSS 1**: **Mars (Khoáng Thạch Ma Pháp)** - Giáp dày, lao húc cực mạnh và phóng mảnh kim cương.
-- **03:30 - 05:00**: Binh đoàn Xác Sống & Quái Vật Bùn của Rades.
-- **05:00 ⚠️ BOSS 2**: **Vetto Của Tuyệt Vọng (Beast Magic Berserker)** - Cuồng bạo, nhảy dập tạo chấn động kinh hoàng.
-- **05:30 - 07:30**: Binh đoàn Ác Ma Vương Quốc Spade.
-- **07:30 ⚠️ BOSS 3**: **Patri / Licht (Ánh Sáng Phán Xét)** - Tốc độ cực nhanh, dịch chuyển tức thời và mưa kiếm ánh sáng.
-- **08:00 - 10:00**: Lũ Quỷ Cấp Thấp từ Cổng Minh Giới tràn ra như bão.
-- **10:00 👑 ĐẠI BOSS CUỐI**: **ÁC QUỶ MINH GIỚI - ZAGRED (Word Soul Devil)** - Trùm tối thượng điều khiển Ma Pháp Ngôn Từ, triệu hồi bầy quỷ phụng sự. Tiêu diệt hắn để **CHIẾN THẮNG & ĐOẠT DANH HIỆU MA PHÁP ĐẾ!**
+Dự án tích hợp bộ kiểm thử tự động toàn diện:
+```bash
+npm test
+```
+* Bộ test bao gồm:
+  1. `tests/syntax_check.test.js`: Kiểm tra cú pháp toàn bộ các file JS trong dự án.
+  2. `tests/visuals.test.js`: Kiểm thử render Canvas 40 Ma Đạo Sĩ, 11 Quái Vật và 8 Boss.
+  3. `tests/persistence.test.js`: Kiểm thử tính bền vững lưu trữ nhân vật khi tải lại web.
 
 ---
 
-## 🕹️ Điều Khiển (Controls)
+## 📁 Cấu Trúc Dự Án (Project Structure)
 
-- **Di chuyển**: Phím `W`, `A`, `S`, `D` hoặc các phím **Mũi tên**.
-- **Lướt né đòn (Dash / Black Meteorite)**: Phím `Space` hoặc **Click chuột phải**.
-- **Tấn công**: Pháp sư tự động tung chiêu theo chu kỳ hồi chiêu (Auto-Cast).
-- **Tạm dừng**: Phím `P` hoặc `Escape` hoặc nút `⏸️`.
-- **Âm thanh**: Nút `🔊 SFX` và `🎵 BGM` trên góc phải.
-- **Hỗ trợ di động**: Bàn điều khiển ảo (Virtual Joystick) và nút Lướt cảm ứng trên màn hình cảm ứng điện thoại/máy tính bảng.
+```text
+black-clover-survivors/
+├── index.html            # Giao diện chính, canvas, modal ma đạo sĩ & hud
+├── style.css             # Định kiểu giao diện hiện đại phong cách anime
+├── server.js             # Máy chủ Node.js phục vụ API đăng nhập & lưu game
+├── start.bat             # Script khởi động 1-click tiện lợi trên Windows
+├── package.json          # Cấu hình dự án & scripts (start, test)
+├── .gitignore            # Loại bỏ file tạm, binary lớn (cloudflared), logs, data nhạy cảm
+├── .gitattributes       # Chuẩn hóa line endings (LF/CRLF) cross-platform
+├── LICENSE               # Giấy phép MIT mã nguồn mở
+├── src/                  # Mã nguồn logic trò chơi
+│   ├── audio.js          # Hệ thống âm thanh tổng hợp Web Audio API
+│   ├── auth.js           # Xử lý đăng ký, đăng nhập & đồng bộ save game
+│   ├── sprites.js        # Đồ họa Canvas cho 40 nhân vật, 11 quái và 8 boss
+│   ├── spells.js         # Toàn bộ phép thuật, kỹ năng & công thức tiến hóa
+│   ├── enemies.js        # Logic AI quái vật, boss, đợt tấn công & nhặt đồ
+│   ├── artifacts.js      # Hệ thống cổ vật, rương báu & la bàn
+│   └── game.js           # Vòng lặp trò chơi chính (Game Loop, Input, Save)
+├── data/                 # Thư mục dữ liệu người dùng (local database)
+│   ├── .gitkeep          # Giữ cấu trúc thư mục trên Git
+│   └── users.example.json# Template mẫu cơ sở dữ liệu
+└── tests/                # Bộ test tự động
+    ├── syntax_check.test.js
+    ├── visuals.test.js
+    └── persistence.test.js
+```
+
+---
+
+## 📤 Hướng Dẫn Đẩy Dự Án Lên GitHub (Push to GitHub)
+
+### Bước 1: Khởi tạo Git (nếu chưa có)
+Mở PowerShell hoặc Git Bash tại thư mục dự án:
+```bash
+git init
+git branch -M main
+```
+
+### Bước 2: Thêm files và Commit
+Nhờ file `.gitignore` đã được tối ưu, các file binary lớn (`cloudflared.exe`) và file tạm đã được tự động loại bỏ:
+```bash
+git add .
+git commit -m "feat: release Black Clover Magic Survivor full release with 40 heroes and visual overhaul"
+```
+
+### Bước 3: Đẩy lên kho lưu trữ GitHub của bạn
+Tạo một repository mới trên GitHub (ví dụ: `black-clover-magic-survivors`), sau đó liên kết và đẩy code:
+```bash
+git remote add origin https://github.com/<tai-khoan-cua-ban>/black-clover-magic-survivors.git
+git push -u origin main
+```
+
+---
+
+## 📜 Giấy Phép (License)
+
+Dự án được phân phối dưới giấy phép **MIT**. Xem chi tiết tại [LICENSE](LICENSE).
+Tác phẩm lấy cảm hứng từ nguyên tác anime/manga **Black Clover** của tác giả Yūki Tabata / Shueisha.
