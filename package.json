@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node tests/syntax_check.test.js && node tests/visuals.test.js && node tests/persistence.test.js"
+    "test": "node tests/syntax_check.test.js && node tests/visuals.test.js && node tests/persistence.test.js && node tests/gold_rewards.test.js"
   },
   "keywords": [
     "black-clover",

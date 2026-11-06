@@ -1674,6 +1674,7 @@ class Game {
 
     this.gameTime = 0;
     this.killCount = 0;
+    this.runCoinsCollected = 0;
     this.comboCount = 0;
     this.comboTimer = 0;
     this.comboBanner = { text: '', alpha: 0, scale: 1 };
@@ -2770,6 +2771,7 @@ class Game {
     } else if (choice.type === 'bonus_heal_coins') {
       p.hp = Math.min(p.maxHp, p.hp + p.maxHp * 0.5);
       this.currency.coins += 300;
+      this.runCoinsCollected = (this.runCoinsCollected || 0) + 300;
       window.soundEngine.pickup();
     } else if (choice.type === 'bonus_stat_dmg') {
       p.damageBonus = (p.damageBonus || 0) + 0.08;
@@ -3030,16 +3032,42 @@ class Game {
     }
   }
 
+  getDifficultyMultiplier() {
+    const diff = (typeof MAP_DIFFICULTIES !== 'undefined') ? MAP_DIFFICULTIES[this.selectedDifficulty] : null;
+    return diff ? (diff.rewardMult || 1.0) : 1.0;
+  }
+
   gameOver() {
     this.state = 'GAME_OVER';
     window.soundEngine.gameOver();
+
+    const inRunCoins = this.runCoinsCollected || 0;
+    const diffMult = this.getDifficultyMultiplier();
+    const killBonus = Math.round((this.killCount || 0) * 1.5);
+    const timeBonus = Math.round((this.gameTime || 0) * 2.0);
+    const levelBonus = (this.player ? this.player.level : 1) * 30;
+    const performanceBonus = Math.max(50, Math.round((killBonus + timeBonus + levelBonus) * diffMult));
+    const totalEarnedThisRun = inRunCoins + performanceBonus;
+
+    // Award performance gold bonus to player currency
+    this.currency.coins = (this.currency.coins || 0) + performanceBonus;
     this.saveGameData();
+    this.updateTopBarCurrency();
 
     document.getElementById('hud').classList.add('hidden');
     document.getElementById('gameOverOverlay').classList.remove('hidden');
-    document.getElementById('goKills').innerText = this.killCount;
+    document.getElementById('goKills').innerText = (this.killCount || 0).toLocaleString();
     document.getElementById('goTime').innerText = this.formatTime(this.gameTime);
-    document.getElementById('goLevel').innerText = this.player.level;
+    document.getElementById('goLevel').innerText = (this.player ? this.player.level : 1);
+
+    const elGoGold = document.getElementById('goGold');
+    if (elGoGold) {
+      elGoGold.innerText = `+${totalEarnedThisRun.toLocaleString()}`;
+    }
+    const elGoGoldSub = document.getElementById('goGoldSub');
+    if (elGoGoldSub) {
+      elGoGoldSub.innerHTML = `🪙 Nhặt trong trận: <b>+${inRunCoins.toLocaleString()}</b> | Thưởng chiến tích: <b>+${performanceBonus.toLocaleString()}</b>`;
+    }
   }
 
   victory() {
@@ -3049,16 +3077,35 @@ class Game {
     this.state = 'VICTORY';
     window.soundEngine.victory();
 
-    // Reward big victory currency!
-    this.currency.coins += 2000;
-    this.currency.tickets += 15;
+    const inRunCoins = this.runCoinsCollected || 0;
+    const diffMult = this.getDifficultyMultiplier();
+    const killBonus = Math.round((this.killCount || 0) * 2.5);
+    const timeBonus = Math.round((this.gameTime || 0) * 3.0);
+    const levelBonus = (this.player ? this.player.level : 1) * 60;
+    const victoryClearBonus = 3000;
+    const performanceBonus = Math.round((victoryClearBonus + killBonus + timeBonus + levelBonus) * diffMult);
+    const totalEarnedThisRun = inRunCoins + performanceBonus;
+
+    // Reward big victory currency & tickets!
+    this.currency.coins = (this.currency.coins || 0) + performanceBonus;
+    this.currency.tickets = (this.currency.tickets || 0) + 15;
     this.saveGameData();
+    this.updateTopBarCurrency();
 
     document.getElementById('hud').classList.add('hidden');
     document.getElementById('victoryOverlay').classList.remove('hidden');
-    document.getElementById('vicKills').innerText = this.killCount;
+    document.getElementById('vicKills').innerText = (this.killCount || 0).toLocaleString();
     document.getElementById('vicTime').innerText = this.formatTime(this.gameTime);
-    document.getElementById('vicLevel').innerText = this.player.level;
+    document.getElementById('vicLevel').innerText = (this.player ? this.player.level : 1);
+
+    const elVicGold = document.getElementById('vicGold');
+    if (elVicGold) {
+      elVicGold.innerText = `+${totalEarnedThisRun.toLocaleString()}`;
+    }
+    const elVicGoldSub = document.getElementById('vicGoldSub');
+    if (elVicGoldSub) {
+      elVicGoldSub.innerHTML = `🏆 Nhặt trong trận: <b>+${inRunCoins.toLocaleString()}</b> | Thưởng Thắng Màn: <b>+${performanceBonus.toLocaleString()}</b> (+15 Vé 🎟️)`;
+    }
   }
 
   continueEndlessMode() {
@@ -3071,6 +3118,15 @@ class Game {
   }
 
   quitCurrentRun() {
+    if ((this.state === 'PLAYING' || this.state === 'PAUSED') && this.gameTime > 15) {
+      const diffMult = this.getDifficultyMultiplier();
+      const killBonus = Math.round((this.killCount || 0) * 1.0);
+      const timeBonus = Math.round((this.gameTime || 0) * 1.5);
+      const earlyQuitBonus = Math.round((killBonus + timeBonus) * diffMult);
+      if (earlyQuitBonus > 0) {
+        this.currency.coins = (this.currency.coins || 0) + earlyQuitBonus;
+      }
+    }
     this.saveGameData();
     window.soundEngine.stopBGM();
     this.state = 'MENU';
@@ -3443,6 +3499,7 @@ class Game {
           window.soundEngine.evolution();
         } else if (drop.type === 'coin') {
           this.currency.coins += drop.val;
+          this.runCoinsCollected = (this.runCoinsCollected || 0) + drop.val;
           this.spells.floatingTexts.push({ x: p.x, y: p.y - 15, text: `+${drop.val} COINS`, color: '#fbbf24', size: 14, life: 0.6 });
           window.soundEngine.pickup();
         } else if (drop.type === 'diamond') {
@@ -3507,6 +3564,7 @@ class Game {
       const expReward = Math.round((this.player.nextExp || 100) * 0.45);
 
       this.currency.coins += coinReward;
+      this.runCoinsCollected = (this.runCoinsCollected || 0) + coinReward;
       this.healPlayer(healAmt);
       this.addExp(expReward);
 
@@ -3741,6 +3799,7 @@ class Game {
 
     if (this.artifacts.inRunArtifacts.length >= 12) {
       this.currency.coins += 800;
+      this.runCoinsCollected = (this.runCoinsCollected || 0) + 800;
       this.healPlayer(Math.round(this.player.maxHp * 0.40));
       this.triggerComboBanner('👑 ĐÃ ĐẠT TỐI ĐA 12/12 CỔ VẬT!');
       return;
@@ -3967,6 +4026,7 @@ class Game {
 
     // Immediate rewards
     this.currency.coins += 250;
+    this.runCoinsCollected = (this.runCoinsCollected || 0) + 250;
     this.addExp(Math.max(1, Math.round((this.player.nextExp || 100) * 0.20)));
 
     // Recalculate passives immediately with new artifact stats!
