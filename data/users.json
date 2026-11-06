@@ -57,6 +57,9 @@
           "fana",
           "sylph"
         ],
+        "selectedCharId": "sylph",
+        "selectedMapId": "clover_plains",
+        "selectedDifficulty": "normal",
         "upgrades": {
           "vitality": 10,
           "strength": 10,
@@ -215,7 +218,7 @@
           "sensitivity": 1
         }
       },
-      "lastSaved": "2026-11-05T19:39:10.050Z",
+      "lastSaved": "2026-11-06T08:41:18.197Z",
       "activeToken": "2ca66ac716ee88002d5a542ee4599f620f260976cd73ab48"
     },
     "lo1": {

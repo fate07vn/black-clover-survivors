@@ -680,6 +680,14 @@ class Game {
     this.selectedCharId = 'asta';
     this.selectedMapId = 'clover_plains';
     this.selectedDifficulty = 'normal';
+    try {
+      const sh = localStorage.getItem('BC_SELECTED_HERO');
+      if (sh) this.selectedCharId = sh;
+      const sm = localStorage.getItem('BC_SELECTED_MAP');
+      if (sm) this.selectedMapId = sm;
+      const sd = localStorage.getItem('BC_SELECTED_DIFF');
+      if (sd) this.selectedDifficulty = sd;
+    } catch (e) {}
 
     this.worldWidth = 4000;
     this.worldHeight = 4000;
@@ -1033,6 +1041,16 @@ class Game {
         if (data.characterUpgrades) this.characterUpgrades = data.characterUpgrades;
         if (data.bannerPity) this.bannerPity = data.bannerPity;
         if (data.pity1000Counter !== undefined) this.pity1000Counter = data.pity1000Counter;
+        if (data.selectedCharId && (CHARACTERS[data.selectedCharId] || data.selectedCharId === 'asta')) {
+          this.selectedCharId = data.selectedCharId;
+        } else {
+          try {
+            const sh = localStorage.getItem('BC_SELECTED_HERO');
+            if (sh && CHARACTERS[sh]) this.selectedCharId = sh;
+          } catch (e) {}
+        }
+        if (data.selectedMapId) this.selectedMapId = data.selectedMapId;
+        if (data.selectedDifficulty) this.selectedDifficulty = data.selectedDifficulty;
 
         if (storageKey === 'BC_GUEST_DATA') {
           // Auto-clean contaminated artifacts from previous logout bug on a fresh guest
@@ -1138,6 +1156,9 @@ class Game {
       currency: this.currency,
       playerName: this.playerName,
       unlocked: Array.from(this.unlockedCharacters),
+      selectedCharId: this.selectedCharId || 'asta',
+      selectedMapId: this.selectedMapId || 'clover_plains',
+      selectedDifficulty: this.selectedDifficulty || 'normal',
       upgrades: this.upgrades,
       characterUpgrades: this.characterUpgrades,
       bannerPity: this.bannerPity,
@@ -1180,6 +1201,18 @@ class Game {
       if (data.bannerPity) this.bannerPity = data.bannerPity;
       if (data.pity1000Counter !== undefined) this.pity1000Counter = data.pity1000Counter;
       if (data.artifactsSystem && this.artifacts) this.artifacts.loadData(data.artifactsSystem);
+      if (data.selectedCharId && (CHARACTERS[data.selectedCharId] || data.selectedCharId === 'asta')) {
+        this.selectedCharId = data.selectedCharId;
+        try { localStorage.setItem('BC_SELECTED_HERO', data.selectedCharId); } catch (e) {}
+      }
+      if (data.selectedMapId) {
+        this.selectedMapId = data.selectedMapId;
+        try { localStorage.setItem('BC_SELECTED_MAP', data.selectedMapId); } catch (e) {}
+      }
+      if (data.selectedDifficulty) {
+        this.selectedDifficulty = data.selectedDifficulty;
+        try { localStorage.setItem('BC_SELECTED_DIFF', data.selectedDifficulty); } catch (e) {}
+      }
 
       const storageKey = this.getSaveStorageKey();
       localStorage.setItem(storageKey, JSON.stringify(this.exportSaveData()));
@@ -1629,6 +1662,11 @@ class Game {
     this.selectedCharId = charId || this.selectedCharId;
     this.selectedMapId = mapId || this.selectedMapId;
     this.selectedDifficulty = diffId || this.selectedDifficulty || 'normal';
+    try {
+      localStorage.setItem('BC_SELECTED_HERO', this.selectedCharId);
+      localStorage.setItem('BC_SELECTED_MAP', this.selectedMapId);
+      localStorage.setItem('BC_SELECTED_DIFF', this.selectedDifficulty);
+    } catch (e) {}
     const char = CHARACTERS[this.selectedCharId];
 
     window.soundEngine.init();
