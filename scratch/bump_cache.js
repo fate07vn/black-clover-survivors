@@ -1,9 +1,9 @@
 const fs = require('fs');
 
-let indexHtml = fs.readFileSync('index.html', 'utf8');
+const indexPath = 'C:/Users/Admin/.gemini/antigravity/scratch/black-clover-survivors/index.html';
+let html = fs.readFileSync(indexPath, 'utf8');
 
-// Bump cache buster from bc186 to bc187
-indexHtml = indexHtml.replace(/\?v=bc186/g, '?v=bc187');
+html = html.replace(/v=bc195/g, 'v=bc196');
+fs.writeFileSync(indexPath, html, 'utf8');
 
-fs.writeFileSync('index.html', indexHtml, 'utf8');
-console.log('Bumped cache buster to v=bc187 in index.html');
+console.log('Bumped cache buster to v=bc196 in index.html');
